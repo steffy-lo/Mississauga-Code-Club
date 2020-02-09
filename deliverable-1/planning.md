@@ -101,52 +101,53 @@ Docker, used to handle containers for deployment
 * Performed manually as well as using automated tools like Selenium to see if behavior matches what is expected. In both cases, we will develop test cases that reflect expected issues.
 
 #### Q5: What are the user stories that make up the MVP?
-1. As the parent of a student at MCC, I want to be able to see a list of all courses my child has taken there, in order to track their progress.
+1. As the parent of a student at MCC, I want to be able to see a list of all courses my child has taken there, in order to track their progress.  
 Acceptance Criteria:
-View list of courses my child has completed
-Record all courses that a student have taken
-Only be able to see data that is relevant to my child
-The courses are displayed in a readable format
+	- View list of courses my child has completed
+	- Record all courses that a student have taken
+	- Only be able to see data that is relevant to my child
+	- The courses are displayed in a readable format
 
-2. As the parent of a student at MCC, I want to be able to see my child's performance in each of their courses, so I can see if they need assistance.
+2. As the parent of a student at MCC, I want to be able to see my child's performance in each of their courses, so I can see if they need assistance.  
 Acceptance Criteria:
-Parents can see the child's grades for each course
-Performance will be viewed and tracked based on each course
-Only be able to see their data relevant to the child.
-Grades are displayed in an organized format
+	- Parents can see the child's grades for each course
+	- Performance will be viewed and tracked based on each course
+	- Only be able to see their data relevant to the child.
+	- Grades are displayed in an organized format
 
-3. As the parent of a student at MCC, I want to see a list of recommended courses based on my child’s performance, in order to know what my child should focus on next.
+3. As the parent of a student at MCC, I want to see a list of recommended courses based on my child’s performance, in order to know what my child should focus on next.  
 Acceptance Criteria:
-Parents can see recommended courses
-Recommended courses are updated as the child's education progresses
-Recommended courses are based on performance on specific related courses
+	- Parents can see recommended courses
+	- Recommended courses are updated as the child's education progresses
+	- Recommended courses are based on performance on specific related courses
               
-4. As a volunteer at MCC, I want to be able to see the number of volunteer hours I have logged between the span of any two dates in order to keep track of how many volunteer hours I have acquired.
+4. As a volunteer at MCC, I want to be able to see the number of volunteer hours I have logged between the span of any two dates in order to keep track of how many volunteer hours I have acquired.  
 Acceptance Criteria:
-Only display the number of hours logged between the two requested dates
-Be able to select any two dates to view
-Hours are viewed between two dates
+	- Only display the number of hours logged between the two requested dates
+	- Be able to select any two dates to view
+	- Hours are viewed between two dates
 
-5. As a volunteer at MCC, I want to be able to log my attendance to assigned hours, in order for MCC to have a record of my volunteer hours.
+5. As a volunteer at MCC, I want to be able to log my attendance to assigned hours, in order for MCC to have a record of my volunteer hours.  
 Acceptance Criteria:
     -    Be able to confirm attendance for a specific day
           -    Keep an organized record of logged hours for other staff to review
     -    Only be able to log attendance to assigned hours
 
-6. As a teacher, I want to be able to view the courses I am teaching, in order to accurately plan course material.
+6. As a teacher, I want to be able to view the courses I am teaching, in order to accurately plan course material.  
 Acceptance Criteria:
     -    Display only the courses that are currently being taught by the user
           -    Courses are displayed in a readable format
     -    Only courses that are being taught by the user can be viewed
 
-7. As a teacher, I want to be able to provide feedback to each student in the form of grades and comments, in order to provide parents and students with their performance in the course.
+7. As a teacher, I want to be able to provide feedback to each student in the form of grades and comments, in order to provide parents and students with their performance in the course.  
 Acceptance Criteria:
     -    For each student in a course, be able to input grades
           -    For each student in a course, be able to provide feedback
     -    Only be able to insert grades and feedback for students currently being taught
     -    Be able to see a list of students enrolled in the course
 
-8. As a teacher, I want to be able to provide course recommendations based on courses students have completed, in order to guide students toward further learning.
+8. As a teacher, I want to be able to provide course recommendations based on courses students have completed, in order to guide students toward further learning.  
+Acceptance Criteria:
     -    For each student in a course, be able to provide suggested courses   
     -    The suggestions must be sent to the student in a readable format
     -    Only be able to suggest courses for students that completed the course with the teacher
@@ -155,41 +156,35 @@ Acceptance Criteria:
 
 
 
-9. As an administrator, I want to be able to access any specific user’s relevant info for MCC so that I can effectively manage their activities.
+9. As an administrator, I want to be able to access any specific user’s relevant info for MCC so that I can effectively manage their activities.  
 Acceptance Criteria:
-Each user and their associated information must be recorded and accessible
-Information is displayed in a readable format
-Only relevant data is displayed
+	- Each user and their associated information must be recorded and accessible Information is displayed in a readable format
+	- Only relevant data is displayed
 
 
-10. As an administrator, I want to be able to verify a volunteer’s logged hours, in order for MCC to have an accurate record of volunteer hours.
-
+10. As an administrator, I want to be able to verify a volunteer’s logged hours, in order for MCC to have an accurate record of volunteer hours.  
 Acceptance Criteria:
-The total hours of a volunteer should be easily accessed
-Logged hours from volunteers should be accessible from the admin side
+	- The total hours of a volunteer should be easily accessed
+	- Logged hours from volunteers should be accessible from the admin side
 
-11. As an administrator, I want to be able to generate a report at the request of a volunteer in order to allow them to showcase the work they have put into MCC for their supervisor.
-
+11. As an administrator, I want to be able to generate a report at the request of a volunteer in order to allow them to showcase the work they have put into MCC for their supervisor.  
 Acceptance Criteria:
-Generate reports that shows the work hours of a volunteer at MCC
-Reports should have a good format for readability purposes
-Reports are per-person(volunteer) basis
+	- Generate reports that shows the work hours of a volunteer at MCC
+	- Reports should have a good format for readability purposes
+	- Reports are per-person(volunteer) basis
 
-12. As an administrator, I want to be able to add an account as any role, in order to populate the system with users.
-
+12. As an administrator, I want to be able to add an account as any role, in order to populate the system with users.  
 Acceptance Criteria:
-Administrators are able to modify the database by adding accounts
-Administrators are able to set the type (role) of the account
-Users are added through the admin
+	- Administrators are able to modify the database by adding accounts
+	- Administrators are able to set the type (role) of the account
+	- Users are added through the admin
 
-13. As an administrator, I want to be able to remove any account, in order to keep my database organized with active users only.
-
+13. As an administrator, I want to be able to remove any account, in order to keep my database organized with active users only.  
 Acceptance Criteria:
-Administrators are able to modify the database by removing accounts
-Users are removed through the admin
-Administrators can see which users are inactive
-14. As an administrator, I want to be able to add or remove courses, in order to keep the course offerings up to date.
-
+	- Administrators are able to modify the database by removing accounts
+	- Users are removed through the admin
+	- Administrators can see which users are inactive
+14. As an administrator, I want to be able to add or remove courses, in order to keep the course offerings up to date.  
 Acceptance Criteria:
      -    Administrators can add any course to the database
      -    Administrators can remove any existing course
@@ -198,22 +193,19 @@ Acceptance Criteria:
      -    Cannot add a course if it already exists
      -    New courses can be added easily  
 
-15. As any user, I want to be able to recover my password, in order to retrieve my account in case I forget my password.
-
+15. As any user, I want to be able to recover my password, in order to retrieve my account in case I forget my password.  
 Acceptance Criteria:
     -   Be able to contact an admin to request a new password
     -   Administrators can see requests from users 
     -   Administrators can modify account data for any user
 
-16. As an administrator, I want to be able to edit account profiles, in order to fix any user generated errors during signup.
-
+16. As an administrator, I want to be able to edit account profiles, in order to fix any user generated errors during signup.  
 Acceptance Criteria:
 
-17. As an administrator, I want to be able to assign an instructor to a course, in order to have a record of which instructor is teaching each course.
-
+17. As an administrator, I want to be able to assign an instructor to a course, in order to have a record of which instructor is teaching each course.  
 Acceptance Criteria:
 
-18. As an administrator, I want to be able to edit logged instructor hours, in order to verify and correct any user generated errors. 
+18. As an administrator, I want to be able to edit logged instructor hours, in order to verify and correct any user generated errors.   
 
 ----
 
@@ -223,21 +215,22 @@ Acceptance Criteria:
 
 ##### Roles:
 
-######: Partner Liaison:
+###### Partner Liaison:
 __Description__: Serves as a communication channel between the project partner and team members. Is responsible for initiating regular communications with the partner and relaying important discussion points to the rest of the team. Informs the partner about the project’s progress, including details regarding milestone’s, expected task completions, setbacks encountered.
 
-######: Project Manager:
+###### Project Manager:
 __Description__: The Project Manager is to make final decisions when the team cannot come to an agreement on a way forward. They also can reassign work if tasks will not be completed in time.
 
-######: Operations Developer:
+###### Operations Developer:
 __Description__: Is responsible for creating/maintaining a reliable process for the effective/timely integration of new features into the existing codebase. 
 
-######: Group Meetings Moderator:
+###### Group Meetings Moderator:
 __Description__: Is responsible for ensuring that weekly team meetings are productive, that important topics are addressed and work is assigned as required.
 
-######: Full Stack Developer:
+###### Full Stack Developer:
 __Description__: Is responsible for evaluating and devising technical solutions that meet end-user requirements as defined. This will involve implementing and testing solutions on both fronts of the application. Should engage in constructive peer code review sessions with other team members, and be up-to-date with the evolving codebase. 
 
+---
 List each team member and:
  * A description of their role(s) and responsibilities including the components they'll work on and non-software related work
  * 3 technical strengths and weaknesses each (e.g. languages, frameworks, libraries, development methodologies, etc.)
@@ -338,56 +331,51 @@ Describe meetings (and other events) you are planning to have.
    * You must have a regular meeting schedule established by the second meeting.  
 
 __Meeting Schedule__:
-_Internal (Group)_: Normally, these will be online (through Discord) & ad-hoc (due to our chosen means of communication), through which in-person internal group meetings can be scheduled. Tentative schedule for in-person meetings is every Thursday 11am-1pm.
-Purpose: 
-i) To plan other more important meetings in the future
-ii) To discuss more serious issues that could not be or hard to be resolved without a meeting (i.e. could not be resolved through standard text communication)
-iii) Coordinate each of our parts together through code reviews, so that each member will understand where the product is going as a whole
+_Internal (Group)_:\
+Normally, these will be online (through Discord) & ad-hoc (due to our chosen means of communication), through which in-person internal group meetings can be scheduled. Tentative schedule for in-person meetings is every Thursday 11am-1pm.  
+Purpose:  
+i) To plan other more important meetings in the future  
+ii) To discuss more serious issues that could not be or hard to be resolved without a meeting (i.e. could not be resolved through standard text communication)  
+iii) Coordinate each of our parts together through code reviews, so that each member will understand where the product is going as a whole  
 iv) Monitor our individual progress and adjust when the need arises (e.g., if someone is struggling with a higher than expected workload, someone is finding themselves idle and finishing their part too fast)
 
-_With Partner_: These have been agreed upon to take place biweekly on Tuesdays and will be “online”, by means of phone or video chat (however, those the group should all be in one place, in person). Physical meetings with the partner to happen as needed to demonstrate functionality of the MVP.
+_With Partner_:  
+These have been agreed upon to take place biweekly on Tuesdays and will be “online”, by means of phone or video chat (however, those the group should all be in one place, in person). Physical meetings with the partner to happen as needed to demonstrate functionality of the MVP.
 
-Purpose:
-i) To report progress made to our partner.
-ii) To ask for further clarifications.
-iii) To collect feedback on what is currently present.
-iv) To schedule an in-person meeting, where necessary.
+Purpose:  
+i) To report progress made to our partner.  
+ii) To ask for further clarifications.  
+iii) To collect feedback on what is currently present.  
+iv) To schedule an in-person meeting, where necessary.  
 
 __Meetings with Partner__:
-1. 30 minute phone call:
-_Topics of Discussion_:
+1. 30 minute phone call:  
+_Topics of Discussion_:  
 Initial introductions, finalizing web app vs phone app, understanding the high level use cases the partner is trying to solve
-_Outcome_:
-Determined that the partner wished to meet in person, successfully identified basic users/use cases, partner committed to final decision on web app vs mobile app for next meeting
-_Meeting Minutes_:
+_Outcome_:  
+Determined that the partner wished to meet in person, successfully identified basic users/use cases, partner committed to final decision on web app vs mobile app for next meeting  
+_Meeting Minutes_:  
 
-Agenda Items
-Time Allotted (min)
-Introductions
-5
-Expectations going forward
-5
-Finalizing product idea
-20
+| Agenda Items | Time Alloted (min) |
+| --- | --- |
+| Introductions | 5 |
+| Expectations going forward | 5 |
+| Finalizing product idea | 20 |
 
 
-2. 50 minute in-person meeting:
-_Topics of Discussion_:
-Scheduling recurring meeting, examining paper prototype mockups of the app as provided by the partner, answering final questions and better understanding the needs of the partner
-_Outcome_:
-Received mockups as well as commitment by the partner to send more mockups in following days, confirmed that the app would be a web app, confirmed true needs regarding document generation and inputting data, team plans to send draft of deliverable 1 prior to or at submission time for partner review to attempt to identify glaring issues. Established regular biweekly meetings, Tuesday 1-2pm
-_Meeting Minutes_:
+2. 50 minute in-person meeting:  
+_Topics of Discussion_:  
+Scheduling recurring meeting, examining paper prototype mockups of the app as provided by the partner, answering final questions and better understanding the needs of the partner  
+_Outcome_:  
+Received mockups as well as commitment by the partner to send more mockups in following days, confirmed that the app would be a web app, confirmed true needs regarding document generation and inputting data, team plans to send draft of deliverable 1 prior to or at submission time for partner review to attempt to identify glaring issues. Established regular biweekly meetings, Tuesday 1-2pm  
+_Meeting Minutes_:  
 
-Agenda Items
-Time Allotted (min)
-Establish regular meetings with partner
-5
-Discuss and review mockups
-30
-Analyzing the problem statement in-depth
-10
-Final wrap-up questions
-5
+| Agenda Items | Time Allotted (min) |
+| --- | --- |
+| Establish regular meetings with partner| 5 |
+| Discuss and review mockups| 30 |
+| Analyzing the problem statement in-depth |  10 |
+| Final wrap-up questions | 5 |
 
 
 #### Q8: What artifacts will you use to self-organize?    
@@ -433,9 +421,9 @@ In order to avoid general conflicts with regards to team expectations, we have p
 
 ----
 ### Highlights
-1. Making a web app:
-**Context:** Originally, the project was proposed by the project partner as a mobile app.
-    **Options:**
+1. Making a web app:  
+**Context:** Originally, the project was proposed by the project partner as a mobile app.  
+    **Options:**  
     I. Continue with the mobile app.
     *Advantages:* Better user experience for mobile devices.
     *Disadvantages:*
@@ -448,15 +436,15 @@ In order to avoid general conflicts with regards to team expectations, we have p
     * Compatibility across all devices that support a modern internet browser.
     * Updating is simpler.
     
-    *Disadvantages:* User experience may not be as good on mobile devices.
-   **Decision:** Web app
+    *Disadvantages:* User experience may not be as good on mobile devices.  
+   **Decision:** Web app  
    The better compatibility of a web app turned was something that our group through would be more valuable than a better mobile user experience, as it would be more convenient for the purposes of user management (especially because our partner explained to us that they make heavy use of spreadsheets, which are far more commonly used and found on non-mobile devices).
    
    In the end, though the final decision was not ours to make, after suggesting the change and explaining the advantages thereof, they agreed and the proposal was changed, accordingly.
 
-2. Choosing a Solution for the Front-end:
-    **Context:** As a web app, our project needs a front-end, however, not everyone in our group is familiar with front-end work.
-    **Options:**
+2. Choosing a Solution for the Front-end:  
+    **Context:** As a web app, our project needs a front-end, however, not everyone in our group is familiar with front-end work.  
+    **Options:**  
     I. Vanilla (Standard HTML & JS)
     *Advantages:*
     * Simple and easy to learn.
@@ -484,13 +472,13 @@ In order to avoid general conflicts with regards to team expectations, we have p
     III. Angular:
     *Main consideration:* None of our group members is familiar with Angular.
     
-   **Decision:** React
+   **Decision:** React  
    The advantages of React over Vanilla are very clear. In particular, modularity is a huge benefit and the benefit of modules is, likewise, massive. The learning curve of React, though unfortunate, is something that our members with experience can assist with (also, React is not particularly difficult to learn). However, the main consideration when it came to Angular was familiarity. As none of our members were familiar with Angular, this would be likely to cause our productivity to suffer initially (with respect to speed and quality), as we would learn Angular. Though React comes with a similar problem, those group members already familiar with React would certainly accelerate the learning process and would certainly lessen the severity of the initial productivity slowdown.
 
 
-3. Choosing a Scheduling system:
-    **Context:** A scheduling system is required that is suitable for the often conflicting schedules of our group members.
-    **Options:**
+3. Choosing a Scheduling system:  
+    **Context:** A scheduling system is required that is suitable for the often conflicting schedules of our group members.  
+    **Options:**  
     I. Kanban (through GitHub):
     *Advantages:*
     * Flexible and adjustable (in several respects, primarily scheduling).
@@ -508,5 +496,5 @@ In order to avoid general conflicts with regards to team expectations, we have p
     * Must be strict, so as to be effective.
     * Readjustments (in the form of reallocation, adjustment, etc.) of work may require more work than in alternatives and may result in more problems (in the form of delays)
     
-   **Decision:** Github’s Kanban
+   **Decision:** Github’s Kanban  
    Although our group finds the advantages of scrum to be valid, we also acknowledge that with our various schedules, having a strict scrum arrangement might prove to be impossible. As such, a less-strict option would be preferred. Kanban, perhaps with a bit more rigour added, has the flexibility required, with respect to time and roles, that allows it to be very compatible with our team's structure. The fact that GitHub has an integrated kanban board also assisted in convincing us (having one less separate thing to keep track of is, in this case, a positive).
