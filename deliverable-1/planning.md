@@ -5,19 +5,6 @@
 ## Product Details
 
 #### Q1: What are you planning to build?
-
- > Short (1 - 2 min' read)
- * Start with a single sentence, high-level description of the product.
- * Be clear - Describe the problem you are solving in simple terms.
- * Be concrete. For example:
-    * What are you planning to build? Is it a website, mobile app,
-   browser extension, command-line app, etc.?      
-    * When describing the problem/need, give concrete examples of common use cases.
-    * Assume your reader knows nothing about the problem domain and provide the necessary context.
- * Focus on *what* your product does, and avoid discussing *how* you're going to implement it.      
-   For example: This is not the time or the place to talk about which programming language and/or framework you are planning to use.
- * **Feel free (and very much encouraged) to include useful diagrams, mock-ups and/or links**.
-
 A web application that helps Mississauga Code Club (MCC) manage its employees, volunteers, and staff, while also providing parents and students with a way to track their progress at MCC. At MCC, there has historically been no digital method of time tracking and providing progress reports to parents and students. This web application aims to modernize the management system at MCC, improving productivity and efficiency to help achieve the organization's mission of helping kids and youth become technology innovators and creators.
 
 Essentially, this web application will be a dashboard for everyone involved with MCC. 
@@ -48,11 +35,6 @@ In particular, there will be different account types associated with the differe
 
 #### Q2: Who are your target users?
 
-  > Short (1 - 2 min' read max)
- * Be specific (e.g. a 'a third-year university student studying Computer Science' and not 'a student')
- * **Feel free (but not obligated) to use personas.         
-   You can create your personas as part of this Markdown file, or add a link to an external site (for example, [Xtensio](https://xtensio.com/user-persona/)).**
-
 Our target users are mainly directed towards people involved in the Mississauga Code Club. However, it could potentially reach out to other organizations that want a small scale solution for a similar problem with their management system. Users will mostly be separated into a few to several different groups, including teachers, students, parents, volunteers and other staff. 
 Teachers: passionate about teaching young children technology
 Students: children aged 8-18 interested in learning coding, digital media, and robotics
@@ -75,16 +57,6 @@ Victor is a high-school student in his final year, in need of his forty hours of
 Pauline is the parent of a young child, Patrick, attending classes at the Mississauga Code Club. She is keenly interested in how Patrick is doing and wants recommendations on what to take next. However, Patrick has lost performance reports before and meeting with his instructors proves difficult, due to Pauline's job. The ability to see feedback (performance and recommendations) from the instructor online, would make this easier for her.
 
 #### Q3: Why would your users choose your product? What are they using today to solve their problem/need?
-
-> Short (1 - 2 min' read max)
- * We want you to "connect the dots" for us - Why does your product (as described in your answer to Q1) fits the needs of your users (as described in your answer to Q2)?
- * Explain the benefits of your product explicitly & clearly. For example:
-    * Save users time (how much?)
-    * Allow users to discover new information (which information? And, why couldn't they discover it before?)
-    * Provide users with more accurate and/or informative data (what kind of data? Why is it useful to them?)
-    * Does this application exist in another form? If so, how does your differ and provide value to the users?
-    * How does this align with your partner's organization's values/mission/mandate?
-
 ##### Benefits
 The current system for time tracking is done entirely on paper, requiring large amounts of physical record keeping as well as manual searching in order to confirm the amount of hours a volunteer or staff member has worked. By utilizing this app, Mississauga Code Club staff will be able to easily generate reports directly from their own accurate data that can be stored efficiently on a computer.
 
@@ -97,14 +69,6 @@ Overall, implementing this solution will enable Mississauga Code Club to better 
 
 #### Q4: How will you build it?
 
-> Short (1-2 min' read max)
- * What is the technology stack? Specify any and all languages, frameworks, libraries, PaaS products or tools.
- * How will you deploy the application?
- * Describe the architecture - what are the high level components or patterns you will use? Diagrams are useful here.
- * Will you be using third party applications or APIs? If so, what are they?
- * What is your testing strategy?
-
-
 ##### Technology Used:
 ###### Front-end: 
 Languages: JavaScript, HTML, CSS
@@ -112,36 +76,31 @@ Framework: ReactJS
 ###### Back-End:
 Language: Python
 Framework: Flask
+Database: MongoDB
 
 ##### Deployment:
 ###### Demo:
 Heroku
 ###### Final:
-Wordpress (?)
+Deployment instructions provided, likely on a subdomain of MCC's website
 
 ##### Third Party applications:
-Docker (?): Pls explain, thx.
+Docker, used to handle containers for deployment
 
 ##### Testing Strategy:
 
 ###### Front-end - ReactJS:  
-*Write unit tests for React components using React’s built-in TestUtils module.
-*Find users to perform specific tasks in the application (ie: login to an account to check weekly schedule of courses). Record findings, discuss required improvements and successes and create/refine team tasks. 
+* Write unit tests for React components using React’s built-in TestUtils module.
+* Find users to perform specific tasks in the application (ie: login to an account to check weekly schedule of courses). Record findings, discuss required improvements and successes and create/refine team tasks. 
 * Inspect presentation and functionality of application views on the latest versions of modern web browsers Chrome and Firefox.
 
  ###### Back-end - Python (with Flask framework):
 * Write unit tests using the pytest framework to test request/response communications with the front-end and data endpoints. 
 
 ###### Code Integration:
-* 
+* Performed manually as well as using automated tools like Selenium to see if behavior matches what is expected. In both cases, we will develop test cases that reflect expected issues.
 
 #### Q5: What are the user stories that make up the MVP?
-
- * At least 5 user stories concerning the main features of the application - note that this can broken down further
- * You must follow proper user story format (as taught in lecture) ```As a <user of the app>, I want to <do something in the app> in order to <accomplish some goal>```
- * If you have a partner, these must be reviewed and accepted by them
- * The user stories should be written in Github and each one must have clear acceptance criteria.
-
 1. As the parent of a student at MCC, I want to be able to see a list of all courses my child has taken there, in order to track their progress.
 Acceptance Criteria:
 View list of courses my child has completed
@@ -239,7 +198,7 @@ Acceptance Criteria:
      -    Cannot add a course if it already exists
      -    New courses can be added easily  
 
-15. As any user, I want to be able to recover my password, in order to retrieve my account in case I forget my password. [is this necessary? maybe?]
+15. As any user, I want to be able to recover my password, in order to retrieve my account in case I forget my password.
 
 Acceptance Criteria:
     -   Be able to contact an admin to request a new password
@@ -256,19 +215,11 @@ Acceptance Criteria:
 
 18. As an administrator, I want to be able to edit logged instructor hours, in order to verify and correct any user generated errors. 
 
-Acceptance Criteria:
-
-
-[please add any more user stories that you can think of!!]
-
 ----
 
 ## Process Details
 
 #### Q6: What are the roles & responsibilities on the team?
-
-Describe the different roles on the team and the responsibilities associated with each role.
- * Roles should reflect the structure of your team and be appropriate for your project. Not necessarily one role to one team member.
 
 ##### Roles:
 
@@ -276,10 +227,13 @@ Describe the different roles on the team and the responsibilities associated wit
 __Description__: Serves as a communication channel between the project partner and team members. Is responsible for initiating regular communications with the partner and relaying important discussion points to the rest of the team. Informs the partner about the project’s progress, including details regarding milestone’s, expected task completions, setbacks encountered.
 
 ######: Project Manager:
-__Description__: The Project Manager is to make final decisions when the team cannot come to an agreement on a way forward. They also can reassign work if tasks are being unable to be completed in time.
+__Description__: The Project Manager is to make final decisions when the team cannot come to an agreement on a way forward. They also can reassign work if tasks will not be completed in time.
 
 ######: Operations Developer:
 __Description__: Is responsible for creating/maintaining a reliable process for the effective/timely integration of new features into the existing codebase. 
+
+######: Group Meetings Moderator:
+__Description__: Is responsible for ensuring that weekly team meetings are productive, that important topics are addressed and work is assigned as required.
 
 ######: Full Stack Developer:
 __Description__: Is responsible for evaluating and devising technical solutions that meet end-user requirements as defined. This will involve implementing and testing solutions on both fronts of the application. Should engage in constructive peer code review sessions with other team members, and be up-to-date with the evolving codebase. 
@@ -382,7 +336,6 @@ Describe meetings (and other events) you are planning to have.
    * What were the outcomes of each meeting?
    * You must provide meeting minutes.
    * You must have a regular meeting schedule established by the second meeting.  
-<Please correct this, if wrong>
 
 __Meeting Schedule__:
 _Internal (Group)_: Normally, these will be online (through Discord) & ad-hoc (due to our chosen means of communication), through which in-person internal group meetings can be scheduled. Tentative schedule for in-person meetings is every Thursday 11am-1pm.
@@ -437,12 +390,7 @@ Final wrap-up questions
 5
 
 
-#### Q8: What artifacts will you use to self-organize?
-
-List/describe the artifacts you will produce in order to organize your team.       
-
- * Artifacts can be To-Do lists, Task boards, schedule(s), meeting minutes, etc.
- * We want to understand:
+#### Q8: What artifacts will you use to self-organize?    
    * How do you keep track of what needs to get done?
    Github issues
    * How do you prioritize tasks?
@@ -453,9 +401,6 @@ List/describe the artifacts you will produce in order to organize your team.
    Progress will be tracked by labels on issues on Github alongside associated discussion
 
 #### Q9: What are the rules regarding how your team works?
-
-Describe your team's working culture.
-
 **Communications:**
  * What is the expected frequency? What methods/channels are appropriate?
 
@@ -488,18 +433,6 @@ In order to avoid general conflicts with regards to team expectations, we have p
 
 ----
 ### Highlights
-
-Specify 3 - 5 key decisions and/or insights that came up during your meetings
-and/or collaborative process.
-
- * Short (5 min' read max)
- * Decisions can be related to the product and/or the team process.
-    * Mention which alternatives you were considering.
-    * Present the arguments for each alternative.
-    * Explain why the option you decided on makes the most sense for your team/product/users.
- * Essentially, we want to understand how (and why) you ended up with your current product and process plan.
- * This section is useful for important information regarding your decision making process that may not necessarily fit in other sections.
-
 1. Making a web app:
 **Context:** Originally, the project was proposed by the project partner as a mobile app.
     **Options:**
@@ -555,5 +488,25 @@ and/or collaborative process.
    The advantages of React over Vanilla are very clear. In particular, modularity is a huge benefit and the benefit of modules is, likewise, massive. The learning curve of React, though unfortunate, is something that our members with experience can assist with (also, React is not particularly difficult to learn). However, the main consideration when it came to Angular was familiarity. As none of our members were familiar with Angular, this would be likely to cause our productivity to suffer initially (with respect to speed and quality), as we would learn Angular. Though React comes with a similar problem, those group members already familiar with React would certainly accelerate the learning process and would certainly lessen the severity of the initial productivity slowdown.
 
 
-3. Choosing a scheduling system:
-We debated a Kanban system vs 
+3. Choosing a Scheduling system:
+    **Context:** A scheduling system is required that is suitable for the often conflicting schedules of our group members.
+    **Options:**
+    I. Kanban (through GitHub):
+    *Advantages:*
+    * Flexible and adjustable (in several respects, primarily scheduling).
+    * Allows for simple reallocation and redistribution of work, without lots of readjustment.
+
+    *Disadvantages:*
+    * Variable timeframes can result in drops in productivity.
+
+    II. Scrum
+    *Advantages:*
+    * Sprints demand consistency in productivity
+    * Organized and cohesive (with respect to work, allocation and roles)
+    
+    *Disadvantages:*
+    * Must be strict, so as to be effective.
+    * Readjustments (in the form of reallocation, adjustment, etc.) of work may require more work than in alternatives and may result in more problems (in the form of delays)
+    
+   **Decision:** Github’s Kanban
+   Although our group finds the advantages of scrum to be valid, we also acknowledge that with our various schedules, having a strict scrum arrangement might prove to be impossible. As such, a less-strict option would be preferred. Kanban, perhaps with a bit more rigour added, has the flexibility required, with respect to time and roles, that allows it to be very compatible with our team's structure. The fact that GitHub has an integrated kanban board also assisted in convincing us (having one less separate thing to keep track of is, in this case, a positive).
