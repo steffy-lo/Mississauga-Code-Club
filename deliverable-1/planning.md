@@ -193,19 +193,33 @@ Acceptance Criteria:
      -    Cannot add a course if it already exists
      -    New courses can be added easily  
 
-15. As any user, I want to be able to recover my password, in order to retrieve my account in case I forget my password.  
+15. As any user, I want to be able to recover my password, in order to retrieve my account in case I forget my password. 
 Acceptance Criteria:
-    -   Be able to contact an admin to request a new password
-    -   Administrators can see requests from users 
-    -   Administrators can modify account data for any user
+	- Any user must be able to contact an admin to request a new password
+	- When the new password is generated, the user is notified as soon as possible and can easily retrieve it
 
-16. As an administrator, I want to be able to edit account profiles, in order to fix any user generated errors during signup.  
+
+16. As an administrator, I want to be able to receive requests from users to generate a new password in order to ensure all users can access the necessary information.
+
 Acceptance Criteria:
+	- Administrators can receive requests from users 
+	- Administrators can easily view all unread requests
+	- Administrators can delete requests whenever they wish
 
-17. As an administrator, I want to be able to assign an instructor to a course, in order to have a record of which instructor is teaching each course.  
+17. As an administrator, I want to be able to edit account profiles, in order to fix any user generated errors during signup.
+
 Acceptance Criteria:
+	- Administrators can access user account info
+	- Administrators can select and edit user profiles
+	- Administrators can easily inform the user in question that their account has been changed
 
-18. As an administrator, I want to be able to edit logged instructor hours, in order to verify and correct any user generated errors.   
+18. As an administrator, I want to be able to assign an instructor to a course, in order to have a record of which instructor is teaching each course.
+
+Acceptance Criteria:
+	- Administrators can access course pages to view course info (Instructors, students, etc.)
+	- Administrators can assign an instructor to a course
+	- Instructor’s are informed that they have been added to a course with all information required.
+   
 
 ----
 
