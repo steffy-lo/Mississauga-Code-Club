@@ -35,11 +35,11 @@ In particular, there will be different account types associated with the differe
 
 #### Q2: Who are your target users?
 
-Our target users are mainly directed towards people involved in the Mississauga Code Club. However, it could potentially reach out to other organizations that want a small scale solution for a similar problem with their management system. Users will mostly be separated into a few to several different groups, including teachers, students, parents, volunteers and other staff. 
-Teachers: passionate about teaching young children technology
-Students: children aged 8-18 interested in learning coding, digital media, and robotics
-Parents: caring and interested in their children’s activities
-Volunteers: loves technology and helping people
+Our target users are mainly directed towards people involved in the Mississauga Code Club. However, it could potentially reach out to other organizations that want a small scale solution for a similar problem with their management system. Users will mostly be separated into a few to several different groups, including teachers, students, parents, volunteers and other staff.  
+Teachers: passionate about teaching young children technology  
+Students: children aged 8-18 interested in learning coding, digital media, and robotics  
+Parents: caring and interested in their children’s activities  
+Volunteers: loves technology and helping people  
 
 ##### Misdirected Mary (Administrator):
 Mary works at MCC and is in charge of keeping track of the attendance of other staff and volunteers. Mary, however, has many other duties to perform while she is at work and cannot constantly keep track of the attendance/hours log. Unfortunately, it is not uncommon for people to make mistakes when filling out their attendance or, worse, for the sheet to end up misplaced, and, seeing as Mary is responsible for the log at the end of the day, she ends up having to spend valuable time following up. A log that could not be misplaced and contained only information that was valid, easily editable by her, would reduce the amount of follow-up necessary.
@@ -246,6 +246,7 @@ __Stengths__:
 * Familiar with front-end web development, particularly in JS (and HTML & CSS) and ReactJS, and with back-end web development, particularly in NodeJS.
 * Fair amount of experience working on web development projects (working for a non-profit and CSC309) & on coding projects in general, including group projects.
 * Fairly adaptable/flexible and able to learn new tech (e.g. libraries) fairly quickly, if need be.
+
 __Weaknesses__:
 * Vulnerable to accidentally introducing feature creep (while developing, rather than planning).
 * Does not always test code thoroughly on the first run.
@@ -316,7 +317,8 @@ __Weaknesses__:
 __Strengths__: 
 * Experience with Python, Java, C, SQL
 * Patient, works well with most people
-* Generally writes clean, well-documented code
+* Generally writes clean, well-documented code  
+
 __Weaknesses__:
 * Not much web development experience
 * No professional experience
@@ -384,14 +386,20 @@ _Meeting Minutes_:
 
 
 #### Q8: What artifacts will you use to self-organize?    
-   * How do you keep track of what needs to get done?
-   Github issues
-   * How do you prioritize tasks?
-   Using labels on Github issues to identify tasks as ‘high’, ‘medium’, ‘low’, etc. priority
-   * How do tasks get assigned to team members?
-   Based on priority and based on skill/experience
-   * How do you determine the status of work from inception to completion?
-   Progress will be tracked by labels on issues on Github alongside associated discussion
+   * How do you keep track of what needs to get done?  
+   
+   GitHub issues will be used to keep track of what needs to be done.
+   * How do you prioritize tasks?  
+   
+   Task prioritisation will be handled using labels on GitHub issues to provide various information about tasks, including their status and that of	their priority (e.g: "high", "normal", "low", etc. priority).
+   * How do tasks get assigned to team members?  
+   
+   Task allocation will be primarily done by skill/experience (i.e. those more experienced with some type of work will likely 	 receive that variety of work).
+   For contests of skill/experience, the parties involved have the option to work it out (if not, then by default, it would 	go to the party with the best compromise between a low workload and a lot of available time for the project).
+   Finally, tasks which feature work that no-one on in the group has experience with will be assigned last and will be either 		taken by bid and consensus or by default assignment.
+   * How do you determine the status of work from inception to completion?  
+    
+   The progression of a task will be tracked by labels on issues in GitHub and will be accompanied with associated discussion.
 
 #### Q9: What are the rules regarding how your team works?
 **Communications:**
@@ -402,7 +410,7 @@ All non-personal (i.e. group) communication is done through Discord, on an as-ne
  * If you have a partner project, what is your process (in detail) for communicating with your partner?
 
 There have been several ways established to communicate with the project partner. 
-For non-severe issues that pop-up between meetings, email is suitable (however, this is primarily done through our two <mailing people>, Nathan and Edwin). 
+For non-severe issues that pop-up between meetings, email is suitable (however, this is primarily done through our two communication liasons, Nathan and Edwin). 
 There is also a regular online/by-phone meeting scheduled biweekly, Tuesdays 1-2pm, where the group will physically come together and discuss matters through with the partner. The group members will assemble on campus to call the partner.
 
 **Meetings:**
