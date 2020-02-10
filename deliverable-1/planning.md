@@ -252,7 +252,7 @@ __Weaknesses__:
 * Does not always test code thoroughly on the first run.
 * Documentation quality can be inadequate (particularly, when under time-pressure)
 ##### Edwin Chan
-###### Role: Partner Liaison, Group Meeting Moderator
+###### Role: Partner Liaison, Group Meeting Moderator, Operations Developer
 __Strengths__:
 * Familiar with front-end development and designing user interfaces
 * Extensive experience in the languages we have chosen for the project (Python, JS, CSS)
