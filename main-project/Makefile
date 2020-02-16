@@ -2,6 +2,7 @@ dev: build shipdev clean
 
 deploy: build shipprod clean
 
+prod: deploy
 
 build:
 	docker build -t a1-301 .
