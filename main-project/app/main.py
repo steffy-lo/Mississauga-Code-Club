@@ -49,7 +49,7 @@ def authenticate():
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None) # TODO: Get the username and use it here
+    session.pop('username', None)
     return redirect(url_for('index'))
 
 # Debug routes are below, do not rely on these for any expected behaviour
@@ -62,14 +62,13 @@ def getASalt():
 def forcelogin(userid):
     # Used to test how the sessions work
     userid = str(userid)
-    session[userid] = userid
+    session['username'] = userid
     return redirect(url_for('index'))
 
-@app.route('/checklogin/<int:userid>')
-def checklogin(userid):
-    userid = str(userid)
-    if userid in session:
-        return "Logged in as " + userid
+@app.route('/checklogin')
+def checklogin():
+    if 'username' in session:
+        return "Logged in as " + session['username']
 
     return "Not logged in"
 
