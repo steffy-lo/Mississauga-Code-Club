@@ -14,10 +14,14 @@ def validateCredentials(username, password):
     # TODO: Return a boolean indicating if the password is valid
     return True
 
-def generateToken(username):
+def getToken(username):
     # TODO: Generate a new token for the username
-    pass
+    # if an existing token already exists, return that instead
+    return None
 
+def getUserType(username):
+    # TODO:
+    return 0
 
 @app.route('/')
 def hello_world():
@@ -25,9 +29,19 @@ def hello_world():
 
 @app.route('/authenticate')
 def authenticate():
-    # TODO: Use this route to log in and get a token
+    # Use this route to log in and get a token
     # Takes in a json of the form {username : '', password : ''}
-    return jsonify({'userType' : 1, 'success' : False, 'token' : None})
+    token = None
+    success = False
+    userType = 0 # Unused user type
+
+    if validateCredentials(request.json['username'], request.json['password']):
+        success = True
+        token = getToken(request.json['username'])
+        userType = getUserType(request.json['username'])
+
+    
+    return jsonify({'userType' : userType, 'success' : success, 'token' : token})
 
 if __name__ == "__main__":
     # Only for debugging while developing
