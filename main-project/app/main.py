@@ -36,9 +36,12 @@ def authenticate():
     # Use this route to log in and get a token
     # Takes in a json of the form {username : '', password : ''}
 
+    # TODO: Likely need to validate username is good input here
+
     if validateCredentials(request.json['username'], request.json['password']):
         token = getToken(request.json['username'])
         userType = getUserType(request.json['username'])
+        session[request.json['username']] = request.json['username']
         return jsonify({'userType' : userType, 'success' : True, 'token' : token})
 
     abort(401)
