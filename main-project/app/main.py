@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort, session
+from flask import Flask, jsonify, request, abort, session, redirect
 from flask_cors import CORS
 import os # TODO: May not be needed
 import bcrypt
@@ -49,7 +49,7 @@ def authenticate():
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    session.pop('username', None) # TODO: Get the username and use it here
     return redirect(url_for('index'))
 
 # Debug routes are below, do not rely on these for any expected behaviour
