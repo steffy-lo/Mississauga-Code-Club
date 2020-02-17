@@ -6,6 +6,10 @@ import os
 app = Flask(__name__, static_url_path='', static_folder='static')
 CORS(app)
 
+# DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
+# IS MADE PUBLIC
+app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
+
 def validateToken(username, token):
     # TODO: Return a boolean validating the token is active and associated with username
     return True
