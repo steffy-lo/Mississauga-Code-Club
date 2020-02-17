@@ -29,7 +29,7 @@ def getUserType(username):
     return 0
 
 @app.route('/')
-def hello_world():
+def index():
     return app.send_static_file('index.html')
 
 @app.route('/authenticate')
@@ -62,7 +62,7 @@ def getASalt():
 def forcelogin(userid):
     # Used to test how the sessions work
     userid = str(userid)
-    session['username'] = userid
+    session[userid] = userid
     return redirect(url_for('index'))
 
 @app.route('/checklogin/<int:userid>')
