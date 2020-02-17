@@ -19,6 +19,11 @@ def generateToken(username):
 def hello_world():
     return app.send_static_file('index.html')
 
+@app.route('/authenticate')
+def authenticate():
+    # TODO: Use this route to log in and get a token
+    return jsonify({'userType' : 1, 'success' : False, 'token' : None})
+
 if __name__ == "__main__":
     # Only for debugging while developing
     app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
