@@ -31,17 +31,13 @@ def hello_world():
 def authenticate():
     # Use this route to log in and get a token
     # Takes in a json of the form {username : '', password : ''}
-    token = None
-    success = False
-    userType = 0 # Unused user type
 
     if validateCredentials(request.json['username'], request.json['password']):
-        success = True
         token = getToken(request.json['username'])
         userType = getUserType(request.json['username'])
+        return jsonify({'userType' : userType, 'success' : True, 'token' : token})
 
-    
-    return jsonify({'userType' : userType, 'success' : success, 'token' : token})
+    abort(401)
 
 if __name__ == "__main__":
     # Only for debugging while developing
