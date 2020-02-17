@@ -52,9 +52,26 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
+# Debug routes are below, do not rely on these for any expected behaviour
+
 @app.route('/salt')
 def getASalt():
     return str(bcrypt.gensalt())
+
+@app.route('/forcelogin/<int:userid>')
+def forcelogin(userid):
+    # Used to test how the sessions work
+    userid = str(userid)
+    session['username'] = userid
+    return redirect(url_for('index'))
+
+@app.route('/checklogin/<int:userid>')
+def checklogin(userid):
+    userid = str(userid)
+    if userid in session:
+        return "Logged in as " + userid
+
+    return "Not logged in"
 
 if __name__ == "__main__":
     # Only for debugging while developing
