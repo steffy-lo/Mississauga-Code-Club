@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, abort, session
 from flask_cors import CORS
-import os
+import os # TODO: May not be needed
+import bcrypt
 
 # Start the app and setup the static directory for the html, css, and js files.
 app = Flask(__name__, static_url_path='', static_folder='static')
@@ -50,6 +51,10 @@ def authenticate():
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
+
+@app.route('/salt')
+def getASalt():
+    return str(bcrypt.gensalt())
 
 if __name__ == "__main__":
     # Only for debugging while developing
