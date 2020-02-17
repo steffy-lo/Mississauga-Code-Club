@@ -10,6 +10,10 @@ def validateToken(username, token):
     # TODO: Return a boolean validating the token is active and associated with username
     return True
 
+def validateCredentials(username, password):
+    # TODO: Return a boolean indicating if the password is valid
+    return True
+
 def generateToken(username):
     # TODO: Generate a new token for the username
     pass
