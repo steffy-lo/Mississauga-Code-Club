@@ -22,6 +22,7 @@ def hello_world():
 @app.route('/authenticate')
 def authenticate():
     # TODO: Use this route to log in and get a token
+    # Takes in a json of the form {username : '', password : ''}
     return jsonify({'userType' : 1, 'success' : False, 'token' : None})
 
 if __name__ == "__main__":
