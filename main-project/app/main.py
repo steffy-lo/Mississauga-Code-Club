@@ -88,6 +88,11 @@ def seejunk():
 
     return outString
 
+@app.route('/clearjunk')
+def clearjunk():
+    mclient[database]['junk'].remove()
+    return "Cleared!"
+
 if __name__ == "__main__":
     # Only for debugging while developing
     app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
