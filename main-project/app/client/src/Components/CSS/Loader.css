@@ -1,0 +1,55 @@
+@keyframes loader {
+  0% {
+    border-top-color: red;
+    border-left-color: darkblue;
+    border-bottom-color: darkgreen;
+    border-right-color: goldenrod;
+    box-shadow: 0 -10px 8px -10px red;
+    /* box-shadow: inset 0 10px 8px -10px red; */
+  }
+  25% {
+    border-top-color: darkred;
+    border-left-color: blue;
+    border-bottom-color: darkgreen;
+    border-right-color: goldenrod;
+    box-shadow: -10px 0 8px -10px blue;
+    /* box-shadow: inset 10px 0 8px -10px blue; */
+  }
+  50% {
+    border-top-color: darkred;
+    border-left-color: darkblue;
+    border-bottom-color: lightgreen;
+    border-right-color: goldenrod;
+    box-shadow: 0 10px 8px -10px lightgreen;
+    /* box-shadow: inset 0 -10px 8px -10px lightgreen; */
+  }
+  75% {
+    border-top-color: darkred;
+    border-left-color: darkblue;
+    border-bottom-color: darkgreen;
+    border-right-color: gold;
+    box-shadow: 10px 0 8px -10px gold;
+    /* box-shadow: inset -10px 0 8px -10px gold; */
+  }
+  100% {
+    border-top-color: red;
+    border-left-color: darkblue;
+    border-bottom-color: darkgreen;
+    border-right-color: goldenrod;
+    box-shadow: 0 -10px 8px -10px red;
+    /* box-shadow: inset 0 10px 8px -10px red; */
+  }
+}
+
+#loaderContainer {
+  position: absolute;
+  animation-name: loader;
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  border-color: darkgrey;
+  border-style: solid;
+  border-radius: 50%;
+  transform: rotate(-45deg);
+  z-index: 98;
+}
