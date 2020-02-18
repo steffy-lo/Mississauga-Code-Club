@@ -31,6 +31,10 @@ def getUserType(username):
     # TODO:
     return 0
 
+def createUser(username, parentEmail, firstName, lastName, password, userType):
+    saltedPassword = password # TODO: Fix this
+    mclient[database]['users'].insert_one({'username' : username, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'active' : True})
+
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
