@@ -1,0 +1,68 @@
+
+h1 {
+  text-align: center;
+  font-weight: bold;
+  font-size: 48px;
+  margin: 0;
+  border-top: 25px solid white;
+  border-bottom: 25px solid white;
+  padding: 10px 0 10px 0;
+}
+
+#mainWrapper {
+  position: absolute;
+  top: 100px;
+  bottom: 100px;
+  left: 100px;
+  right: 100px;
+}
+
+.textbox {
+  display: block;
+  transition: all 0.15s linear;
+  border-color: grey;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  width: 65%;
+  left: 17.5%;
+  position: relative;
+}
+
+.textbox:focus {
+  border-color: lightblue;
+  box-shadow: 0px 0px 2px lightblue;
+}
+
+#loginForm {
+  position: relative;
+}
+
+#reset {
+  transition: all 0.15s linear;
+  background-color: white;
+  width: 12.50%;
+  border-color: red;
+  margin-left: 25%;
+  position: relative;
+  color: red;
+}
+
+#submit {
+  transition: all 0.15s linear;
+  background-color: white;
+  border-color: blue;
+  color: blue;
+  width: 12.50%;
+  margin-left: 25%;
+  position: relative;
+}
+
+#reset:hover {
+
+  box-shadow: 0px 0px 2px red;
+}
+
+#submit:hover {
+
+  box-shadow: 0px 0px 2px blue;
+}
