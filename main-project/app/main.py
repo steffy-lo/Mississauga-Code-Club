@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os # TODO: May not be needed
 import bcrypt
 from pymongo import MongoClient
+import datetime
 
 # Start the app and setup the static directory for the html, css, and js files.
 app = Flask(__name__, static_url_path='', static_folder='static')
@@ -27,6 +28,25 @@ def validateCredentials(username, password):
 def getUserType(username):
     # TODO:
     return 0
+
+def validateSessionActive():
+    # Validate that the cookie has not expired, return True if this is the case
+    # Additionally, update the lastUsed date to the present
+    if session['lastUsed'] is None:
+        return False
+
+    # Disabled due to Andryian suggesting that Suha never wants it to expire
+    # now = datetime.now()
+    # try:
+    #     if (now - session['lastUsed']).total_seconds() > 60 * 60 * 2: # 2 hours
+    #         return False
+    # except:
+    #         return False
+
+    # Now that we validated, update the time to the present
+    session['lastUsed'] = now
+
+    return True
 
 @app.route('/')
 def index():
