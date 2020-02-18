@@ -36,7 +36,7 @@ def validateSessionActive():
         return False
 
     # Disabled due to Andryian suggesting that Suha never wants it to expire
-    # now = datetime.now()
+    # now = datetime.datetime.now()
     # try:
     #     if (now - session['lastUsed']).total_seconds() > 60 * 60 * 2: # 2 hours
     #         return False
@@ -82,6 +82,7 @@ def forcelogin(userid):
     # Used to test how the sessions work
     userid = str(userid)
     session['username'] = userid
+    session['lastUsed'] = datetime.datetime.now()
     return redirect(url_for('index'))
 
 @app.route('/checklogin')
