@@ -8,6 +8,13 @@ from pymongo import MongoClient
 app = Flask(__name__, static_url_path='', static_folder='static')
 CORS(app)
 
+# DO NOT SHOW THESE CREDENTIALS PUBLICLY
+DBUSER = "mccgamma"
+DBPASSWORD = "alfdasdf83423j4lsdf8"
+MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md"
+
+mclient = MongoClient(MONGOURI)
+
 # DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
 # IS MADE PUBLIC
 app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
