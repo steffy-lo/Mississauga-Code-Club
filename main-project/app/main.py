@@ -17,6 +17,7 @@ mclient = MongoClient(MONGOURI)
 
 # DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
 # IS MADE PUBLIC
+# THIS IS USED FOR THE SESSION COOKIE ENCRYPTION
 app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
 
 def validateCredentials(username, password):
