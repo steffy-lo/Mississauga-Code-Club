@@ -32,7 +32,8 @@ def getUserType(username):
     return 0
 
 def createUser(username, parentEmail, firstName, lastName, password, userType):
-    saltedPassword = password # TODO: Fix this
+    salt = bcrypt.gensalt()
+    saltedPassword = bcrypt.hashpw(password, salt)
     mclient[database]['users'].insert_one({'username' : username, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'active' : True})
 
 @app.route('/')
