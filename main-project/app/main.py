@@ -98,6 +98,10 @@ def clearjunk():
     mclient[database]['junk'].remove()
     return "Cleared!"
 
+@app.route('/addSampleUser/<username>')
+def addSampleUser(username):
+    createUser(username, 'fischnat@gmail.com', 'Sample', 'User', 'I love rock and roll', 0)
+
 if __name__ == "__main__":
     # Only for debugging while developing
     app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
