@@ -33,6 +33,8 @@ def getUserType(username):
 
 def createUser(username, parentEmail, firstName, lastName, password, userType):
     salt = bcrypt.gensalt()
+    password = password.encode()
+
     saltedPassword = bcrypt.hashpw(password, salt)
     mclient[database]['users'].insert_one({'username' : username, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'active' : True})
 
@@ -98,9 +100,18 @@ def clearjunk():
     mclient[database]['junk'].remove()
     return "Cleared!"
 
-@app.route('/addSampleUser/<username>')
+@app.route('/addsampleuser/<username>')
 def addSampleUser(username):
-    createUser(username, 'fischnat@gmail.com', 'Sample', 'User', 'I love rock and roll', 0)
+    createUser(username, username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 0)
+    return username
+
+@app.route('/showusers')
+def showAllUsersDebug():
+    outString = ""
+    for j in mclient[database]['users'].find():
+        outString += str(j) + " "
+
+    return outString
 
 if __name__ == "__main__":
     # Only for debugging while developing
