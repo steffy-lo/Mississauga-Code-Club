@@ -12,9 +12,11 @@ CORS(app)
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
 DBUSER = "mccgamma"
 DBPASSWORD = "alfdasdf83423j4lsdf8"
-MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md"
+MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md?retryWrites=false"
 
 mclient = MongoClient(MONGOURI)
+
+database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 
 # DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
 # IS MADE PUBLIC
@@ -91,6 +93,20 @@ def checklogin():
         return "Logged in as " + session['username']
 
     return "Not logged in"
+
+@app.route('/addjunk')
+def addjunk():
+    mclient[database]['junk'].insert_one({"datetime" : datetime.datetime.now()})
+
+    return "Junk added"
+
+@app.route('/seejunk')
+def seejunk():
+    outString = ""
+    for j in mclient[database]['junk'].find():
+        outString += str(j) + " "
+
+    return outString
 
 if __name__ == "__main__":
     # Only for debugging while developing
