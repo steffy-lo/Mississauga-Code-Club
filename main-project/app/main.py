@@ -32,8 +32,12 @@ def validateCredentials(username, password):
     return bcrypt.hashpw(password, user['password']) == user['password']
 
 def getUserType(username):
-    # TODO:
-    return 0
+    # Returns None if there is no such user
+    user = mclient[database]['users'].find_one({'username' : username})
+    if user is None:
+        return None
+
+    return user['userType']
 
 def createUser(username, parentEmail, firstName, lastName, password, userType):
     salt = bcrypt.gensalt()
