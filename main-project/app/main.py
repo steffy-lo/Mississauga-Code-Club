@@ -33,6 +33,10 @@ database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 # THIS IS USED FOR THE SESSION COOKIE ENCRYPTION
 app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
 
+# Turn this to False when properly deploying to make sure that all
+# debugging routes are shut off.
+ENABLE_DEBUG_ROUTES = True
+
 def validateCredentials(username, password):
     # Return a boolean indicating if the password is valid
     user = mclient[database]['users'].find_one({'email' : username})
@@ -83,17 +87,26 @@ def logout():
 
 @app.route('/salt')
 def getASalt():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     return str(bcrypt.gensalt())
 
 @app.route('/forcelogin/<int:userid>')
 def forcelogin(userid):
     # Used to test how the sessions work
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     userid = str(userid)
     session['username'] = userid
     return redirect(url_for('index'))
 
 @app.route('/checklogin')
 def checklogin():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     if 'username' in session:
         return "Logged in as " + session['username']
 
@@ -101,12 +114,18 @@ def checklogin():
 
 @app.route('/addjunk')
 def addjunk():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     mclient[database]['junk'].insert_one({"datetime" : datetime.datetime.now()})
 
     return "Junk added"
 
 @app.route('/seejunk')
 def seejunk():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     outString = ""
     for j in mclient[database]['junk'].find():
         outString += str(j) + " "
@@ -115,16 +134,25 @@ def seejunk():
 
 @app.route('/clearjunk')
 def clearjunk():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     mclient[database]['junk'].remove()
     return "Cleared!"
 
 @app.route('/addsampleuser/<username>')
 def addSampleUser(username):
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     createUser(username, username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 0)
     return username
 
 @app.route('/showusers')
 def showAllUsersDebug():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     outString = ""
     for j in mclient[database]['users'].find():
         outString += str(j) + " "
