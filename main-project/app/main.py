@@ -1,12 +1,22 @@
 from flask import Flask, jsonify, request, abort, session, redirect, url_for
 from flask_cors import CORS
-import os # TODO: May not be needed
+import os
 import bcrypt
 from pymongo import MongoClient
 import datetime
 
 # Start the app and setup the static directory for the html, css, and js files.
-app = Flask(__name__, static_url_path='', static_folder='static')
+
+# TODO: Get this working, maybe
+STATIC_FOLDER = 'client/build'
+# STATIC_FOLDER = 'static' # Default static folder to display warnings
+# if os.path.exists('client/build'):
+#     # React app was built
+#     # Well, the folder exists at least, might as well try to serve it
+#     STATIC_FOLDER = 'client/build'
+
+
+app = Flask(__name__, static_url_path='', static_folder=STATIC_FOLDER)
 CORS(app)
 
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
