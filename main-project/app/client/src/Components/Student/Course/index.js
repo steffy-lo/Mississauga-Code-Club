@@ -1,6 +1,6 @@
 import React from "react";
 
-class CurrentCourse extends React.Component {
+class Course extends React.Component {
     render() {
         const { course } = this.props;
         return (
@@ -16,4 +16,4 @@ class CurrentCourse extends React.Component {
     }
 }
 
-export default CurrentCourse;
+export default Course;

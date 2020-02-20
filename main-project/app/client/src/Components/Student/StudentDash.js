@@ -4,7 +4,7 @@ import { setState, action, subscribe } from 'statezero';
 
 import NavBarGeneric from '../Util/NavbarGeneric';
 import './StudentDash.css';
-import CurrentCourse from "./CurrentCourse";
+import CurrentCourse from "./Course";
 import CompletedCourse from "./CompletedCourse";
 
 class StudentDash extends React.Component {
@@ -31,7 +31,7 @@ class StudentDash extends React.Component {
               <CurrentCourse
                 key={uid(
                   course
-                )} /* unique id required to help React render more efficiently when we modify the students list. */
+                )} /* unique id required to help React render more efficiently*/
                 course={course}
               />
             ))}
@@ -42,7 +42,7 @@ class StudentDash extends React.Component {
               <CompletedCourse
                 key={uid(
                   course
-                )} /* unique id required to help React render more efficiently when we modify the students list. */
+                )} /* unique id required to help React render more efficiently*/
                 course={course}
               />
             ))}

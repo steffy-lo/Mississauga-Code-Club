@@ -1,4 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
+import StudentGrades from '../GradesView';
 
 class CompletedCourse extends React.Component {
     render() {
@@ -12,8 +15,10 @@ class CompletedCourse extends React.Component {
                     {course.courseDesc}
                 </dd>
                 <dt>
-                    <button>View Grades</button>
-              </dt>
+                    <Link to={{pathname: '/s/grades', state: {courseInfo: course}}}>
+                        <Button>View Grades</Button>
+                    </Link>
+                </dt>
             </dl>
           );
     }
