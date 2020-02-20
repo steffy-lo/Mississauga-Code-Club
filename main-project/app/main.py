@@ -24,8 +24,12 @@ database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
 
 def validateCredentials(username, password):
-    # TODO: Return a boolean indicating if the password is valid
-    return True
+    # Return a boolean indicating if the password is valid
+    user = mclient[database]['users'].find_one({'username' : username})
+    if user is None:
+        return False
+
+    return bcrypt.hashpw(password, user['password']) == user['password']
 
 def getUserType(username):
     # TODO:
