@@ -14,3 +14,10 @@ Dev is at https://mcc-dev-301.herokuapp.com/
 If you have Node.js installed, type `make setupheroku`. This will download and log into Heroku (will require you to do things)
 
 If you have the Heroku command line installed but are not yet logged in, type either `make login` or `heroku login` to perform the login process.
+
+# Software Required For Deployment
+Docker
+
+Node.js (for building React, also helps with installing the Heroku CLI)
+
+Heroku CLI
