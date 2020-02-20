@@ -1,6 +1,10 @@
-dev: build shipdev clean
+dev: buildreact build shipdev clean
 
-deploy: build shipprod clean
+devlight: cleanreact build shipdev clean
+
+deploy: buildreact build shipprod clean
+
+prodlight: cleanreact build shipprod clean
 
 prod: deploy
 
