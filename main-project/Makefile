@@ -18,6 +18,12 @@ shipdev:
 	heroku container:push web --app mcc-dev-301
 	heroku container:release web --app mcc-dev-301
 
+buildreact:
+	./buildreact.sh
+
+cleanreact:
+	rm -rf app/client/build
+	rm -rf app/client/node_modules
 
 clean:
 	docker stop a1-301-container
