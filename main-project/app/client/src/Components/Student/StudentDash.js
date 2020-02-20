@@ -1,10 +1,23 @@
 import React from 'react';
+import { uid } from "react-uid";
 import { setState, action, subscribe } from 'statezero';
 
 import NavBarGeneric from '../Util/NavbarGeneric';
 import './StudentDash.css';
+import CurrentCourse from "./CurrentCourse";
+import CompletedCourse from "./CompletedCourse";
 
 class StudentDash extends React.Component {
+  state = {
+    coursesEnrolled: [
+      {courseName: "Robotics With Raspberry Pi 4 (2)", courseDesc: "Intermediate course for Robotics With Raspberry Pi 4"},
+      {courseName: "Project Based Python", courseDesc: "Build your own project using Python"}
+    ],
+    coursesCompleted: [
+      {courseName: "Robotics With Raspberry Pi 4 (1)", courseDesc: "Introductory course for Robotics With Raspberry Pi 4"},
+      {courseName: "Introduction to Python", courseDesc: "Introductory course for programming in Python"}
+    ]
+  }
   render() {
     setState('uType', 0);
     return(
@@ -14,39 +27,25 @@ class StudentDash extends React.Component {
         {/* This is the student dashboard. */}
           <div class="enrolled">
             <h1>Enrolled Courses</h1>
-            <dl class="current-courses">
-              <dt>
-                <label>Robotics With Raspberry Pi 4 (2)</label>
-              </dt>
-              <dd>Intermediate course for Robotics With Raspberry Pi 4</dd>
-            </dl>
-            <dl class="current-courses">
-              <dt>
-                <label>Project Based Python</label>
-              </dt>
-              <dd>Build your own project using Python</dd>
-            </dl>
+            {this.state.coursesEnrolled.map(course => (
+              <CurrentCourse
+                key={uid(
+                  course
+                )} /* unique id required to help React render more efficiently when we modify the students list. */
+                course={course}
+              />
+            ))}
           </div>
           <div class="completed">
             <h1>Completed Courses</h1>
-            <dl class="completed-courses">
-              <dt>
-                <label>Robotics With Raspberry Pi 4 (1)</label>
-              </dt>
-              <dd>Introductory course for Robotics With Raspberry Pi 4</dd>
-              <dt>
-                <button>View Grades</button>
-              </dt>
-            </dl>
-            <dl class="completed-courses">
-              <dt>
-                <label>Introduction to Python</label>
-              </dt>
-              <dd>Introductory course for programming in Python</dd>
-              <dt>
-                <button>View Grades</button>
-              </dt>
-            </dl>
+            {this.state.coursesCompleted.map(course => (
+              <CompletedCourse
+                key={uid(
+                  course
+                )} /* unique id required to help React render more efficiently when we modify the students list. */
+                course={course}
+              />
+            ))}
           </div>
         </div>
       </React.Fragment>
