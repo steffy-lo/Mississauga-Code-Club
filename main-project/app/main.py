@@ -35,7 +35,7 @@ app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
 
 def validateCredentials(username, password):
     # Return a boolean indicating if the password is valid
-    user = mclient[database]['users'].find_one({'username' : username})
+    user = mclient[database]['users'].find_one({'email' : username})
     if user is None:
         return False
 
@@ -43,7 +43,7 @@ def validateCredentials(username, password):
 
 def getUserType(username):
     # Returns None if there is no such user
-    user = mclient[database]['users'].find_one({'username' : username})
+    user = mclient[database]['users'].find_one({'email' : username})
     if user is None:
         return None
 
@@ -54,7 +54,7 @@ def createUser(username, parentEmail, firstName, lastName, password, userType):
     password = password.encode()
 
     saltedPassword = bcrypt.hashpw(password, salt)
-    mclient[database]['users'].insert_one({'username' : username, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'active' : True})
+    mclient[database]['users'].insert_one({'email' : username, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'active' : True})
 
 @app.route('/')
 def index():
