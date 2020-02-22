@@ -37,20 +37,20 @@ def index():
 @app.route('/authenticate')
 def authenticate():
     # Use this route to log in and get a token
-    # Takes in a json of the form {username : '', password : ''}
+    # Takes in a json of the form {email : '', password : ''}
 
-    # TODO: Likely need to validate username is good input here
+    # TODO: Likely need to validate email is good input here
 
-    if dbworker.validateCredentials(request.json['username'], request.json['password']):
-        userType = dbworker.getUserType(request.json['username'])
-        session[request.json['username']] = request.json['username']
+    if dbworker.validateCredentials(request.json['email'], request.json['password']):
+        userType = dbworker.getUserType(request.json['email'])
+        session['email'] = request.json['email']
         return jsonify({'userType' : userType, 'success' : True})
 
     abort(401)
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    session.pop('email', None)
     return redirect(url_for('index'))
 
 @app.route('/updatePassword', methods=['POST'])
@@ -73,7 +73,7 @@ def forcelogin(userid):
         abort(404)
 
     userid = str(userid)
-    session['username'] = userid
+    session['email'] = userid
     return redirect(url_for('index'))
 
 @app.route('/checklogin')
@@ -81,8 +81,8 @@ def checklogin():
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    if 'username' in session:
-        return "Logged in as " + session['username']
+    if 'email' in session:
+        return "Logged in as " + session['email']
 
     return "Not logged in"
 
