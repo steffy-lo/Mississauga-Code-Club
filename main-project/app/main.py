@@ -67,6 +67,9 @@ def updatePassword():
     else:
         abort(401)
 
+    if getUser(request.json['email']) is None:
+        abort(404)
+
     dbworker.setPassword(request.json['email'], request.json['password'])
     return jsonify({'success' : True})
 
