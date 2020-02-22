@@ -72,9 +72,11 @@ def setPassword(email, newPassword):
 
 # Map of text -> userType (integer)
 userTypeMap = {}
+userTypeMap['default'] = 0
 userTypeMap['admin'] = 1
-
-# TODO: Add more usertypes here
+userTypeMap['instructor'] = 2
+userTypeMap['volunteer'] = 3
+userTypeMap['student'] = 4
 
 if __name__ == "__main__":
     print("This file should not be executed directly.")
