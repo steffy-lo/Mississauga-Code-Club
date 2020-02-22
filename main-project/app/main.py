@@ -149,6 +149,14 @@ def showAllUsersDebug():
 
     return outString
 
+@app.route('/dumpsession')
+def dumpSession():
+    # Dump the session variables that are stored in the cookie
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
+    return str(session)
+
 if __name__ == "__main__":
     # Only for debugging while developing
     app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
