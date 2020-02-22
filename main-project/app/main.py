@@ -53,6 +53,10 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
+@app.route('/updatePassword', methods=['POST'])
+def updatePassword():
+    abort(401)
+
 # Debug routes are below, do not rely on these for any expected behaviour
 
 @app.route('/salt')
