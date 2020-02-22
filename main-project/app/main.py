@@ -53,12 +53,12 @@ def getUserType(username):
 
     return user['userType']
 
-def createUser(username, parentEmail, firstName, lastName, password, userType):
+def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, age, parentName):
     salt = bcrypt.gensalt()
     password = password.encode()
 
     saltedPassword = bcrypt.hashpw(password, salt)
-    mclient[database]['users'].insert_one({'email' : username, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'active' : True})
+    mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
 
 @app.route('/')
 def index():
@@ -145,7 +145,7 @@ def addSampleUser(username):
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    createUser(username, username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 0)
+    createUser(username, username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 0, '647-111-1111', 18, 'Parent Name')
     return username
 
 @app.route('/showusers')
