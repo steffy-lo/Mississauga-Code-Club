@@ -48,3 +48,6 @@ def createUser(email, parentEmail, firstName, lastName, password, userType, phon
 
     saltedPassword = bcrypt.hashpw(password, salt)
     mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
+
+if __name__ == "__main__":
+    print("This file should not be executed directly.")
