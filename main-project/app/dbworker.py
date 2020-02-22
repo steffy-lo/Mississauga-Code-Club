@@ -31,7 +31,7 @@ def getUserType(username):
 
     return user['userType']
 
-def validateAccess(expectedUserTypes):
+def validateAccessList(expectedUserTypes):
     # Validate that the user is logged in, use the information in the
     # session data to determine if their username is valid and one of the
     # expectedUserTypes, return boolean, True if valid, False if invalid
@@ -46,6 +46,9 @@ def validateAccess(expectedUserTypes):
 
     return False
 
+def validateAccess(expectedUserType):
+    return validateAccessList([expectedUserType])
+
 def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, age, parentName):
     salt = bcrypt.gensalt()
     password = password.encode()
@@ -53,6 +56,17 @@ def createUser(email, parentEmail, firstName, lastName, password, userType, phon
     saltedPassword = bcrypt.hashpw(password, salt)
     mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
 
+def setPassword(email, newPassword):
+    """
+    Used for updating a password for an existing user
+    Matches based off the email, not the parentEmail
+    Assumes that the user already exists (you should peform this check)
+    """
+    salt = bcrypt.gensalt()
+    password = newPassword.encode()
+
+    saltedPassword = bcrypt.hashpw(password, salt)
+    mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
 
 

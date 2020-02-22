@@ -53,6 +53,23 @@ def logout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
+@app.route('/updatePassword', methods=['POST'])
+def updatePassword():
+    # Takes in a json of the form {email : '', password : ''}
+
+    # TODO: Likely need to validate that email is good input
+
+    # Validate that the user calling this has access
+    # Either that they are the same user or that they are an admin
+    # TODO: Make this prettier while keeping short circuit
+    if session['email'] == request.json['email'] or dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        pass
+    else:
+        abort(401)
+
+    dbworker.setPassword(request.json['email'], request.json['password'])
+    return jsonify({'success' : True})
+
 # Debug routes are below, do not rely on these for any expected behaviour
 
 @app.route('/salt')
