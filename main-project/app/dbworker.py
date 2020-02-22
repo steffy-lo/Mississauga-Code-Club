@@ -68,5 +68,13 @@ def setPassword(email, newPassword):
     saltedPassword = bcrypt.hashpw(password, salt)
     mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
+
+
+# Map of text -> userType (integer)
+userTypeMap = {}
+userTypeMap['admin'] = 1
+
+# TODO: Add more usertypes here
+
 if __name__ == "__main__":
     print("This file should not be executed directly.")
