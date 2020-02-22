@@ -11,16 +11,17 @@ mclient = MongoClient(MONGOURI)
 
 database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 
+def getUser(username):
+    return mclient[database]['users'].find_one({'email' : username})
+
 def validateCredentials(username, password):
     # Return a boolean indicating if the password is valid
-    user = mclient[database]['users'].find_one({'email' : username})
+    user = getUser(username)
     if user is None:
         return False
 
     return bcrypt.hashpw(password.encode(), user['password']) == user['password']
 
-def getUser(username):
-    return mclient[database]['users'].find_one({'email' : username})
 
 def getUserType(username):
     # Returns None if there is no such user
