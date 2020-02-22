@@ -60,6 +60,7 @@ def updatePassword():
     # TODO: Likely need to validate that email is good input
 
     # Validate that the user calling this has access
+    # Either that they are the same user or that they are an admin
     # TODO: Make this prettier while keeping short circuit
     if session['email'] == request.json['email'] or dbworker.validateAccess(dbworker.userTypeMap['admin']):
         pass
