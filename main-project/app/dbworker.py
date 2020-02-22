@@ -53,5 +53,17 @@ def createUser(email, parentEmail, firstName, lastName, password, userType, phon
     saltedPassword = bcrypt.hashpw(password, salt)
     mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
 
+def setPassword(email, newPassword):
+    """
+    Used for updating a password for an existing user
+    Matches based off the email, not the parentEmail
+    Assumes that the user already exists (you should peform this check)
+    """
+    salt = bcrypt.gensalt()
+    password = newPassword.encode()
+
+    saltedPassword = bcrypt.hashpw(password, salt)
+    mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
+
 if __name__ == "__main__":
     print("This file should not be executed directly.")
