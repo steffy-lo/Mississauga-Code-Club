@@ -31,7 +31,7 @@ def getUserType(username):
 
     return user['userType']
 
-def validateAccess(expectedUserTypes):
+def validateAccessList(expectedUserTypes):
     # Validate that the user is logged in, use the information in the
     # session data to determine if their username is valid and one of the
     # expectedUserTypes, return boolean, True if valid, False if invalid
@@ -45,6 +45,9 @@ def validateAccess(expectedUserTypes):
             return True
 
     return False
+
+def validateAccess(expectedUserType):
+    return validateAccessList([expectedUserType])
 
 def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, age, parentName):
     salt = bcrypt.gensalt()
