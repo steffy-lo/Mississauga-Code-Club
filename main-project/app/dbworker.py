@@ -19,9 +19,12 @@ def validateCredentials(username, password):
 
     return bcrypt.hashpw(password.encode(), user['password']) == user['password']
 
+def getUser(username):
+    return mclient[database]['users'].find_one({'email' : username})
+
 def getUserType(username):
     # Returns None if there is no such user
-    user = mclient[database]['users'].find_one({'email' : username})
+    user = getUser(username)
     if user is None:
         return None
 
