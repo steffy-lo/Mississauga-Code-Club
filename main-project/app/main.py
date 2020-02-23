@@ -53,7 +53,7 @@ def logout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
-@app.route('/updatePassword', methods=['POST'])
+@app.route('/updatepassword', methods=['POST'])
 def updatePassword():
     # Takes in a json of the form {email : '', password : ''}
 
