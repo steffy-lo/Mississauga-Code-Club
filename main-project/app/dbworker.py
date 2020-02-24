@@ -68,8 +68,58 @@ def setPassword(email, newPassword):
     saltedPassword = bcrypt.hashpw(password, salt)
     mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
-def createClass(courseTitle, students, instructors):
-    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors})
+def createClass(courseTitle, students, instructors, semester):
+    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester})
+
+def addStudent(courseId, email):
+    """
+    Add a student to the class with _id == courseId
+
+    Returns True if successful, False otherwise
+    """
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    lookup = getUser(email)
+    if lookup is None or lookup['userType'] != userTypeMap['student']:
+        # User is not a valid user to add as a student
+        return False
+
+    studentList = matchingClass['students'][:]
+
+    studentList.append(email)
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}})
+
+    return True
+
+def addInstructor(courseId, email):
+    """
+    Add a instructor to the class with _id == courseId
+
+    Returns True if successful, False otherwise
+    """
+    # TODO: Maybe merge this with addStudent?
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    lookup = getUser(email)
+    if lookup is None or lookup['userType'] == userTypeMap['student']:
+        # User is not a valid user to add as an instructor of some sort
+        return False
+
+    staffList = matchingClass['instructors'][:]
+
+    staffList.append(email)
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}})
+
+    return True
+
 
 # Map of text -> userType (integer)
 userTypeMap = {}
