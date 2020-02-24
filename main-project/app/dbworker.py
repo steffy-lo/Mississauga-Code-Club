@@ -68,7 +68,8 @@ def setPassword(email, newPassword):
     saltedPassword = bcrypt.hashpw(password, salt)
     mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
-
+def createClass(courseTitle, students, instructors):
+    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors})
 
 # Map of text -> userType (integer)
 userTypeMap = {}
