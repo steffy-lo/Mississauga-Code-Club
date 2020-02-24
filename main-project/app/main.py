@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort, session, redirect, url_for
+from flask import Flask, jsonify, request, abort, session, redirect, url_for, escape
 from flask_cors import CORS
 import os
 import bcrypt
