@@ -2,6 +2,7 @@ import React from "react";
 import { uid } from "react-uid";
 import Grades from "../Grades"
 import Course from "../Course";
+import './styles.css'
 
 class GradesView extends React.Component {
     state = {
@@ -35,7 +36,7 @@ class GradesView extends React.Component {
     render() {
         if (this.state.course != null) {
             return (
-                <div>
+                <div class="grades-view">
                     <select class="courses-list" id="course-sel">
                         <option name={this.state.course}>{this.state.course}</option>
                     </select>
@@ -48,7 +49,7 @@ class GradesView extends React.Component {
                         entry={entry}/>
                     ))}
                     <h2>Teacher's Comments</h2>
-                    <p>{this.state.comments}</p>
+                    <p id="comments">{this.state.comments}</p>
                     <h2>Next Steps</h2>
                     {this.state.recommendations.map(course => (
                         <Course

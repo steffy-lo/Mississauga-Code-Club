@@ -1,0 +1,21 @@
+#comments {
+    max-width: 50%;
+}
+
+.grades-view {
+  margin: 50px;
+}
+
+select {
+    display: inline-block;
+    width: 30%;
+    padding: 10px 15px;
+    outline: 0;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+}
+
+select:hover, select:active, select:focus {
+    background: #f8f8f8;
+}
