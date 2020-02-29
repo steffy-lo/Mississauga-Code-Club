@@ -1,6 +1,7 @@
 import bcrypt
 import datetime
 from pymongo import MongoClient
+from flask import session
 
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
 DBUSER = "mccgamma"
@@ -38,10 +39,10 @@ def validateAccessList(expectedUserTypes):
     # Validate that the user is logged in, use the information in the
     # session data to determine if their username is valid and one of the
     # expectedUserTypes, return boolean, True if valid, False if invalid
-    if session['userName'] is None:
+    if session['email'] is None:
         return False
 
-    uType = getUserType(session['username'])
+    uType = getUserType(session['email'])
 
     for x in expectedUserTypes:
         if uType == x:
