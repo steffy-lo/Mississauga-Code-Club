@@ -168,7 +168,7 @@ def getClasses(email):
 
     for c in allClasses:
         if currUserType == userTypeMap['admin'] or email in c['students'] or email in c['instructors']:
-            dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle']}
+            dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
 
             retList.append(dataToSend)
 
