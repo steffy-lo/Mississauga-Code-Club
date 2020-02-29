@@ -132,6 +132,8 @@ def getClasses(email):
     """
     currUserType = getUserType(email)
 
+    # TODO: Is there a faster way of doing this lookup?
+    # Potential issue is that we have to search inside of a db object
     allClasses = mclient[database]['classes'].find()
 
     retList = []
