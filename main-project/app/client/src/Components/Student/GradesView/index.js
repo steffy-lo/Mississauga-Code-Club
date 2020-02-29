@@ -1,7 +1,6 @@
 import React from "react";
 import { uid } from "react-uid";
 import Grades from "../Grades"
-import Course from "../Course";
 import './styles.css'
 
 class GradesView extends React.Component {
@@ -109,11 +108,11 @@ class GradesView extends React.Component {
                     <p id="comments">{this.state.comments}</p>
                     <h2>Next Steps</h2>
                     {this.state.recommendations.map(course => (
-                        <Course
-                        key={uid(
-                        course
-                        )} /* unique id required to help React render more efficiently*/
-                        course={course}/>
+                        <dl className="recommended-courses">
+                            <dt>
+                                <label>{course.courseName}</label>
+                            </dt>
+                        </dl>
                     ))}
                 </div>
             );

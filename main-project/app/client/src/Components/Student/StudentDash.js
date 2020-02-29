@@ -1,16 +1,13 @@
 import React from 'react';
-import { uid } from "react-uid";
 import axios from "axios";
 import NavBarGeneric from '../Util/NavbarGeneric';
 import './StudentDash.css';
-import CurrentCourse from "./Course";
-import CompletedCourse from "./CompletedCourse";
 import {getState} from "statezero";
 import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 
 /* For local debugging */
-const DEBUG = 0;
+const DEBUG = 1;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
