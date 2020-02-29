@@ -14,6 +14,9 @@ database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 def getUser(username):
     return mclient[database]['users'].find_one({'email' : username})
 
+def getCurrentUser():
+    return getUser(session['email'])
+
 def validateCredentials(username, password):
     # Return a boolean indicating if the password is valid
     user = getUser(username)
@@ -120,6 +123,12 @@ def addInstructor(courseId, email):
 
     return True
 
+def getClasses(email):
+    """
+    Returns a list of classes that email has access to, either as a student or instructor or admin
+    """
+    # TODO:
+    return []
 
 # Map of text -> userType (integer)
 userTypeMap = {}
