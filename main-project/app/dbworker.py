@@ -60,7 +60,7 @@ def createUser(email, parentEmail, firstName, lastName, password, userType, phon
     salt = bcrypt.gensalt()
     password = password.encode()
 
-    saltedPassword = bcrypt.hashpw(password, salt)
+    saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
     mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
 
 def setPassword(email, newPassword):
@@ -72,7 +72,7 @@ def setPassword(email, newPassword):
     salt = bcrypt.gensalt()
     password = newPassword.encode()
 
-    saltedPassword = bcrypt.hashpw(password, salt)
+    saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
     mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
 def createClass(courseTitle, students, instructors, semester):
