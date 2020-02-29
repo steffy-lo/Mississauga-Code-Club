@@ -125,6 +125,8 @@ def addStudent(courseId, email):
 
     mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}})
 
+    addEmptyReport(courseId, email)
+
     return True
 
 def addInstructor(courseId, email):
@@ -175,6 +177,13 @@ def getClasses(email, filt={}):
             retList.append(dataToSend)
 
     return retList
+
+def addEmptyReport(classId, studentEmail):
+    """
+    Adds an empty marking report for studentEmail to classId to be filled in later
+    """
+    mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : []})
+
 
 # Map of text -> userType (integer)
 userTypeMap = {}
