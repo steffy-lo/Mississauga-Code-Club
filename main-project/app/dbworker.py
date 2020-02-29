@@ -128,7 +128,7 @@ def getClasses(email):
     """
     Returns a list of classes that email has access to, either as a student or instructor or admin
 
-    Each class is of the format (class_id, title)
+    Each class is of the format {'id' : class_id, 'title' : title}
     """
     currUserType = getUserType(email)
 
