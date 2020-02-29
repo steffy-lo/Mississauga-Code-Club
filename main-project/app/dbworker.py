@@ -152,17 +152,19 @@ def addInstructor(courseId, email):
 
     return True
 
-def getClasses(email):
+def getClasses(email, filt={}):
     """
     Returns a list of classes that email has access to, either as a student or instructor or admin
 
     Each class is of the format {'id' : class_id, 'title' : title}
+
+    filt is a filter that can be used to filter the database a bit
     """
     currUserType = getUserType(email)
 
     # TODO: Is there a faster way of doing this lookup?
     # Potential issue is that we have to search inside of a db object
-    allClasses = mclient[database]['classes'].find()
+    allClasses = mclient[database]['classes'].find(filt)
 
     retList = []
 
