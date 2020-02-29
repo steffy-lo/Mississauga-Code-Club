@@ -78,7 +78,7 @@ class VolunteerDash extends React.Component {
       <React.Fragment>
       <NavbarGeneric/>
         {/* This is the volunteer dashboard. */}
-        <div className="volunteer">
+        <div className="volunteer-container">
           <div className="clocking">
             <h2 className="date">{this.state.date}</h2>
             <h1 className="time">{this.state.time}</h1>

@@ -2,11 +2,11 @@
     margin: 70px 0 0 0;
 }
 
-.container {
+.volunteer-container {
     margin: 30px 50px 30px 50px;
 }
 
-.volunteer button {
+.volunteer-container button {
     font-family: "Roboto", sans-serif;
     text-transform: uppercase;
     outline: 0;
@@ -20,7 +20,7 @@
     margin: 15px 15px 15px 0;
   }
 
-  .container button:hover, button:active, button:focus {
+  .volunteer-container button:hover, button:active, button:focus {
     background: #535FC1;
   }
 
