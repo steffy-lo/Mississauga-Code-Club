@@ -127,6 +127,8 @@ def addInstructor(courseId, email):
 def getClasses(email):
     """
     Returns a list of classes that email has access to, either as a student or instructor or admin
+
+    Each class is of the format (class_id, title)
     """
     currUserType = getUserType(email)
 
@@ -135,12 +137,8 @@ def getClasses(email):
     retList = []
 
     for c in allClasses:
-        if currUserType == userTypeMap['admin']:
-            retList.append(c['class_id'])
-            continue
-
-        if email in c['students'] or email in c['instructors']:
-            retList.append(c['class_id'])
+        if currUserType == userTypeMap['admin'] or email in c['students'] or email in c['instructors']:
+            retList.append((c['class_id'], c['course']))
 
     return retList
 
