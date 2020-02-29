@@ -8,7 +8,7 @@ import CompletedCourse from "./CompletedCourse";
 import {getState} from "statezero";
 
 /* For local debugging */
-const DEBUG = 1;
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
