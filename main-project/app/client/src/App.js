@@ -13,7 +13,6 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        //Only accessible this way for now.
         <Route exact path="/s" component={StudentDash}/>
         <Route exact path="/s/grades" component={StudentGrades}/>
         <Route exact path="/a" component={AdminDash}/>

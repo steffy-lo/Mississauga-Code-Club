@@ -1,6 +1,5 @@
 import React from 'react';
 import { uid } from "react-uid";
-import { setState, action, subscribe } from 'statezero';
 
 import NavBarGeneric from '../Util/NavbarGeneric';
 import './StudentDash.css';
@@ -19,7 +18,6 @@ class StudentDash extends React.Component {
     ]
   }
   render() {
-    setState('uType', 0);
     return(
       <React.Fragment>
         <div>

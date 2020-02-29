@@ -1,22 +1,23 @@
 import React from 'react';
-import { getState, action, subscribe } from 'statezero';
+import { getState } from 'statezero';
+import { Link } from 'react-router-dom';
 
 import '../CSS/NavbarGeneric.css';
 
-import { Link } from 'react-router-dom';
+import { logout } from '../../Actions/auth.js';
 
 class NavbarGeneric extends React.Component {
   render(){
     let type = "";
     switch(getState('uType')) {
       case 1:
-        type = "volunteer";
+        type = "administrator";
         break
       case 2:
         type = "teacher";
         break;
       case 3:
-        type = "administrator";
+        type = "volunteer";
         break;
       default:
         type = "student";
@@ -28,7 +29,7 @@ class NavbarGeneric extends React.Component {
             console.log('Back to dashboard');
           }}>{type}</Link>
           <Link to='/' id='logoutB' onClick={e => {
-            console.log('Logged out, I guess.');
+            logout()
           }}>Logout</Link>
         </div>
       </React.Fragment>

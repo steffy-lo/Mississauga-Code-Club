@@ -34,13 +34,12 @@ ENABLE_DEBUG_ROUTES = True
 def index():
     return app.send_static_file('index.html')
 
-@app.route('/authenticate')
+@app.route('/authenticate', methods=['POST'])
 def authenticate():
     # Use this route to log in and get a token
     # Takes in a json of the form {email : '', password : ''}
 
     # TODO: Likely need to validate email is good input here
-
     if dbworker.validateCredentials(request.json['email'], request.json['password']):
         userType = dbworker.getUserType(request.json['email'])
         session['email'] = request.json['email']

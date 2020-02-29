@@ -20,7 +20,7 @@ def validateCredentials(username, password):
     if user is None:
         return False
 
-    return bcrypt.hashpw(password.encode(), user['password']) == user['password']
+    return bcrypt.checkpw(password.encode(), user['password'].encode())
 
 
 def getUserType(username):
