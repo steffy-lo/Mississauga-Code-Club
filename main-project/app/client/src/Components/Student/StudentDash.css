@@ -24,13 +24,11 @@
     text-transform: uppercase;
     outline: 0;
     background: #5866D1;
-    width: 30%;
+    width: 40%;
     border: 0;
     padding: 5px;
     color: #FFFFFF;
     font-size: 12px;
-    -webkit-transition: all 0.3 ease;
-    transition: all 0.3 ease;
     cursor: pointer;
     margin-top: 15px;
     margin-bottom: 15px;

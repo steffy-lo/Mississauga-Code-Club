@@ -52,6 +52,7 @@ class GradesView extends React.Component {
     componentDidMount() {
         if (this.props.location.state != null) {
             const courseName = this.props.location.state.courseInfo.courseName
+            console.log(courseName)
             for (let i = 0; i < this.data.length; i++) {
                 if (this.data[i].courseName === courseName) {
                     this.setState({
@@ -81,6 +82,7 @@ class GradesView extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         if (this.state != null) {
             const otherCompletedCourses = ["Robotics With Raspberry Pi 4 (1)", "Introduction to Python"] // get all completed courses
             const index = otherCompletedCourses.indexOf(this.state.course);

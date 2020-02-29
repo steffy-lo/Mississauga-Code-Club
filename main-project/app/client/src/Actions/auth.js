@@ -2,7 +2,7 @@ import { setState } from "statezero";
 import axios from "axios";
 
 /* For local debugging */
-const DEBUG = 0;
+const DEBUG = 1;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -32,6 +32,7 @@ export const authenticate = (email, password) => {
     .then(type => {
       if (!type || !type.data) throw {status: 500, statusText: "Something went wrong"};
       setState('uType', type.data.userType);
+      setState('email', email);
       resolve(['/a', '/t', '/v', '/s'][type.data.userType - 1]);
     })
     .catch(err => {
