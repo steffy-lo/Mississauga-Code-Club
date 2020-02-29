@@ -4,7 +4,6 @@ import os
 import bcrypt
 from pymongo import MongoClient
 import datetime
-
 import dbworker
 
 # Start the app and setup the static directory for the html, css, and js files.
@@ -147,6 +146,16 @@ def showAllUsersDebug():
         outString += str(j) + " "
 
     return outString
+
+@app.route('/getClasses/<email>', methods=['GET'])
+def getClasses(email):
+    classes = {'instructor': [], 'student': []}
+    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
+        classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
+
+    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": email}):
+        classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
+    return jsonify(classes)
 
 @app.route('/dumpsession')
 def dumpSession():
