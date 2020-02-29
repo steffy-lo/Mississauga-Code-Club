@@ -72,6 +72,16 @@ def updatePassword():
     dbworker.setPassword(request.json['email'], request.json['password'])
     return jsonify({'success' : True})
 
+@app.route('/getclasses')
+def getClasses():
+    """
+    Returns a list of class ids from the database
+    """
+    if session['email'] is None:
+        abort(401)
+
+    return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
+
 # Debug routes are below, do not rely on these for any expected behaviour
 
 @app.route('/salt')
