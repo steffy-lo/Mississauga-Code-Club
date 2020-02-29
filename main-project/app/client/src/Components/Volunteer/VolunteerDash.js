@@ -17,6 +17,24 @@ class VolunteerDash extends React.Component {
     }
     this.handleChangeFromDate = this.handleChangeFromDate.bind(this);
     this.handleChangeToDate = this.handleChangeToDate.bind(this);
+    this.clockIn = this.clockIn.bind(this);
+    this.clockOut = this.clockOut.bind(this);
+  }
+
+  clockIn() {
+    const clockIn = document.createElement('h2');
+    const clockingDiv = document.querySelector('.clocking');
+    clockIn.appendChild(document.createTextNode('> ' + this.state.time));
+    clockIn.style.color = "blue";
+    clockingDiv.appendChild(clockIn);
+  }
+
+  clockOut() {
+    const clockOut = document.createElement('h2');
+    const clockingDiv = document.querySelector('.clocking');
+    clockOut.appendChild(document.createTextNode('< ' + this.state.time));
+    clockOut.style.color = "red";
+    clockingDiv.appendChild(clockOut);
   }
 
   handleChangeFromDate = date => {
@@ -53,8 +71,8 @@ class VolunteerDash extends React.Component {
           <div className="clocking">
             <h2 className="date">{this.state.date}</h2>
             <h1 className="time">{this.state.time}</h1>
-            <Button>Clock In</Button>
-            <Button>Clock Out</Button>
+            <Button onClick={this.clockIn}>Clock In</Button>
+            <Button onClick={this.clockOut}>Clock Out</Button>
           </div>
           <div className="check-hours">
             <h2>Volunteer Hours</h2>
