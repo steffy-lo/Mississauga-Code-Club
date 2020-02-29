@@ -77,7 +77,7 @@ def getClasses():
     """
     Returns a list of class ids from the database
     """
-    if session['email'] is None:
+    if 'email' not in session or session['email'] is None:
         abort(401)
 
     return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
