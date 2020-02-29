@@ -71,6 +71,16 @@ def updatePassword():
     dbworker.setPassword(request.json['email'], request.json['password'])
     return jsonify({'success' : True})
 
+@app.route('/getclasses')
+def getClasses():
+    """
+    Returns a list of class ids from the database
+    """
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
+
 # Debug routes are below, do not rely on these for any expected behaviour
 
 @app.route('/salt')
@@ -133,7 +143,7 @@ def addSampleUser(username):
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    dbworker.createUser(username, username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 0, '647-111-1111', 18, 'Parent Name')
+    dbworker.createUser(username + '@roma.it', username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 1, '647-111-1111', 18, 'Parent Name')
     return username
 
 @app.route('/showusers')

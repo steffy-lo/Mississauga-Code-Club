@@ -1,6 +1,7 @@
 import bcrypt
 import datetime
 from pymongo import MongoClient
+from flask import session
 
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
 DBUSER = "mccgamma"
@@ -12,10 +13,24 @@ mclient = MongoClient(MONGOURI)
 database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 
 def getUser(username):
+    """
+    Return the user associated with 'username' ie. email
+    """
     return mclient[database]['users'].find_one({'email' : username})
 
+def getCurrentUser():
+    """
+    Get the current user associated with whatever email is stored in session
+    """
+    if 'email' not in session:
+        return None
+
+    return getUser(session['email'])
+
 def validateCredentials(username, password):
-    # Return a boolean indicating if the password is valid
+    """
+    Return a boolean indicating if the password is valid
+    """
     user = getUser(username)
     if user is None:
         return False
@@ -24,7 +39,11 @@ def validateCredentials(username, password):
 
 
 def getUserType(username):
-    # Returns None if there is no such user
+    """
+    Returns the userType (ie. an integer from 0-4) for username
+
+    Returns None if there is no such user
+    """
     user = getUser(username)
     if user is None:
         return None
@@ -32,13 +51,15 @@ def getUserType(username):
     return user['userType']
 
 def validateAccessList(expectedUserTypes):
-    # Validate that the user is logged in, use the information in the
-    # session data to determine if their username is valid and one of the
-    # expectedUserTypes, return boolean, True if valid, False if invalid
-    if session['userName'] is None:
+    """
+    Validate that the user is logged in, use the information in the
+    session data to determine if their username is valid and one of the
+    expectedUserTypes, return boolean, True if valid, False if invalid
+    """
+    if session['email'] is None:
         return False
 
-    uType = getUserType(session['username'])
+    uType = getUserType(session['email'])
 
     for x in expectedUserTypes:
         if uType == x:
@@ -47,13 +68,19 @@ def validateAccessList(expectedUserTypes):
     return False
 
 def validateAccess(expectedUserType):
+    """
+    Validate a user has a specific access type, not a list of them
+    """
     return validateAccessList([expectedUserType])
 
 def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, age, parentName):
+    """
+    Create a user and add them to the database
+    """
     salt = bcrypt.gensalt()
     password = password.encode()
 
-    saltedPassword = bcrypt.hashpw(password, salt)
+    saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
     mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
 
 def setPassword(email, newPassword):
@@ -65,11 +92,16 @@ def setPassword(email, newPassword):
     salt = bcrypt.gensalt()
     password = newPassword.encode()
 
-    saltedPassword = bcrypt.hashpw(password, salt)
+    saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
     mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
 def createClass(courseTitle, students, instructors, semester):
-    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester})
+    """
+    Adds a class to the database
+
+    Students and instructors are lists of emails
+    """
+    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : [], 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -120,6 +152,29 @@ def addInstructor(courseId, email):
 
     return True
 
+def getClasses(email, filt={}):
+    """
+    Returns a list of classes that email has access to, either as a student or instructor or admin
+
+    Each class is of the format {'id' : class_id, 'title' : title}
+
+    filt is a filter that can be used to filter the database a bit
+    """
+    currUserType = getUserType(email)
+
+    # TODO: Is there a faster way of doing this lookup?
+    # Potential issue is that we have to search inside of a db object
+    allClasses = mclient[database]['classes'].find(filt)
+
+    retList = []
+
+    for c in allClasses:
+        if currUserType == userTypeMap['admin'] or email in c['students'] or email in c['instructors']:
+            dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
+
+            retList.append(dataToSend)
+
+    return retList
 
 # Map of text -> userType (integer)
 userTypeMap = {}
