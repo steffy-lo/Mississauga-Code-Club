@@ -1,0 +1,29 @@
+.date {
+    margin: 70px 0px 0px 0px;
+}
+
+.container {
+    margin: 30px 50px 30px 50px;
+}
+
+.container button {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #5866D1;
+    width: 100px;
+    border: 0;
+    padding: 5px;
+    color: #FFFFFF;
+    font-size: 12px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+    margin: 15px 15px 15px 0px;
+  }
+
+  .container button:hover, button:active, button:focus {
+    background: #535FC1;
+  }
+
+  
