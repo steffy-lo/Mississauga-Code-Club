@@ -13,16 +13,24 @@ mclient = MongoClient(MONGOURI)
 database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 
 def getUser(username):
+    """
+    Return the user associated with 'username' ie. email
+    """
     return mclient[database]['users'].find_one({'email' : username})
 
 def getCurrentUser():
+    """
+    Get the current user associated with whatever email is stored in session
+    """
     if 'email' not in session:
         return None
 
     return getUser(session['email'])
 
 def validateCredentials(username, password):
-    # Return a boolean indicating if the password is valid
+    """
+    Return a boolean indicating if the password is valid
+    """
     user = getUser(username)
     if user is None:
         return False
@@ -31,7 +39,11 @@ def validateCredentials(username, password):
 
 
 def getUserType(username):
-    # Returns None if there is no such user
+    """
+    Returns the userType (ie. an integer from 0-4) for username
+
+    Returns None if there is no such user
+    """
     user = getUser(username)
     if user is None:
         return None
@@ -39,9 +51,11 @@ def getUserType(username):
     return user['userType']
 
 def validateAccessList(expectedUserTypes):
-    # Validate that the user is logged in, use the information in the
-    # session data to determine if their username is valid and one of the
-    # expectedUserTypes, return boolean, True if valid, False if invalid
+    """
+    Validate that the user is logged in, use the information in the
+    session data to determine if their username is valid and one of the
+    expectedUserTypes, return boolean, True if valid, False if invalid
+    """
     if session['email'] is None:
         return False
 
@@ -54,9 +68,15 @@ def validateAccessList(expectedUserTypes):
     return False
 
 def validateAccess(expectedUserType):
+    """
+    Validate a user has a specific access type, not a list of them
+    """
     return validateAccessList([expectedUserType])
 
 def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, age, parentName):
+    """
+    Create a user and add them to the database
+    """
     salt = bcrypt.gensalt()
     password = password.encode()
 
@@ -76,6 +96,11 @@ def setPassword(email, newPassword):
     mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
 def createClass(courseTitle, students, instructors, semester):
+    """
+    Adds a class to the database
+
+    Students and instructors are lists of emails
+    """
     mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester})
 
 def addStudent(courseId, email):
