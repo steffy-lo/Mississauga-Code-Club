@@ -16,6 +16,9 @@ def getUser(username):
     return mclient[database]['users'].find_one({'email' : username})
 
 def getCurrentUser():
+    if 'email' not in session:
+        return None
+
     return getUser(session['email'])
 
 def validateCredentials(username, password):
