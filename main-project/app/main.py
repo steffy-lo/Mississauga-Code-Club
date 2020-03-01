@@ -110,6 +110,14 @@ def checklogin():
 
     return "Not logged in"
 
+@app.route('/whoAmI', methods=['GET'])
+def getFullName():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
+    thisUser = dbworker.getCurrentUser()
+    return jsonify({'firstName' : thisUser['firstName'], 'lastName' : thisUser['lastName'], 'success': True})
+
 @app.route('/addjunk')
 def addjunk():
     if not ENABLE_DEBUG_ROUTES:
