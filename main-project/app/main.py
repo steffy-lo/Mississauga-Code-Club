@@ -165,6 +165,9 @@ def showAllUsersDebug():
 
 @app.route('/getClasses/<email>', methods=['GET'])
 def getUserClasses(email):
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     classes = {'instructor': [], 'student': []}
     for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
         classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
