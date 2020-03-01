@@ -204,6 +204,18 @@ def getClass(classId):
     """
     return mclient[database]['classes'].find({'classId' : classId})
 
+def addMarkingSection(classId, sectionTitle, weight):
+    """
+    Adds/overwrites the marking section associated with sectionTitle in classId, using weight as its new weight
+    """
+    classContent = getClass(classId)
+
+    classContent['markingSections'][sectionTitle] = weight
+
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
+
+
+
 # Map of text -> userType (integer)
 userTypeMap = {}
 userTypeMap['default'] = 0
