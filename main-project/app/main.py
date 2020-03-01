@@ -96,6 +96,19 @@ def getActiveClasses():
 
     return jsonify({'classList' : dbworker.getClasses(session['email'], filt={'ongoing' : True}), 'success' : True})
 
+# This may be a debug route, not sure, made by Steffy
+@app.route('/api/getClasses/<email>', methods=['GET'])
+@app.route('/getClasses/<email>', methods=['GET'])
+def getUserClasses(email):
+    classes = {'instructor': [], 'student': []}
+    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
+        classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
+
+    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": email}):
+        classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
+    return jsonify(classes)
+
+
 # Debug routes are below, do not rely on these for any expected behaviour
 
 @app.route('/salt')
@@ -172,18 +185,6 @@ def showAllUsersDebug():
 
     return outString
 
-@app.route('/getClasses/<email>', methods=['GET'])
-def getUserClasses(email):
-    if not ENABLE_DEBUG_ROUTES:
-        abort(404)
-
-    classes = {'instructor': [], 'student': []}
-    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
-        classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
-
-    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": email}):
-        classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
-    return jsonify(classes)
 
 @app.route('/dumpsession')
 def dumpSession():
