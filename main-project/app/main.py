@@ -29,6 +29,10 @@ app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
 # debugging routes are shut off.
 ENABLE_DEBUG_ROUTES = True
 
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('favicon.ico')
+
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
     # Use this route to log in and get a token
