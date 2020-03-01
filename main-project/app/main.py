@@ -17,7 +17,7 @@ STATIC_FOLDER = 'client/build'
 #     STATIC_FOLDER = 'client/build'
 
 
-app = Flask(__name__, static_url_path='', static_folder=STATIC_FOLDER)
+app = Flask(__name__, static_url_path='/', static_folder=STATIC_FOLDER)
 CORS(app)
 
 # DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
@@ -28,10 +28,6 @@ app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
 # Turn this to False when properly deploying to make sure that all
 # debugging routes are shut off.
 ENABLE_DEBUG_ROUTES = True
-
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
 
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
@@ -174,6 +170,12 @@ def dumpSession():
         abort(404)
 
     return str(session)
+
+
+@app.route('/')
+@app.route("/<path:path>")
+def index(path='/'):
+    return app.send_static_file('index.html')
 
 if __name__ == "__main__":
     # Only for debugging while developing
