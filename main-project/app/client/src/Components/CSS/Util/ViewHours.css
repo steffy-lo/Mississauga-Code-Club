@@ -1,0 +1,121 @@
+.administratorVH {
+  background-color: crimson;
+}
+
+.teacherVH {
+  background-color: blue;
+}
+
+.volunteerVH {
+  background-color: gold;
+}
+
+.studentVH {
+  background-color: green;
+}
+.administratorVH:hover {
+  background-color: darkred;
+}
+
+.teacherVH:hover {
+  background-color: darkblue;
+}
+
+.volunteerVH:hover {
+  background-color: goldenrod;
+}
+
+.studentVH:hover {
+  background-color: darkgreen;
+}
+
+.hidden {
+  display: none;
+}
+
+.shown {
+  display: inherit;
+}
+
+.VHviewRow {
+
+}
+
+.unPaid {
+  color: #b71c1c;
+  font-weight: bold;
+  font-size: 22px;
+  background-color: #ef5350;
+}
+
+.paid {
+  color: green;
+  font-weight: bold;
+  font-size: 22px;
+  background-color: lightgreen;
+}
+
+#VHviewTable {
+  width: 100%;
+  text-align: center;
+}
+
+#VHviewTable th {
+  color: transparent;
+  height: 1px;
+  line-height: 0.5px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#VHviewTableHeader {
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+}
+
+#scrollableHoursPane {
+  max-height: 600px;
+  overflow-y: auto;
+  margin: 5px;
+}
+
+#VHviewTableHeader th {
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#mainVHoursWindow {
+  width: 50%;
+  min-width: 600px;
+  background-color: white;
+  box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
+}
+
+#mVHWindowHeader {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 5px;
+  border-bottom: 2px solid lightgrey;
+  margin: 5px;
+}
+
+#mVHWindowHeader div {
+  flex-grow: 1;
+  font-size: 36px;
+}
+
+#mVHWindowHeader a {
+  text-decoration: none;
+  padding: 5px 30px;
+  color: white;
+  line-height: 36px;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 22px;
+}
