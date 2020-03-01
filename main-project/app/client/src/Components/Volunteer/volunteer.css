@@ -1,12 +1,12 @@
 .date {
-    margin: 70px 0px 0px 0px;
+    margin: 70px 0 0 0;
 }
 
-.container {
+.volunteer-container {
     margin: 30px 50px 30px 50px;
 }
 
-.container button {
+.volunteer-container button {
     font-family: "Roboto", sans-serif;
     text-transform: uppercase;
     outline: 0;
@@ -16,13 +16,11 @@
     padding: 5px;
     color: #FFFFFF;
     font-size: 12px;
-    -webkit-transition: all 0.3 ease;
-    transition: all 0.3 ease;
     cursor: pointer;
-    margin: 15px 15px 15px 0px;
+    margin: 15px 15px 15px 0;
   }
 
-  .container button:hover, button:active, button:focus {
+  .volunteer-container button:hover, button:active, button:focus {
     background: #535FC1;
   }
 

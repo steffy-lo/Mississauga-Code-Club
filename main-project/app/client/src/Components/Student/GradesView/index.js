@@ -1,7 +1,6 @@
 import React from "react";
 import { uid } from "react-uid";
 import Grades from "../Grades"
-import Course from "../Course";
 import './styles.css'
 
 class GradesView extends React.Component {
@@ -52,6 +51,7 @@ class GradesView extends React.Component {
     componentDidMount() {
         if (this.props.location.state != null) {
             const courseName = this.props.location.state.courseInfo.courseName
+            console.log(courseName)
             for (let i = 0; i < this.data.length; i++) {
                 if (this.data[i].courseName === courseName) {
                     this.setState({
@@ -81,6 +81,7 @@ class GradesView extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         if (this.state != null) {
             const otherCompletedCourses = ["Robotics With Raspberry Pi 4 (1)", "Introduction to Python"] // get all completed courses
             const index = otherCompletedCourses.indexOf(this.state.course);
@@ -107,11 +108,11 @@ class GradesView extends React.Component {
                     <p id="comments">{this.state.comments}</p>
                     <h2>Next Steps</h2>
                     {this.state.recommendations.map(course => (
-                        <Course
-                        key={uid(
-                        course
-                        )} /* unique id required to help React render more efficiently*/
-                        course={course}/>
+                        <dl className="recommended-courses">
+                            <dt>
+                                <label>{course.courseName}</label>
+                            </dt>
+                        </dl>
                     ))}
                 </div>
             );

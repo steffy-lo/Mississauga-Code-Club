@@ -14,7 +14,7 @@ class VolunteerDash extends React.Component {
       time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
       fromDate: new Date(),
       toDate: new Date()
-    }
+    };
     this.handleChangeFromDate = this.handleChangeFromDate.bind(this);
     this.handleChangeToDate = this.handleChangeToDate.bind(this);
     this.clockIn = this.clockIn.bind(this);
@@ -22,28 +22,39 @@ class VolunteerDash extends React.Component {
   }
 
   clockIn() {
-    const clockIn = document.createElement('h2');
-    const clockingDiv = document.querySelector('.clocking');
-    clockIn.appendChild(document.createTextNode('> ' + this.state.time));
-    clockIn.style.color = "blue";
-    clockingDiv.appendChild(clockIn);
+      const clockingDiv = document.querySelector('.clocking');
+      if (clockingDiv.lastChild.className === "clockedOut") {
+          clockingDiv.removeChild(clockingDiv.lastChild); // remove clockedOut element
+          clockingDiv.removeChild(clockingDiv.lastChild); // remove clockedIn element
+      }
+      if (clockingDiv.lastChild.className !== "clockedIn") {
+          const clockIn = document.createElement('h3');
+          clockIn.className = "clockedIn";
+          clockIn.appendChild(document.createTextNode('> ' + this.state.time));
+          clockIn.style.color = "blue";
+          clockingDiv.appendChild(clockIn);
+      }
+
   }
 
   clockOut() {
-    const clockOut = document.createElement('h2');
-    const clockingDiv = document.querySelector('.clocking');
-    clockOut.appendChild(document.createTextNode('< ' + this.state.time));
-    clockOut.style.color = "red";
-    clockingDiv.appendChild(clockOut);
+      const clockingDiv = document.querySelector('.clocking');
+      if (clockingDiv.lastChild.className === "clockedIn") {
+          const clockOut = document.createElement('h3');
+          clockOut.className = "clockedOut";
+          clockOut.appendChild(document.createTextNode('< ' + this.state.time));
+          clockOut.style.color = "red";
+          clockingDiv.appendChild(clockOut);
+      }
   }
 
   handleChangeFromDate = date => {
     this.setState({fromDate: date})
-  }
+  };
 
   handleChangeToDate = date => {
     this.setState({toDate: date})
-  }
+  };
 
   componentDidMount() {
     this.intervalID = setInterval(() => 
@@ -67,7 +78,7 @@ class VolunteerDash extends React.Component {
       <React.Fragment>
       <NavbarGeneric/>
         {/* This is the volunteer dashboard. */}
-        <div className="container">
+        <div className="volunteer-container">
           <div className="clocking">
             <h2 className="date">{this.state.date}</h2>
             <h1 className="time">{this.state.time}</h1>

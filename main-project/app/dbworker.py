@@ -125,6 +125,8 @@ def addStudent(courseId, email):
 
     mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}})
 
+    addEmptyReport(courseId, email)
+
     return True
 
 def addInstructor(courseId, email):
@@ -152,27 +154,40 @@ def addInstructor(courseId, email):
 
     return True
 
-def getClasses(email):
+def getClasses(email, filt={}):
     """
-    Returns a list of classes that email has access to, either as a student or instructor or admin
+    Returns a json of classes that email has access to, either as a student or instructor or admin
 
     Each class is of the format {'id' : class_id, 'title' : title}
+
+    filt is a filter that can be used to filter the database a bit
     """
     currUserType = getUserType(email)
 
     # TODO: Is there a faster way of doing this lookup?
     # Potential issue is that we have to search inside of a db object
-    allClasses = mclient[database]['classes'].find()
+    allClasses = mclient[database]['classes'].find(filt)
 
-    retList = []
+    retJSON = {'student' : [], 'instructor' : [], 'other' : []}
 
     for c in allClasses:
-        if currUserType == userTypeMap['admin'] or email in c['students'] or email in c['instructors']:
-            dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle']}
+        dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
+        if email in c['students']:
+            retJSON['student'].append(dataToSend)
+        elif email in c['instructors']:
+            retJSON['instructor'].append(dataToSend)
+        elif currUserType == userTypeMap['admin']:
+            retJSON['other'].append(dataToSend)
 
-            retList.append(dataToSend)
 
-    return retList
+    return retJSON
+
+def addEmptyReport(classId, studentEmail):
+    """
+    Adds an empty marking report for studentEmail to classId to be filled in later
+    """
+    mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : []})
+
 
 # Map of text -> userType (integer)
 userTypeMap = {}
