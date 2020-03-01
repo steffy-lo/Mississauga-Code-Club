@@ -17,7 +17,7 @@ STATIC_FOLDER = 'client/build'
 #     STATIC_FOLDER = 'client/build'
 
 
-app = Flask(__name__, static_url_path='/', static_folder=STATIC_FOLDER)
+app = Flask(__name__, static_url_path='', static_folder=STATIC_FOLDER)
 CORS(app)
 
 # DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
@@ -188,10 +188,16 @@ def dumpSession():
 
     return str(session)
 
-
+@app.route('/a')
+@app.route('/a/')
+@app.route('/s')
+@app.route('/s/')
+@app.route('/t')
+@app.route('/t/')
+@app.route('/v')
+@app.route('/v/')
 @app.route('/')
-@app.route("/<path:path>")
-def index(path='/'):
+def index():
     return app.send_static_file('index.html')
 
 if __name__ == "__main__":
