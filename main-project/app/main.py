@@ -117,7 +117,31 @@ def getName():
         abort(404)
 
     thisUser = dbworker.getCurrentUser()
-    return jsonify({'firstUser' : thisUser['firstUser'], 'lastUser' : thisUser['firstUser'], 'success' : True})
+    return jsonify({'firstName' : thisUser['firstName'], 'lastName' : thisUser['lastName'], 'success' : True})
+
+@app.route('/setUpStudentDashboard', methods=['GET'])
+def getStudentDahboardInfo():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+    studentDashboardDict = {}
+    classes = dbworker.getClasses(session['email'])
+    thisStudent = dbworker.getCurrentUser()
+
+    # TODO: set up mock grades to put in here
+
+    studentDashboardDict['firstName'] = thisStudent['firstName']
+    studentDashboardDict['lastName'] = thisStudent['lastName']
+    studentDashboardDict['Classes'] = {}
+    studentDashboardDict['Classes'].update(classes)
+    classesWithGrades = {}
+
+
+
+    return jsonify(studentDashboardDict)
+
+
 
 @app.route('/addjunk')
 def addjunk():
