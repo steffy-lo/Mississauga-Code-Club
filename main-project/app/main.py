@@ -77,6 +77,16 @@ def getClasses():
 
     return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
 
+@app.route('/getactiveclasses')
+def getActiveClasses():
+    """
+    Returns a list of active class ids from the database
+    """
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    return jsonify({'classList' : dbworker.getClasses(session['email'], filt={'ongoing' : True}), 'success' : True})
+
 # Debug routes are below, do not rely on these for any expected behaviour
 
 @app.route('/salt')
