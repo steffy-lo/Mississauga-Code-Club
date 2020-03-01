@@ -17,7 +17,7 @@ STATIC_FOLDER = 'client/build'
 #     STATIC_FOLDER = 'client/build'
 
 
-app = Flask(__name__, static_url_path='', static_folder=STATIC_FOLDER)
+app = Flask(__name__, static_url_path='/', static_folder=STATIC_FOLDER)
 CORS(app)
 
 # DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
@@ -29,9 +29,9 @@ app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
 # debugging routes are shut off.
 ENABLE_DEBUG_ROUTES = True
 
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('favicon.ico')
 
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
@@ -80,6 +80,16 @@ def getClasses():
         abort(401)
 
     return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
+
+@app.route('/getactiveclasses')
+def getActiveClasses():
+    """
+    Returns a list of active class ids from the database
+    """
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    return jsonify({'classList' : dbworker.getClasses(session['email'], filt={'ongoing' : True}), 'success' : True})
 
 # Debug routes are below, do not rely on these for any expected behaviour
 
@@ -159,6 +169,9 @@ def showAllUsersDebug():
 
 @app.route('/getClasses/<email>', methods=['GET'])
 def getUserClasses(email):
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
     classes = {'instructor': [], 'student': []}
     for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
         classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
@@ -174,6 +187,12 @@ def dumpSession():
         abort(404)
 
     return str(session)
+
+
+@app.route('/')
+@app.route("/<path:path>")
+def index(path='/'):
+    return app.send_static_file('index.html')
 
 if __name__ == "__main__":
     # Only for debugging while developing

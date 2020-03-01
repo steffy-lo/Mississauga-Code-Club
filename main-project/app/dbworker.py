@@ -156,7 +156,7 @@ def addInstructor(courseId, email):
 
 def getClasses(email, filt={}):
     """
-    Returns a list of classes that email has access to, either as a student or instructor or admin
+    Returns a json of classes that email has access to, either as a student or instructor or admin
 
     Each class is of the format {'id' : class_id, 'title' : title}
 
@@ -168,15 +168,19 @@ def getClasses(email, filt={}):
     # Potential issue is that we have to search inside of a db object
     allClasses = mclient[database]['classes'].find(filt)
 
-    retList = []
+    retJSON = {'student' : [], 'instructor' : [], 'other' : []}
 
     for c in allClasses:
-        if currUserType == userTypeMap['admin'] or email in c['students'] or email in c['instructors']:
-            dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
+        dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
+        if email in c['students']:
+            retJSON['student'].append(dataToSend)
+        elif email in c['instructors']:
+            retJSON['instructor'].append(dataToSend)
+        elif currUserType == userTypeMap['admin']:
+            retJSON['other'].append(dataToSend)
 
-            retList.append(dataToSend)
 
-    return retList
+    return retJSON
 
 def addEmptyReport(classId, studentEmail):
     """
