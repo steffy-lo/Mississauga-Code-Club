@@ -186,7 +186,7 @@ def dumpSession():
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    return str(session)
+    return jsonify({'sessionVars' : str(session)})
 
 @app.route('/a')
 @app.route('/a/')
