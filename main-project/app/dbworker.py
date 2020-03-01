@@ -188,6 +188,15 @@ def addEmptyReport(classId, studentEmail):
     """
     mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : [], 'comments' : ""})
 
+def getClassReports(classId, filt={}):
+    """
+    Get all reports for a specific class
+
+    Additional filter requirements can be specified with filt
+    This will not override the requirement that classId be the class searched for
+    """
+    filt['classId'] = classId
+    return mclient[database]['reports'].find(filt)
 
 # Map of text -> userType (integer)
 userTypeMap = {}
