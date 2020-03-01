@@ -33,6 +33,7 @@ ENABLE_DEBUG_ROUTES = True
 def favicon():
     return app.send_static_file('favicon.ico')
 
+@app.route('/api/authenticate', methods=['POST'])
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
     # Use this route to log in and get a token
@@ -46,11 +47,13 @@ def authenticate():
 
     abort(401)
 
+@app.route('/api/logout')
 @app.route('/logout')
 def logout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
+@app.route('/api/updatepassword', methods=['POST'])
 @app.route('/updatepassword', methods=['POST'])
 def updatePassword():
     # Takes in a json of the form {email : '', password : ''}
@@ -71,6 +74,7 @@ def updatePassword():
     dbworker.setPassword(request.json['email'], request.json['password'])
     return jsonify({'success' : True})
 
+@app.route('/api/getclasses')
 @app.route('/getclasses')
 def getClasses():
     """
@@ -81,6 +85,7 @@ def getClasses():
 
     return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
 
+@app.route('/api/getactiveclasses')
 @app.route('/getactiveclasses')
 def getActiveClasses():
     """
