@@ -198,6 +198,12 @@ def getClassReports(classId, filt={}):
     filt['classId'] = classId
     return mclient[database]['reports'].find(filt)
 
+def getClass(classId):
+    """
+    Gets the class associated with classId
+    """
+    return mclient[database]['classes'].find({'classId' : classId})
+
 # Map of text -> userType (integer)
 userTypeMap = {}
 userTypeMap['default'] = 0
