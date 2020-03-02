@@ -219,8 +219,10 @@ def deleteMark(classId, studentEmail, sectionTitle):
     Deletes a student's marking info for <sectionTitle> in
     classId
     """
-    # TODO: Implement this
-    pass
+    reportData = getClassReports(classId, filt={'studentEmail' : studentEmail})
+
+    reportData['marks'].pop(sectionTitle, None)
+    mclient[database]['reports'].update_one({'classId' : classId, 'studentEmail' : studentEmail}, {'$set' : {'marks' : reportData['marks']}})
 
 def deleteMarkingSection(classId, sectionTitle):
     """
