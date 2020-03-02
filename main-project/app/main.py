@@ -173,6 +173,24 @@ def deleteMarkingSection():
 
     return jsonify({'success' : True})
 
+@app.route('/api/setmark', methods=['POST', 'PATCH'])
+def setMark():
+    """
+    Takes in a JSON of the following format
+    {classId, studentEmail, sectionTitle, mark : Int}
+
+    Returns {success : Boolean}
+
+    Sets the mark of sectionTitle in classId to <weight>
+    This will override existing values
+    """
+    # TODO: Validate credentials here
+
+    dbworker.setMark(request.json['classId'], request.json['studentEmail'], request.json['sectionTitle'], request.json['mark'])
+
+    return jsonify({'success' : True})
+
+
 @app.route('/api/mymarks/')
 def getMyMarks():
     """
