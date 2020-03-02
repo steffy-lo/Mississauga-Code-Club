@@ -96,6 +96,16 @@ def getActiveClasses():
 
     return jsonify({'classList' : dbworker.getClasses(session['email'], filt={'ongoing' : True}), 'success' : True})
 
+@app.route('/api/whoAmI', methods=['GET'])
+@app.route('/whoAmI', methods=['GET'])
+def getFullName():
+    thisUser = dbworker.getCurrentUser()
+
+    if thisUser is None:
+        return jsonify({'firstName' : None, 'lastName' : None, 'success' : False})
+
+    return jsonify({'firstName' : thisUser['firstName'][:], 'lastName' : thisUser['lastName'][:], 'success' : True})
+
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
@@ -137,15 +147,6 @@ def checklogin():
         return "Logged in as " + session['email']
 
     return "Not logged in"
-
-@app.route('/whoAmI', methods=['GET'])
-def getFullName():
-    if not ENABLE_DEBUG_ROUTES:
-        abort(404)
-
-    thisUser = dbworker.getCurrentUser()
-
-    return jsonify({'firstName' : thisUser['firstName'][:], 'lastName' : thisUser['lastName'][:], 'success' : True})
 
 @app.route('/setUpStudentDashboard', methods=['GET'])
 def getStudentDahboardInfo():
