@@ -104,7 +104,7 @@ def getFullName():
     if thisUser is None:
         return jsonify({'firstName' : None, 'lastName' : None, 'success' : False})
 
-    return jsonify({'firstName' : thisUser['firstName'][:], 'lastName' : thisUser['lastName'][:], 'success' : True})
+    return jsonify({'firstName' : thisUser['firstName'], 'lastName' : thisUser['lastName'], 'success' : True})
 
 @app.route('/api/setupstudentdashboard', methods=['GET'])
 @app.route('/setupstudentdashboard', methods=['GET'])
