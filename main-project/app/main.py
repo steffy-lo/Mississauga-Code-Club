@@ -155,6 +155,8 @@ def setMarkingSection():
 
     dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weight'])
 
+    return jsonify({'success' : True})
+
 @app.route('/api/deletemarkingsection', methods=['PATCH'])
 def deleteMarkingSection():
     """
@@ -168,6 +170,8 @@ def deleteMarkingSection():
     # TODO: Validate credentials here
 
     dbworker.deleteMarkingSection(request.json['classId'], request.json['sectionTitle'])
+
+    return jsonify({'success' : True})
 
 
 # This may be a debug route, not sure, made by Steffy
