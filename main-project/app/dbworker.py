@@ -214,6 +214,26 @@ def addMarkingSection(classId, sectionTitle, weight):
 
     mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
 
+def deleteMark(classId, studentEmail, sectionTitle):
+    """
+    Deletes a student's marking info for <sectionTitle> in
+    classId
+    """
+    # TODO: Implement this
+    pass
+
+def deleteMarkingSection(classId, sectionTitle):
+    """
+    Deletes a marking section as well as all associated marks for
+    <sectionTitle> in class <classId>
+    """
+
+    classContent = getClass(classId)
+    classContent['markingSections'].pop(sectionTitle, None)
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
+
+    for s in classContent['students']:
+        deleteMark(classId, s, sectionTitle)
 
 
 # Map of text -> userType (integer)
