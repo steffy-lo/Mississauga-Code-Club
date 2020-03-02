@@ -139,7 +139,6 @@ def checklogin():
     return "Not logged in"
 
 @app.route('/whoAmI', methods=['GET'])
-
 def getFullName():
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
@@ -156,11 +155,11 @@ def getStudentDahboardInfo():
         abort(401)
 
     studentDashboardDict = {}
-    classes = dbworker.getClasses(session['email'])
+    classes = dbworker.getClasses(session['email'], filt={'ongoing' : True})
     thisStudent = dbworker.getCurrentUser()
 
-    studentDashboardDict['firstName'] = thisStudent['firstName']
-    studentDashboardDict['lastName'] = thisStudent['lastName']
+    studentDashboardDict['firstName'] = thisStudent['firstName'][:]
+    studentDashboardDict['lastName'] = thisStudent['lastName'][:]
     studentDashboardDict['Classes'] = []
     studentDashboardDict['Classes'] = studentDashboardDict['Classes'] + classes['student']
 
