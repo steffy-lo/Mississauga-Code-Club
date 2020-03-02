@@ -96,8 +96,8 @@ def getActiveClasses():
 
     return jsonify({'classList' : dbworker.getClasses(session['email'], filt={'ongoing' : True}), 'success' : True})
 
-@app.route('/api/whoAmI', methods=['GET'])
-@app.route('/whoAmI', methods=['GET'])
+@app.route('/api/whoami', methods=['GET'])
+@app.route('/whoami', methods=['GET'])
 def getFullName():
     thisUser = dbworker.getCurrentUser()
 
@@ -106,8 +106,8 @@ def getFullName():
 
     return jsonify({'firstName' : thisUser['firstName'][:], 'lastName' : thisUser['lastName'][:], 'success' : True})
 
-@app.route('/api/setUpStudentDashboard', methods=['GET'])
-@app.route('/setUpStudentDashboard', methods=['GET'])
+@app.route('/api/setupstudentdashboard', methods=['GET'])
+@app.route('/setupstudentdashboard', methods=['GET'])
 def getStudentDahboardInfo():
     if 'email' not in session or session['email'] is None:
         abort(401)
