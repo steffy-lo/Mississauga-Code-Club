@@ -173,6 +173,24 @@ def deleteMarkingSection():
 
     return jsonify({'success' : True})
 
+@app.route('/api/mymarks/')
+def getMyMarks():
+    """
+    Gets a student's marks
+
+    If the logged in user is not a student, then it will return a 403
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['student']):
+        abort(403)
+
+    marks = dbworker.getReports({'studentEmail' : session['email']})
+
+    retList = []
+    for m in marks:
+        m.pop('_id', None)
+        retList.append(m)
+
+    return jsonify({'result' : retList, 'success' : True})
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
