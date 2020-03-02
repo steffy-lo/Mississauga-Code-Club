@@ -220,6 +220,8 @@ def getMyMarks():
     Gets a student's marks
 
     If the logged in user is not a student, then it will return a 403
+
+    Returned structure is {result : [], success : Boolean}
     """
     if not dbworker.validateAccess(dbworker.userTypeMap['student']):
         abort(403)
