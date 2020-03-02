@@ -242,14 +242,18 @@ def dumpSession():
 
 @app.route('/a')
 @app.route('/a/')
+@app.route('/a/<path:path>')
 @app.route('/s')
 @app.route('/s/')
+@app.route('/s/<path:path>')
 @app.route('/t')
 @app.route('/t/')
+@app.route('/t/<path:path>')
 @app.route('/v')
 @app.route('/v/')
+@app.route('/v/<path:path>')
 @app.route('/')
-def index():
+def index(path='/'):
     return app.send_static_file('index.html')
 
 if __name__ == "__main__":
