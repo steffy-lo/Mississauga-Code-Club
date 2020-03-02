@@ -153,6 +153,8 @@ def setMarkingSection():
     """
     # TODO: Validate credentials here
 
+    # TODO: Validate types
+
     dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weight'])
 
     return jsonify({'success' : True})
@@ -186,9 +188,30 @@ def setMark():
     """
     # TODO: Validate credentials here
 
+    # TODO: Validate types
+
     dbworker.setMark(request.json['classId'], request.json['studentEmail'], request.json['sectionTitle'], request.json['mark'])
 
     return jsonify({'success' : True})
+
+@app.route('/api/setactivestatus', methods=['POST', 'PATCH'])
+def setMark():
+    """
+    Takes in a JSON of the following format
+    {classId, status : Boolean}
+
+    Returns {success : Boolean}
+
+    Sets the <ongoing> of classId to <status>
+    """
+    # TODO: Validate credentials here
+
+    # TODO: Validate types
+
+    dbworker.setClassActiveStatus(request.json['classId'], request.json['status'])
+
+    return jsonify({'success' : True})
+
 
 
 @app.route('/api/mymarks/')

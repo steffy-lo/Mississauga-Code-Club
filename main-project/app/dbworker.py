@@ -253,6 +253,11 @@ def deleteMarkingSection(classId, sectionTitle):
     for s in classContent['students']:
         deleteMark(classId, s, sectionTitle)
 
+def setClassActiveStatus(classId, status):
+    """
+    Sets the active status of a class to status
+    """
+    mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
 
 # Map of text -> userType (integer)
 userTypeMap = {}
