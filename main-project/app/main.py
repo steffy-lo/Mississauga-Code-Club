@@ -33,6 +33,7 @@ ENABLE_DEBUG_ROUTES = True
 def favicon():
     return app.send_static_file('favicon.ico')
 
+@app.route('/api/authenticate', methods=['POST'])
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
     # Use this route to log in and get a token
@@ -46,11 +47,13 @@ def authenticate():
 
     abort(401)
 
+@app.route('/api/logout')
 @app.route('/logout')
 def logout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
+@app.route('/api/updatepassword', methods=['POST'])
 @app.route('/updatepassword', methods=['POST'])
 def updatePassword():
     # Takes in a json of the form {email : '', password : ''}
@@ -71,6 +74,7 @@ def updatePassword():
     dbworker.setPassword(request.json['email'], request.json['password'])
     return jsonify({'success' : True})
 
+@app.route('/api/getclasses')
 @app.route('/getclasses')
 def getClasses():
     """
@@ -81,6 +85,7 @@ def getClasses():
 
     return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
 
+@app.route('/api/getactiveclasses')
 @app.route('/getactiveclasses')
 def getActiveClasses():
     """
@@ -90,6 +95,19 @@ def getActiveClasses():
         abort(401)
 
     return jsonify({'classList' : dbworker.getClasses(session['email'], filt={'ongoing' : True}), 'success' : True})
+
+# This may be a debug route, not sure, made by Steffy
+@app.route('/api/getClasses/<email>', methods=['GET'])
+@app.route('/getClasses/<email>', methods=['GET'])
+def getUserClasses(email):
+    classes = {'instructor': [], 'student': []}
+    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
+        classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
+
+    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": email}):
+        classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
+    return jsonify(classes)
+
 
 # Debug routes are below, do not rely on these for any expected behaviour
 
@@ -211,18 +229,6 @@ def showAllUsersDebug():
 
     return outString
 
-@app.route('/getClasses/<email>', methods=['GET'])
-def getUserClasses(email):
-    if not ENABLE_DEBUG_ROUTES:
-        abort(404)
-
-    classes = {'instructor': [], 'student': []}
-    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
-        classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
-
-    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": email}):
-        classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
-    return jsonify(classes)
 
 @app.route('/dumpsession')
 def dumpSession():
@@ -230,7 +236,7 @@ def dumpSession():
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    return str(session)
+    return jsonify({'sessionVars' : str(session)})
 
 @app.route('/a')
 @app.route('/a/')
