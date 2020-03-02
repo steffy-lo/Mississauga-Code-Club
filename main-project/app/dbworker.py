@@ -220,6 +220,16 @@ def addMarkingSection(classId, sectionTitle, weight):
 
     mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
 
+def setMark(classId, studentEmail, sectionTitle, mark):
+    """
+    Set's a student's marking info for <sectionTitle> in
+    classId
+    """
+    reportData = getClassReports(classId, filt={'studentEmail' : studentEmail})
+
+    reportData['marks'][sectionTitle] = mark
+    mclient[database]['reports'].update_one({'classId' : classId, 'studentEmail' : studentEmail}, {'$set' : {'marks' : reportData['marks']}})
+
 def deleteMark(classId, studentEmail, sectionTitle):
     """
     Deletes a student's marking info for <sectionTitle> in
