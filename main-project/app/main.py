@@ -155,6 +155,21 @@ def setMarkingSection():
 
     dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weight'])
 
+@app.route('/api/deletemarkingsection', methods=['PATCH'])
+def deleteMarkingSection():
+    """
+    Takes in a JSON of the following format
+    {classId, sectionTitle}
+
+    Returns {success : Boolean}
+
+    Deletes mark weights and marks for sectionTitle in <classId>
+    """
+    # TODO: Validate credentials here
+
+    dbworker.deleteMarkingSection(request.json['classId'], request.json['sectionTitle'])
+
+
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
