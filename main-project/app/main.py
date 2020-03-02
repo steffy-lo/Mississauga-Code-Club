@@ -29,10 +29,11 @@ app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
 # debugging routes are shut off.
 ENABLE_DEBUG_ROUTES = True
 
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('favicon.ico')
 
+@app.route('/api/authenticate', methods=['POST'])
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
     # Use this route to log in and get a token
@@ -46,11 +47,13 @@ def authenticate():
 
     abort(401)
 
+@app.route('/api/logout')
 @app.route('/logout')
 def logout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
+@app.route('/api/updatepassword', methods=['POST'])
 @app.route('/updatepassword', methods=['POST'])
 def updatePassword():
     # Takes in a json of the form {email : '', password : ''}
@@ -71,6 +74,7 @@ def updatePassword():
     dbworker.setPassword(request.json['email'], request.json['password'])
     return jsonify({'success' : True})
 
+@app.route('/api/getclasses')
 @app.route('/getclasses')
 def getClasses():
     """
@@ -80,6 +84,30 @@ def getClasses():
         abort(401)
 
     return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
+
+@app.route('/api/getactiveclasses')
+@app.route('/getactiveclasses')
+def getActiveClasses():
+    """
+    Returns a list of active class ids from the database
+    """
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    return jsonify({'classList' : dbworker.getClasses(session['email'], filt={'ongoing' : True}), 'success' : True})
+
+# This may be a debug route, not sure, made by Steffy
+@app.route('/api/getClasses/<email>', methods=['GET'])
+@app.route('/getClasses/<email>', methods=['GET'])
+def getUserClasses(email):
+    classes = {'instructor': [], 'student': []}
+    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
+        classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
+
+    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": email}):
+        classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
+    return jsonify(classes)
+
 
 # Debug routes are below, do not rely on these for any expected behaviour
 
@@ -111,12 +139,49 @@ def checklogin():
     return "Not logged in"
 
 @app.route('/whoAmI', methods=['GET'])
+
 def getFullName():
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
     thisUser = dbworker.getCurrentUser()
-    return jsonify({'firstName' : thisUser['firstName'], 'lastName' : thisUser['lastName'], 'success': True})
+
+    return jsonify({'firstName' : thisUser['firstName'][:], 'lastName' : thisUser['lastName'][:], 'success' : True})
+
+@app.route('/setUpStudentDashboard', methods=['GET'])
+def getStudentDahboardInfo():
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    studentDashboardDict = {}
+    classes = dbworker.getClasses(session['email'])
+    thisStudent = dbworker.getCurrentUser()
+
+    studentDashboardDict['firstName'] = thisStudent['firstName']
+    studentDashboardDict['lastName'] = thisStudent['lastName']
+    studentDashboardDict['Classes'] = []
+    studentDashboardDict['Classes'] = studentDashboardDict['Classes'] + classes['student']
+
+    # TODO: set up mock grades to put in here
+    classReports = dbworker.mclient[dbworker.database]['reports']
+
+    for c in studentDashboardDict['Classes']:
+        foundClass = False
+        r = 0
+        while not foundClass and r < classReports.size():
+            if classReports[r]['classId'] == c['id']:
+                foundClass = True
+            else:
+                r += 1
+        if foundClass:
+            c['nextCourse'] = classReports[r]['nextCourse']
+            c['marks'] = classReports[r]['marks']
+
+
+    return jsonify(studentDashboardDict)
+
 
 @app.route('/addjunk')
 def addjunk():
@@ -165,15 +230,6 @@ def showAllUsersDebug():
 
     return outString
 
-@app.route('/getClasses/<email>', methods=['GET'])
-def getUserClasses(email):
-    classes = {'instructor': [], 'student': []}
-    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
-        classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
-
-    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": email}):
-        classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
-    return jsonify(classes)
 
 @app.route('/dumpsession')
 def dumpSession():
@@ -181,7 +237,19 @@ def dumpSession():
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    return str(session)
+    return jsonify({'sessionVars' : str(session)})
+
+@app.route('/a')
+@app.route('/a/')
+@app.route('/s')
+@app.route('/s/')
+@app.route('/t')
+@app.route('/t/')
+@app.route('/v')
+@app.route('/v/')
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 if __name__ == "__main__":
     # Only for debugging while developing

@@ -101,7 +101,7 @@ def createClass(courseTitle, students, instructors, semester):
 
     Students and instructors are lists of emails
     """
-    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : [], 'ongoing' : True})
+    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -156,7 +156,7 @@ def addInstructor(courseId, email):
 
 def getClasses(email, filt={}):
     """
-    Returns a list of classes that email has access to, either as a student or instructor or admin
+    Returns a json of classes that email has access to, either as a student or instructor or admin
 
     Each class is of the format {'id' : class_id, 'title' : title}
 
@@ -168,21 +168,52 @@ def getClasses(email, filt={}):
     # Potential issue is that we have to search inside of a db object
     allClasses = mclient[database]['classes'].find(filt)
 
-    retList = []
+    retJSON = {'student' : [], 'instructor' : [], 'other' : []}
 
     for c in allClasses:
-        if currUserType == userTypeMap['admin'] or email in c['students'] or email in c['instructors']:
-            dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
+        dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
+        if email in c['students']:
+            retJSON['student'].append(dataToSend)
+        elif email in c['instructors']:
+            retJSON['instructor'].append(dataToSend)
+        elif currUserType == userTypeMap['admin']:
+            retJSON['other'].append(dataToSend)
 
-            retList.append(dataToSend)
 
-    return retList
+    return retJSON
 
 def addEmptyReport(classId, studentEmail):
     """
     Adds an empty marking report for studentEmail to classId to be filled in later
     """
-    mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : []})
+    mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : [], 'comments' : ""})
+
+def getClassReports(classId, filt={}):
+    """
+    Get all reports for a specific class
+
+    Additional filter requirements can be specified with filt
+    This will not override the requirement that classId be the class searched for
+    """
+    filt['classId'] = classId
+    return mclient[database]['reports'].find(filt)
+
+def getClass(classId):
+    """
+    Gets the class associated with classId
+    """
+    return mclient[database]['classes'].find({'_id' : classId})
+
+def addMarkingSection(classId, sectionTitle, weight):
+    """
+    Adds/overwrites the marking section associated with sectionTitle in classId, using weight as its new weight
+    """
+    classContent = getClass(classId)
+
+    classContent['markingSections'][sectionTitle] = weight
+
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
+
 
 
 # Map of text -> userType (integer)
