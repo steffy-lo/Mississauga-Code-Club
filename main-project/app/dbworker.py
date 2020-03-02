@@ -188,6 +188,12 @@ def addEmptyReport(classId, studentEmail):
     """
     mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : [], 'comments' : ""})
 
+def getReports(filt={}):
+    """
+    Gets all reports using filter <filt>
+    """
+    return mclient[database]['reports'].find(filt)
+
 def getClassReports(classId, filt={}):
     """
     Get all reports for a specific class
@@ -196,7 +202,7 @@ def getClassReports(classId, filt={}):
     This will not override the requirement that classId be the class searched for
     """
     filt['classId'] = classId
-    return mclient[database]['reports'].find(filt)
+    return getReports(filt)
 
 def getClass(classId):
     """
