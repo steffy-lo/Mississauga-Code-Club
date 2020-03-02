@@ -140,6 +140,20 @@ def getStudentDahboardInfo():
     return jsonify(studentDashboardDict)
 
 
+@app.route('/api/setmarkingsection', methods=['POST', 'PATCH'])
+def setMarkingSection():
+    """
+    Takes in a JSON of the following format
+    {classId, sectionTitle, weight : Int}
+
+    Returns {success : Boolean}
+
+    Sets the weight of sectionTitle in classId to <weight>
+    This will override existing values
+    """
+    # TODO: Validate credentials here
+
+    dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weight'])
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
