@@ -126,7 +126,7 @@ def getName():
         abort(404)
 
     thisUser = dbworker.getCurrentUser()
-    return jsonify({'firstName' : thisUser['firstName'], 'lastName' : thisUser['lastName'], 'success' : True})
+    return jsonify({'firstName' : thisUser['firstName'][:], 'lastName' : thisUser['lastName'][:], 'success' : True})
 
 @app.route('/setUpStudentDashboard', methods=['GET'])
 def getStudentDahboardInfo():
@@ -134,18 +134,30 @@ def getStudentDahboardInfo():
         abort(404)
     if 'email' not in session or session['email'] is None:
         abort(401)
+
     studentDashboardDict = {}
     classes = dbworker.getClasses(session['email'])
     thisStudent = dbworker.getCurrentUser()
 
-    # TODO: set up mock grades to put in here
-
     studentDashboardDict['firstName'] = thisStudent['firstName']
     studentDashboardDict['lastName'] = thisStudent['lastName']
-    studentDashboardDict['Classes'] = {}
-    studentDashboardDict['Classes'].update(classes)
-    classesWithGrades = {}
+    studentDashboardDict['Classes'] = []
+    studentDashboardDict['Classes'] = studentDashboardDict['Classes'] + classes['student']
 
+    # TODO: set up mock grades to put in here
+    classReports = dbworker.mclient[dbworker.database]['reports']
+
+    for c in studentDashboardDict['Classes']:
+        foundClass = False
+        r = 0
+        while not foundClass and r < classReports.size():
+            if classReports[r]['classId'] == c['id']:
+                foundClass = True
+            else:
+                r += 1
+        if foundClass:
+            c['nextCourse'] = classReports[r]['nextCourse']
+            c['marks'] = classReports[r]['marks']
 
 
     return jsonify(studentDashboardDict)
