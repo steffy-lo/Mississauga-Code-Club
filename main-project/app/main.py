@@ -106,6 +106,41 @@ def getFullName():
 
     return jsonify({'firstName' : thisUser['firstName'][:], 'lastName' : thisUser['lastName'][:], 'success' : True})
 
+@app.route('/api/setUpStudentDashboard', methods=['GET'])
+@app.route('/setUpStudentDashboard', methods=['GET'])
+def getStudentDahboardInfo():
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    studentDashboardDict = {}
+    classes = dbworker.getClasses(session['email'], filt={'ongoing' : True})
+    thisStudent = dbworker.getCurrentUser()
+
+    studentDashboardDict['firstName'] = thisStudent['firstName'][:]
+    studentDashboardDict['lastName'] = thisStudent['lastName'][:]
+    studentDashboardDict['Classes'] = []
+    studentDashboardDict['Classes'] = studentDashboardDict['Classes'] + classes['student']
+
+    # TODO: set up mock grades to put in here
+    classReports = dbworker.mclient[dbworker.database]['reports']
+
+    for c in studentDashboardDict['Classes']:
+        foundClass = False
+        r = 0
+        while not foundClass and r < classReports.size():
+            if classReports[r]['classId'] == c['id']:
+                foundClass = True
+            else:
+                r += 1
+        if foundClass:
+            c['nextCourse'] = classReports[r]['nextCourse']
+            c['marks'] = classReports[r]['marks']
+
+
+    return jsonify(studentDashboardDict)
+
+
+
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
@@ -147,40 +182,6 @@ def checklogin():
         return "Logged in as " + session['email']
 
     return "Not logged in"
-
-@app.route('/setUpStudentDashboard', methods=['GET'])
-def getStudentDahboardInfo():
-    if not ENABLE_DEBUG_ROUTES:
-        abort(404)
-    if 'email' not in session or session['email'] is None:
-        abort(401)
-
-    studentDashboardDict = {}
-    classes = dbworker.getClasses(session['email'], filt={'ongoing' : True})
-    thisStudent = dbworker.getCurrentUser()
-
-    studentDashboardDict['firstName'] = thisStudent['firstName'][:]
-    studentDashboardDict['lastName'] = thisStudent['lastName'][:]
-    studentDashboardDict['Classes'] = []
-    studentDashboardDict['Classes'] = studentDashboardDict['Classes'] + classes['student']
-
-    # TODO: set up mock grades to put in here
-    classReports = dbworker.mclient[dbworker.database]['reports']
-
-    for c in studentDashboardDict['Classes']:
-        foundClass = False
-        r = 0
-        while not foundClass and r < classReports.size():
-            if classReports[r]['classId'] == c['id']:
-                foundClass = True
-            else:
-                r += 1
-        if foundClass:
-            c['nextCourse'] = classReports[r]['nextCourse']
-            c['marks'] = classReports[r]['marks']
-
-
-    return jsonify(studentDashboardDict)
 
 
 @app.route('/addjunk')
