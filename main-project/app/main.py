@@ -235,6 +235,26 @@ def getMyMarks():
 
     return jsonify({'result' : retList, 'success' : True})
 
+@app.route('/api/checkemail')
+def checkEmail():
+    """
+    Takes in a json of the form {'email' : email_address}
+
+    Returns a json of the form {'message' : error_message, 'valid' : Boolean}
+
+    'message' will refer to the specific reason an email address is invalid
+    """
+    # TODO: Add some sort of timeout?
+
+    # TODO: Sanitize input?
+
+    # TODO: Use the verification library to check that it is a valid email
+
+    if dbworker.getUser(request.json['email']) is None:
+        return jsonify({'message' : 'Email address not found', 'valid' : False})
+
+    return jsonify({'message' : None, 'valid' : True})
+
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
