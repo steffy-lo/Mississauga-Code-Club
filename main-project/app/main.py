@@ -108,7 +108,7 @@ def getFullName():
 
 @app.route('/api/setupstudentdashboard', methods=['GET'])
 @app.route('/setupstudentdashboard', methods=['GET'])
-def getStudentDahboardInfo():
+def getStudentDashboardInfo():
     if 'email' not in session or session['email'] is None:
         abort(401)
 
