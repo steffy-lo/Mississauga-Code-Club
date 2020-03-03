@@ -12,6 +12,7 @@ class GradesView extends React.Component {
         this.updateDisplay = this.updateDisplay.bind(this);
         this.state = {
             email: getState('email'),
+            prefix: getState('prefix'),
             loading: true
         };
         this.data = [
@@ -77,7 +78,7 @@ class GradesView extends React.Component {
 
     getCompletedClasses(email) {
         const currentComponent = this;
-        axios.get(currentComponent.props.state.prefix + '/getClasses/'+ this.state.email)
+        axios.get(currentComponent.state.prefix + '/getClasses/'+ this.state.email)
             .then(function (response) {
                 // handle success
                 console.log(response.data);

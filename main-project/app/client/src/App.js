@@ -10,29 +10,17 @@ import TeacherDash from './Components/Teacher/TeacherDash';
 import StudentGrades from './Components/Student/GradesView';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    /* For local debugging */
-    const DEBUG = 0;
-
-    /* Debug variables.*/
-    const PREFIX = DEBUG ? "http://localhost:80" : "";
-
-    this.state = {
-      prefix: PREFIX
-    };
-  }
 
   render() {
     return (
         <BrowserRouter>
           <Switch>
-            <Route exact path="/s" component={StudentDash} state={this.state}/>
-            <Route exact path="/s/grades" component={StudentGrades} state={this.state}/>
-            <Route exact path="/a" component={AdminDash} state={this.state}/>
-            <Route exact path="/v" component={VolunteerDash} state={this.state}/>
-            <Route exact path="/t" component={TeacherDash} state={this.state}/>
-            <Route exact path="/" component={Login} state={this.state}/>
+            <Route exact path="/s" component={StudentDash} />
+            <Route exact path="/s/grades" component={StudentGrades} />
+            <Route exact path="/a" component={AdminDash} />
+            <Route exact path="/v" component={VolunteerDash} />
+            <Route exact path="/t" component={TeacherDash} />
+            <Route exact path="/" component={Login} />
             <Redirect from="/" to="/"/>
           </Switch>
         </BrowserRouter>

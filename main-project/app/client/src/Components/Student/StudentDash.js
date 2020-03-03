@@ -12,6 +12,7 @@ class StudentDash extends React.Component {
         super(props);
         this.state = {
             email: getState('email'),
+            prefix: getState('prefix'),
             loading: true
         };
         this.getClasses = this.getClasses.bind(this);
@@ -23,7 +24,8 @@ class StudentDash extends React.Component {
 
     getClasses() {
         const currentComponent = this;
-        axios.get(currentComponent.props.state.prefix + '/getClasses/'+ this.state.email)
+        console.log(this.props);
+        axios.get(currentComponent.state.prefix + '/getClasses/'+ this.state.email)
             .then(function (response) {
                 // handle success
                 console.log(response.data);
