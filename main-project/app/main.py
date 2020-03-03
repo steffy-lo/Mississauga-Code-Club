@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 import bcrypt
 from pymongo import MongoClient
+from email_validator import validate_email, EmailNotValidError
 import datetime
 import dbworker
 
@@ -248,9 +249,16 @@ def checkEmail():
 
     # TODO: Sanitize input?
 
-    # TODO: Use the verification library to check that it is a valid email
+    # Use the verification library to check that it is a valid email
+    address = request.json['email']
+    try:
+        v = validate_email(address)
+        address = v['email']
+    except EmailNotValidError as e:
+        return jsonify({'message' : str(e), 'valid' : False})
 
-    if dbworker.getUser(request.json['email']) is None:
+    
+    if dbworker.getUser(address) is None:
         return jsonify({'message' : 'Email address not found', 'valid' : False})
 
     return jsonify({'message' : None, 'valid' : True})
