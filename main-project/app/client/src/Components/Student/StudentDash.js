@@ -7,12 +7,6 @@ import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import {uid} from "react-uid";
 
-/* For local debugging */
-const DEBUG = 0;
-
-/* Debug variables.*/
-const PREFIX = DEBUG ? "http://localhost:80" : "";
-
 class StudentDash extends React.Component {
     constructor(props) {
         super(props);
@@ -29,7 +23,7 @@ class StudentDash extends React.Component {
 
     getClasses() {
         const currentComponent = this;
-        axios.get(PREFIX + '/getClasses/'+ this.state.email)
+        axios.get(currentComponent.props.state.prefix + '/getClasses/'+ this.state.email)
             .then(function (response) {
                 // handle success
                 console.log(response.data);

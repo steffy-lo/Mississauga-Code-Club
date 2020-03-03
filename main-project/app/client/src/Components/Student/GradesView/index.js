@@ -5,11 +5,6 @@ import './styles.css'
 import axios from "axios";
 import {getState} from "statezero";
 
-const DEBUG = 0;
-
-/* Debug variables.*/
-const PREFIX = DEBUG ? "http://localhost:80" : "";
-
 class GradesView extends React.Component {
 
     constructor(props) {
@@ -82,7 +77,7 @@ class GradesView extends React.Component {
 
     getCompletedClasses(email) {
         const currentComponent = this;
-        axios.get(PREFIX + '/getClasses/'+ this.state.email)
+        axios.get(currentComponent.props.state.prefix + '/getClasses/'+ this.state.email)
             .then(function (response) {
                 // handle success
                 console.log(response.data);
