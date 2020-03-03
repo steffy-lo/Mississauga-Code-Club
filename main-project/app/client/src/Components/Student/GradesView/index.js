@@ -67,7 +67,8 @@ class GradesView extends React.Component {
     }
 
     updateDisplay() {
-        const courseName = document.querySelector('#course-sel').value;
+        const sel = document.querySelector('#course-sel');
+        const courseName = sel.value;
         for (let i = 0; i < this.data.length; i++) {
             if (this.data[i].courseName === courseName) {
                 this.setState({
@@ -76,6 +77,7 @@ class GradesView extends React.Component {
                     comments: this.data[i].comments,
                     recommendations: this.data[i].recommendations
                 });
+                sel.selectedIndex = 0;
             }
         }
     }
@@ -91,7 +93,7 @@ class GradesView extends React.Component {
             return (
                 <div class="grades-view">
                     <select onChange={this.updateDisplay} class="courses-list" id="course-sel">
-                        <option name={this.state.course}>{this.state.course}</option>
+                        <option selected={true} name={this.state.course}>{this.state.course}</option>
                         {otherCompletedCourses.map(courseName => (
                             <option name={courseName}>{courseName}</option>
                         ))}

@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 
 /* For local debugging */
-const DEBUG = 0;
+const DEBUG = 1;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
