@@ -29,12 +29,12 @@ class HoursForm extends React.Component {
                 </h2>
                 <div id='form-inputs'>
                     <div className='form-input'>
-                    From
+                    <div className='label'>From</div>
                     <DatePicker id='hours-from'  onChange={(date)=>this.setDate(date, "from")} selected={this.state.from} >
                     </DatePicker>
                     </div>
                     <div className='form-input'>
-                    To
+                    <div className='label'>To</div>
                     <DatePicker id='hours-to'  onChange={(date)=>this.setDate(date, "to")} selected={this.state.to}>
                     </DatePicker>
                     </div>
