@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import {uid} from "react-uid";
 
 /* For local debugging */
-const DEBUG = 1;
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";

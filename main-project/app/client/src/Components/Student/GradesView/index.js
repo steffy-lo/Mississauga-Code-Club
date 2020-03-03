@@ -5,7 +5,7 @@ import './styles.css'
 import axios from "axios";
 import {getState} from "statezero";
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
