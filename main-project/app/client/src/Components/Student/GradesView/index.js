@@ -2,30 +2,24 @@ import React from "react";
 import { uid } from "react-uid";
 import Grades from "../Grades"
 import './styles.css'
+import axios from "axios";
+import {getState} from "statezero";
+
+const DEBUG = 1;
+
+/* Debug variables.*/
+const PREFIX = DEBUG ? "http://localhost:80" : "";
 
 class GradesView extends React.Component {
 
     constructor(props) {
         super(props);
         this.updateDisplay = this.updateDisplay.bind(this);
+        this.state = {
+            email: getState('email'),
+            loading: true
+        };
         this.data = [
-            {
-                courseName: "Robotics With Raspberry Pi 4 (1)",
-                grades: [
-                    {name: "Knowledge", grade: 1},
-                    {name: "Thinking", grade: 0.75},
-                    {name: "Application", grade: 0.5},
-                    {name: "Extra", grade: 0.65}
-                ],
-                comments: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, \
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris \
-                nisi ut aliquip ex ea commodo consequat.",
-                recommendations: [
-                    {courseName: "Robotics With Raspberry Pi 4 (2)", courseDesc: "Intermediate course for Robotics With Raspberry Pi 4" }
-                ]
-            },
-    
             {
                 courseName: "Introduction to Python",
                 grades: [
@@ -44,25 +38,29 @@ class GradesView extends React.Component {
                     {courseName: "Interactive Python", courseDesc: "Learn human-computer interaction with Python" }
                 ]
             
+            },
+            {
+                courseName: "Robotics With Raspberry Pi 4 (1)",
+                grades: [
+                    {name: "Knowledge", grade: 1},
+                    {name: "Thinking", grade: 0.75},
+                    {name: "Application", grade: 0.5},
+                    {name: "Extra", grade: 0.65}
+                ],
+                comments: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, \
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris \
+                nisi ut aliquip ex ea commodo consequat.",
+                recommendations: [
+                    {courseName: "Robotics With Raspberry Pi 4 (2)", courseDesc: "Intermediate course for Robotics With Raspberry Pi 4" }
+                ]
             }
         ]
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         if (this.props.location.state != null) {
-            const courseName = this.props.location.state.courseInfo.courseName
-            console.log(courseName)
-            for (let i = 0; i < this.data.length; i++) {
-                if (this.data[i].courseName === courseName) {
-                    this.setState({
-                        course: courseName,
-                        grades: this.data[i].grades,
-                        comments: this.data[i].comments,
-                        recommendations: this.data[i].recommendations
-                    });
-                }
-            }
-            console.log(this.props.location.state)
+            this.getCompletedClasses(this.state.email);
         }
     }
 
@@ -82,20 +80,53 @@ class GradesView extends React.Component {
         }
     }
 
+    getCompletedClasses(email) {
+        const currentComponent = this;
+        axios.get(PREFIX + '/getClasses/'+ this.state.email)
+            .then(function (response) {
+                // handle success
+                console.log(response.data);
+                const classes = response.data.student;
+                const completed = [];
+                for (let i = 0; i < classes.length; i++) {
+                    if (!classes[i].ongoing) {
+                        completed.push(classes[i].name)
+                    }
+                }
+                currentComponent.setState({'coursesCompleted': completed});
+
+                const courseName = currentComponent.props.location.state.courseInfo.courseName;
+                for (let i = 0; i < completed.length; i++) {
+                    if (completed[i] === courseName) {
+                        currentComponent.setState({
+                            course: courseName,
+                            grades: currentComponent.data[i].grades,
+                            comments: currentComponent.data[i].comments,
+                            recommendations: currentComponent.data[i].recommendations
+                        });
+                    }
+                }
+
+                currentComponent.setState({'loading': false});
+
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    }
+
     render() {
-        console.log(this.state)
-        if (this.state != null) {
-            const otherCompletedCourses = ["Robotics With Raspberry Pi 4 (1)", "Introduction to Python"] // get all completed courses
-            const index = otherCompletedCourses.indexOf(this.state.course);
-            if (index > -1) {
-                otherCompletedCourses.splice(index, 1);
-            }
+        if (this.state.email !== undefined && !this.state.loading) {
+            const index = this.state.coursesCompleted.indexOf(this.state.course);
+            const otherCompletedCourses = [...this.state.coursesCompleted];
+            otherCompletedCourses.splice(index, 1);
             return (
-                <div class="grades-view">
-                    <select onChange={this.updateDisplay} class="courses-list" id="course-sel">
-                        <option selected={true} name={this.state.course}>{this.state.course}</option>
+                <div className="grades-view">
+                    <select onChange={this.updateDisplay} className="courses-list" id="course-sel">
+                        <option value="DEFAULT" name={this.state.course}>{this.state.course}</option>
                         {otherCompletedCourses.map(courseName => (
-                            <option name={courseName}>{courseName}</option>
+                            <option key={uid(courseName)} name={courseName}>{courseName}</option>
                         ))}
                     </select>
                     <h2>Your Grades</h2>
@@ -110,7 +141,7 @@ class GradesView extends React.Component {
                     <p id="comments">{this.state.comments}</p>
                     <h2>Next Steps</h2>
                     {this.state.recommendations.map(course => (
-                        <dl className="recommended-courses">
+                        <dl key={uid(course)} className="recommended-courses">
                             <dt>
                                 <label>{course.courseName}</label>
                             </dt>

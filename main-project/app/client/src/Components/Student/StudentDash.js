@@ -5,9 +5,10 @@ import './StudentDash.css';
 import {getState} from "statezero";
 import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import {uid} from "react-uid";
 
 /* For local debugging */
-const DEBUG = 0;
+const DEBUG = 1;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -62,7 +63,7 @@ class StudentDash extends React.Component {
                     <div className="enrolled">
                         <h1>Enrolled Courses</h1>
                         {this.state.coursesEnrolled.map(course => (
-                            <dl className="current-courses">
+                            <dl key={uid(course)} className="current-courses">
                                 <dt>
                                     <label>{course.courseName}</label>
                                 </dt>
@@ -72,12 +73,13 @@ class StudentDash extends React.Component {
                     <div className="completed">
                         <h1>Completed Courses</h1>
                         {this.state.coursesCompleted.map(course => (
-                            <dl className="completed-courses">
+                            <dl key={uid(course)} className="completed-courses">
                                 <dt>
                                     <label>{course.courseName}</label>
                                 </dt>
                                 <dt>
-                                    <Link to={{pathname: '/s/grades', state: {courseInfo: course}}}>
+                                    <Link to={{pathname: '/s/grades',
+                                        state: {courseInfo: course}}}>
                                         <Button>View Grades</Button>
                                     </Link>
                                 </dt>
