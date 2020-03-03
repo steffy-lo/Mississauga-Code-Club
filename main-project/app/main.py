@@ -195,7 +195,7 @@ def setMark():
     return jsonify({'success' : True})
 
 @app.route('/api/setactivestatus', methods=['POST', 'PATCH'])
-def setMark():
+def setActive():
     """
     Takes in a JSON of the following format
     {classId, status : Boolean}
