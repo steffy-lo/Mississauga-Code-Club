@@ -317,8 +317,7 @@ def checkEmail():
         abort(400)
 
     # Use the verification library to check that it is a valid email
-    address = request.json['email']
-    address = mailsane.normalize(address)
+    address = mailsane.normalize(request.json['email'])
 
     if address.error:
         return jsonify({'message' : str(address), 'valid' : False})
