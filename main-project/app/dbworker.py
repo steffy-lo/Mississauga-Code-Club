@@ -200,7 +200,9 @@ def getMarkingSectionInformation(filt={}):
     retJson = {}
 
     for x in matchingClasses:
-        retJson[x['_id']] = x['markingSections']
+        tmpId = x['_id']
+        x.pop('_id', None)
+        retJson[str(tmpId)] = x['markingSections']
 
     return retJson
 

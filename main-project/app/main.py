@@ -237,8 +237,12 @@ def getMyMarks():
     for m in marks:
         # This is to hide the internal report _ids
         m.pop('_id', None)
-        classList.append(m['classId'])
-        marksDict[m['classId']] = m
+        tmpId = m['classId']
+        m.pop('classId', None) # This has to be done as ObjectIds not serializable
+        m.pop('studentEmail', None)
+
+        classList.append(tmpId)
+        marksDict[str(tmpId)] = m
 
     markingSections = dbworker.getMarkingSectionInformation(filt={'_id' : {'$in' : classList}})
 
