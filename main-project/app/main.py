@@ -277,7 +277,11 @@ def getMyMarks():
     if not dbworker.validateAccess(dbworker.userTypeMap['student']):
         abort(403)
 
-    marks = dbworker.getReports({'studentEmail' : session['email']})
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
+    marks = dbworker.getReports({'studentEmail' : str(email)})
 
     classList = []
     marksDict = {}
