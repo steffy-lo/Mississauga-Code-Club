@@ -3,6 +3,8 @@ import datetime
 from pymongo import MongoClient
 from flask import session
 
+import mailsane
+
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
 DBUSER = "mccgamma"
 DBPASSWORD = "alfdasdf83423j4lsdf8"
@@ -25,7 +27,11 @@ def getCurrentUser():
     if 'email' not in session:
         return None
 
-    return getUser(session['email'])
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        return None
+
+    return getUser(str(email))
 
 def validateCredentials(username, password):
     """
@@ -59,7 +65,11 @@ def validateAccessList(expectedUserTypes):
     if session['email'] is None:
         return False
 
-    uType = getUserType(session['email'])
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        return False
+
+    uType = getUserType(str(email))
 
     for x in expectedUserTypes:
         if uType == x:
