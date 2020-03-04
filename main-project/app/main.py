@@ -333,11 +333,15 @@ def checkEmail():
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
 def getUserClasses(email):
+    email = mailsane.normalize(email)
+    if email.error:
+        abort(400)
+
     classes = {'instructor': [], 'student': []}
-    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": email}):
+    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": str(email)}):
         classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
 
-    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": email}):
+    for j in dbworker.mclient[dbworker.database]['classes'].find({"students": str(email)}):
         classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
     return jsonify(classes)
 
