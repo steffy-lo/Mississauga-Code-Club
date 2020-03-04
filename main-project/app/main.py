@@ -45,9 +45,13 @@ def authenticate():
         if x not in request.json:
             abort(400)
 
-    if dbworker.validateCredentials(request.json['email'], request.json['password']):
-        userType = dbworker.getUserType(request.json['email'])
-        session['email'] = request.json['email']
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    if dbworker.validateCredentials(str(email), request.json['password']):
+        userType = dbworker.getUserType(str(email))
+        session['email'] = str(email)
         return jsonify({'userType' : userType, 'success' : True})
 
     abort(401)
