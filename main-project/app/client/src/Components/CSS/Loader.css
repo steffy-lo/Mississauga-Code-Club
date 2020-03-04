@@ -1,11 +1,10 @@
 @keyframes loader {
-  0% {
+  /* 0% {
     border-top-color: red;
     border-left-color: darkblue;
     border-bottom-color: darkgreen;
     border-right-color: goldenrod;
     box-shadow: 0 -10px 8px -10px red;
-    /* box-shadow: inset 0 10px 8px -10px red; */
   }
   25% {
     border-top-color: darkred;
@@ -13,7 +12,6 @@
     border-bottom-color: darkgreen;
     border-right-color: goldenrod;
     box-shadow: -10px 0 8px -10px blue;
-    /* box-shadow: inset 10px 0 8px -10px blue; */
   }
   50% {
     border-top-color: darkred;
@@ -21,7 +19,6 @@
     border-bottom-color: lightgreen;
     border-right-color: goldenrod;
     box-shadow: 0 10px 8px -10px lightgreen;
-    /* box-shadow: inset 0 -10px 8px -10px lightgreen; */
   }
   75% {
     border-top-color: darkred;
@@ -29,7 +26,6 @@
     border-bottom-color: darkgreen;
     border-right-color: gold;
     box-shadow: 10px 0 8px -10px gold;
-    /* box-shadow: inset -10px 0 8px -10px gold; */
   }
   100% {
     border-top-color: red;
@@ -37,12 +33,36 @@
     border-bottom-color: darkgreen;
     border-right-color: goldenrod;
     box-shadow: 0 -10px 8px -10px red;
-    /* box-shadow: inset 0 10px 8px -10px red; */
+  } */
+  0% {
+    transform: rotate(0deg);
+    border-color: darkred;
+    border-top-color: crimson;
+  }
+  25% {
+    transform: rotate(-90deg);
+    border-color: darkblue;
+    border-top-color: royalblue;
+  }
+  50% {
+    transform: rotate(-180deg);
+    border-color: darkgreen;
+    border-top-color: lightgreen;
+  }
+  75% {
+    transform: rotate(-270deg);
+    border-color: goldenrod;
+    border-top-color: gold;
+  }
+  100% {
+    transform: rotate(-360deg);
+    border-color: darkred;
+    border-top-color: red;
   }
 }
 
 #loaderContainer {
-  position: absolute;
+  margin: 10px;
   animation-name: loader;
   animation-duration: 4s;
   animation-fill-mode: forwards;
@@ -50,6 +70,8 @@
   border-color: darkgrey;
   border-style: solid;
   border-radius: 50%;
+  border-top-style: solid;
+  border-top-color: red;
   transform: rotate(-45deg);
   z-index: 98;
 }

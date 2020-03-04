@@ -25,8 +25,8 @@ function App() {
         <Route exact path="/a" component={AdminDash}/>
         <Route exact path="/a/hours" component={ViewHours}/>
         <Route exact path="/a/checkin" component={CheckIn}/>
-        <Route exact path="/v" component={VolunteerDash}/>
-        <Route exact path="/v/hours" component={ViewHours}/>
+        <Route exact path="/v" component={ViewHours}/>
+        {/*}<Route exact path="/v/hours" component={ViewHours}/>*/}
         <Route exact path="/t" component={TeacherDash}/>
         <Route exact path="/t/hours" component={ViewHours}/>
         <Route exact path="/" component={Login}/>

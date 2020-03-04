@@ -18,9 +18,9 @@ export function getUserTypeExplicit() {
       //type = "error";
 
       //type = "student";
-      type = "administrator";
+      //type = "administrator";
       //type = "teacher";
-      //type = "volunteer";
+      type = "volunteer";
     }
     return type;
 }

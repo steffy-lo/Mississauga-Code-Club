@@ -30,15 +30,11 @@
 }
 
 .hidden {
-  display: none;
+  visibility: collapse;
 }
 
 .shown {
-  display: inherit;
-}
-
-.VHviewRow {
-
+  visibility: inherit;
 }
 
 .unPaid {
@@ -53,6 +49,48 @@
   font-weight: bold;
   font-size: 22px;
   background-color: lightgreen;
+}
+
+#mainVHoursWindow input[type=radio]:disabled{
+  cursor: not-allowed;
+  color: grey;
+}
+
+#mainVHoursWindow button:disabled, input[type=submit]:disabled, input[type=reset]:disabled {
+  cursor: not-allowed;
+  background-color: lightgrey;
+}
+
+#mainVHoursWindow input[type=submit]:disabled:hover, input[type=reset]:disabled:hover {
+  cursor: not-allowed;
+}
+
+#vhVerboseClear {
+  padding: 5px 20px;
+  border: none;
+  margin: 5px 0;
+  color: white;
+  font-size: 18px;
+}
+
+#vhFuncButtonsWrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 10px;
+}
+
+#vhFuncButtonsWrapper * {
+  padding: 10px 40px;
+  margin: 5px 10px;
+  border: none;
+  color: white;
+  font-size: 18px;
+  transition: background-color 0.25s linear;
+}
+
+#vhFuncButtonsWrapper *:hover {
+  cursor: pointer;
 }
 
 #VHviewTable {
@@ -76,7 +114,7 @@
 }
 
 #scrollableHoursPane {
-  max-height: 600px;
+  max-height: 500px;
   overflow-y: auto;
   margin: 5px;
 }
@@ -93,6 +131,7 @@
   min-width: 600px;
   background-color: white;
   box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
+  margin: 10px;
 }
 
 #mVHWindowHeader {
@@ -118,4 +157,69 @@
   display: inline-block;
   vertical-align: middle;
   font-size: 22px;
+  transition: background-color 0.5s linear;
+}
+
+#vhSettingsWrapper {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 5px rgb(0, 0, 0, 0.2);
+  margin: 0 10px;
+}
+
+#vhsettingsExpand {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 5px;
+  transition: background-color 0.25s linear;
+}
+
+#vhsettingsExpand:hover {
+  cursor: pointer;
+}
+
+#vhsettingsExpand span {
+  background-color: white;
+  padding: 5px 20px;
+  color: grey;
+  font-size: 20px;
+}
+
+#vhSettingsExpanded {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 10px 5px 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 10px 5px 0;
+  border-top: 2px solid lightgrey;
+}
+
+#vhSettingsExpanded div {
+  margin: 5px;
+}
+
+#vhSettingsExpanded p {
+  font-size: 20px;
+  margin: 0 0 5px 0;
+  text-align: center;
+}
+
+#VHSWMain {
+  width: 95%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#dateFieldSet {
+  text-align: right;
+}
+
+#noHoursLogged {
+  text-align: center;
+  margin: 20px 0 30px;
+  color: darkgrey;
 }
