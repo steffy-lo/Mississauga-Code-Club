@@ -186,7 +186,7 @@ def addEmptyReport(classId, studentEmail):
     """
     Adds an empty marking report for studentEmail to classId to be filled in later
     """
-    mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : [], 'comments' : ""})
+    mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : {}, 'comments' : ""})
 
 def getReports(filt={}):
     """
