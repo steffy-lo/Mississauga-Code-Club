@@ -76,14 +76,14 @@ def updatePassword():
     if emailSess.error:
         abort(400)
 
-    if str(emailSess) == request.json['email'] or dbworker.validateAccess(dbworker.userTypeMap['admin']):
-        pass
-    else:
-        abort(401)
-
     email = mailsane.normalize(request.json['email'])
     if email.error:
         abort(400)
+
+    if str(emailSess) == str(email) or dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        pass
+    else:
+        abort(401)
 
     if getUser(str(email)) is None:
         abort(404)
