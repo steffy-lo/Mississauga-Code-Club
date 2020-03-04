@@ -229,13 +229,13 @@ def getClass(classId):
     """
     return mclient[database]['classes'].find({'_id' : classId})
 
-def addMarkingSection(classId, sectionTitle, weight):
+def addMarkingSection(classId, sectionTitle, weightInfo):
     """
-    Adds/overwrites the marking section associated with sectionTitle in classId, using weight as its new weight
+    Adds/overwrites the marking section associated with sectionTitle in classId, using weightInfo
     """
     classContent = getClass(classId)
 
-    classContent['markingSections'][sectionTitle] = weight
+    classContent['markingSections'][sectionTitle] = weightInfo
 
     mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
 

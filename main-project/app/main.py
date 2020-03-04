@@ -145,7 +145,10 @@ def getStudentDashboardInfo():
 def setMarkingSection():
     """
     Takes in a JSON of the following format
-    {classId, sectionTitle, weight : Int}
+    {classId, sectionTitle, weightInfo : JSON}
+
+    weightInfo will be of the form
+    {'weight' : Int, 'index' : Int}
 
     Returns {success : Boolean}
 
@@ -156,7 +159,7 @@ def setMarkingSection():
 
     # TODO: Validate types
 
-    dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weight'])
+    dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weightInfo'])
 
     return jsonify({'success' : True})
 
