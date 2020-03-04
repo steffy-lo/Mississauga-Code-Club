@@ -121,8 +121,12 @@ def getStudentDashboardInfo():
     if 'email' not in session or session['email'] is None:
         abort(401)
 
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
     studentDashboardDict = {}
-    classes = dbworker.getClasses(session['email'], filt={'ongoing' : True})
+    classes = dbworker.getClasses(str(email), filt={'ongoing' : True})
     thisStudent = dbworker.getCurrentUser()
 
     studentDashboardDict['firstName'] = thisStudent['firstName'][:]
