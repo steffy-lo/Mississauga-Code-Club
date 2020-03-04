@@ -83,7 +83,7 @@ def validateAccess(expectedUserType):
     """
     return validateAccessList([expectedUserType])
 
-def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, age, parentName):
+def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, birthday, parentName):
     """
     Create a user and add them to the database
     """
@@ -91,7 +91,7 @@ def createUser(email, parentEmail, firstName, lastName, password, userType, phon
     password = password.encode()
 
     saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
-    mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
+    mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'birthday' : birthday, 'parentName' : parentName})
 
 def setPassword(email, newPassword):
     """
