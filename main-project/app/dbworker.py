@@ -276,6 +276,29 @@ def setClassActiveStatus(classId, status):
     """
     mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
 
+# Routes to fix issues with the database
+def addMissingEmptyReports():
+    """
+    This route will add all missing empty reports to the database
+
+    If a student should have a report but doesn't, this will fix it
+    """
+    fixCount = 0
+
+    studentList = mclient[database]['users'].find({'userType' : userTypeMap['student']})
+
+    for st in studentList:
+        classes = mclient[database]['classes'].find({'students' : {'$in' : [st['email']]}})
+
+        for cl in classes:
+            rep = mclient[database]['reports'].find_one({'classId' : cl['_id'], 'studentEmail' : st['email']})
+
+            if rep is None:
+                addEmptyReport(cl['_id'], st['email'])
+                fixCount += 1
+
+    return fixCount
+
 # Map of text -> userType (integer)
 userTypeMap = {}
 userTypeMap['default'] = 0

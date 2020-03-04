@@ -370,6 +370,14 @@ def dumpSession():
 
     return jsonify({'sessionVars' : str(session)})
 
+@app.route('/fixreports')
+def fixReportIssues():
+    # Fix missing reports
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
+    return jsonify({'result' : dbworker.addMissingEmptyReports()})
+
 @app.route('/a')
 @app.route('/a/')
 @app.route('/a/<path:path>')
