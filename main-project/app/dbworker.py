@@ -188,6 +188,23 @@ def addEmptyReport(classId, studentEmail):
     """
     mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : {}, 'comments' : ""})
 
+def getMarkingSectionInformation(filt={}):
+    """
+    Gets marking section information according to filt
+
+    Returns a json mapping classId -> markingSection
+    """
+    matchingClasses = mclient[database]['classes'].find(filt, projection={'markingSections' : 1})
+
+
+    retJson = {}
+
+    for x in matchingClasses:
+        retJson[x['_id']] = x['markingSections']
+
+    return retJson
+
+
 def getReports(filt={}):
     """
     Gets all reports using filter <filt>
