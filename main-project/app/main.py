@@ -222,19 +222,27 @@ def getMyMarks():
 
     If the logged in user is not a student, then it will return a 403
 
-    Returned structure is {result : [], success : Boolean}
+    Returned structure is {marks : {}, markingSections : {}, success : Boolean}
+
+    The keys for marks and markingSections will be class _ids
     """
     if not dbworker.validateAccess(dbworker.userTypeMap['student']):
         abort(403)
 
     marks = dbworker.getReports({'studentEmail' : session['email']})
 
-    retList = []
-    for m in marks:
-        m.pop('_id', None)
-        retList.append(m)
+    classList = []
+    marksDict = {}
 
-    return jsonify({'result' : retList, 'success' : True})
+    for m in marks:
+        # This is to hide the internal report _ids
+        m.pop('_id', None)
+        classList.append(m['classId'])
+        marksDict[m['classId']] = m
+
+    markingSections = dbworker.getMarkingSectionInformation(filt={'_id' : {'$in' : classList}})
+
+    return jsonify({'marks' : marksDict, 'markingSections' : markingSections, 'success' : True})
 
 @app.route('/api/checkemail')
 def checkEmail():
