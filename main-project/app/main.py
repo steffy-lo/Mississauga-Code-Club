@@ -72,15 +72,23 @@ def updatePassword():
         if x not in request.json:
             abort(400)
 
-    if session['email'] == request.json['email'] or dbworker.validateAccess(dbworker.userTypeMap['admin']):
+    emailSess = mailsane.normalize(session['email'])
+    if emailSess.error:
+        abort(400)
+
+    if str(emailSess) == request.json['email'] or dbworker.validateAccess(dbworker.userTypeMap['admin']):
         pass
     else:
         abort(401)
 
-    if getUser(request.json['email']) is None:
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    if getUser(str(email)) is None:
         abort(404)
 
-    dbworker.setPassword(request.json['email'], request.json['password'])
+    dbworker.setPassword(str(email), request.json['password'])
     return jsonify({'success' : True})
 
 @app.route('/api/getclasses')
@@ -92,7 +100,11 @@ def getClasses():
     if 'email' not in session or session['email'] is None:
         abort(401)
 
-    return jsonify({'classList' : dbworker.getClasses(session['email']), 'success' : True})
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
+    return jsonify({'classList' : dbworker.getClasses(str(email)), 'success' : True})
 
 @app.route('/api/getactiveclasses')
 @app.route('/getactiveclasses')
@@ -103,7 +115,11 @@ def getActiveClasses():
     if 'email' not in session or session['email'] is None:
         abort(401)
 
-    return jsonify({'classList' : dbworker.getClasses(session['email'], filt={'ongoing' : True}), 'success' : True})
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
+    return jsonify({'classList' : dbworker.getClasses(str(email), filt={'ongoing' : True}), 'success' : True})
 
 @app.route('/api/whoami', methods=['GET'])
 @app.route('/whoami', methods=['GET'])
