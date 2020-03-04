@@ -41,6 +41,10 @@ def authenticate():
     # Takes in a json of the form {email : '', password : ''}
 
     # TODO: Likely need to validate email is good input here
+    for x in ['email', 'password']:
+        if x not in request.json:
+            abort(400)
+
     if dbworker.validateCredentials(request.json['email'], request.json['password']):
         userType = dbworker.getUserType(request.json['email'])
         session['email'] = request.json['email']
@@ -64,6 +68,10 @@ def updatePassword():
     # Validate that the user calling this has access
     # Either that they are the same user or that they are an admin
     # TODO: Make this prettier while keeping short circuit
+    for x in ['email', 'password']:
+        if x not in request.json:
+            abort(400)
+
     if session['email'] == request.json['email'] or dbworker.validateAccess(dbworker.userTypeMap['admin']):
         pass
     else:
@@ -158,6 +166,9 @@ def setMarkingSection():
     # TODO: Validate credentials here
 
     # TODO: Validate types
+    for x in ['weight', 'index']:
+        if x not in request.json:
+            abort(400)
 
     dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weightInfo'])
 
@@ -174,6 +185,9 @@ def deleteMarkingSection():
     Deletes mark weights and marks for sectionTitle in <classId>
     """
     # TODO: Validate credentials here
+    for x in ['classId', 'sectionTitle']:
+        if x not in request.json:
+            abort(400)
 
     dbworker.deleteMarkingSection(request.json['classId'], request.json['sectionTitle'])
 
@@ -193,6 +207,10 @@ def setMark():
     # TODO: Validate credentials here
 
     # TODO: Validate types
+    for x in ['classId', 'studentEmail', 'sectionTitle', 'mark']:
+        if x not in request.json:
+            abort(400)
+
 
     dbworker.setMark(request.json['classId'], request.json['studentEmail'], request.json['sectionTitle'], request.json['mark'])
 
@@ -211,6 +229,9 @@ def setActive():
     # TODO: Validate credentials here
 
     # TODO: Validate types
+    if 'classId' not in request.json or 'status' not in request.json:
+        abort(400)
+
 
     dbworker.setClassActiveStatus(request.json['classId'], request.json['status'])
 
@@ -263,6 +284,9 @@ def checkEmail():
     # TODO: Add some sort of timeout?
 
     # TODO: Sanitize input?
+
+    if 'email' not in request.json:
+        abort(400)
 
     # Use the verification library to check that it is a valid email
     address = request.json['email']
