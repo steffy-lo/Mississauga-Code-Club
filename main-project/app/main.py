@@ -3,9 +3,9 @@ from flask_cors import CORS
 import os
 import bcrypt
 from pymongo import MongoClient
-from email_validator import validate_email, EmailNotValidError
 import datetime
 import dbworker
+import mailsane
 
 # Start the app and setup the static directory for the html, css, and js files.
 
@@ -290,14 +290,13 @@ def checkEmail():
 
     # Use the verification library to check that it is a valid email
     address = request.json['email']
-    try:
-        v = validate_email(address)
-        address = v['email']
-    except EmailNotValidError as e:
-        return jsonify({'message' : str(e), 'valid' : False})
+    address = mailsane.normalize(address)
+
+    if address.error:
+        return jsonify({'message' : str(address), 'valid' : False})
 
     
-    if dbworker.getUser(address) is None:
+    if dbworker.getUser(str(address)) is None:
         return jsonify({'message' : 'Email address not found', 'valid' : False})
 
     return jsonify({'message' : None, 'valid' : True})
