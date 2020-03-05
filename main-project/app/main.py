@@ -303,11 +303,20 @@ def getMyMarks():
 
     for cl in classList:
         stredCl = str(cl)
-        marksDict[stredCl]['weights'] = {}
-        marksDict[stredCl]['indexes'] = {}
+        tmp = {}
         for sectionTitle in markingSections[stredCl]:
-            marksDict[stredCl]['weights'][sectionTitle] = markingSections[stredCl][sectionTitle]['weight']
-            marksDict[stredCl]['indexes'][sectionTitle] = markingSections[stredCl][sectionTitle]['index']
+            tmp[sectionTitle] = {}
+
+            tmp[sectionTitle]['weight'] = markingSections[stredCl][sectionTitle]['weight']
+            tmp[sectionTitle]['index'] = markingSections[stredCl][sectionTitle]['index']
+
+            if sectionTitle in marksDict[stredCl]['marks']:
+                # This is to handle the case where a 'None' mark exists
+                tmp[sectionTitle]['mark'] = marksDict[stredCl]['marks'][sectionTitle]
+            else:
+                tmp[sectionTitle]['mark'] = None
+
+        marksDict[stredCl]['marks'] = tmp
 
     return jsonify({'marks' : marksDict, 'success' : True})
 
