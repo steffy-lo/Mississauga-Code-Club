@@ -270,7 +270,7 @@ def getMyMarks():
 
     If the logged in user is not a student, then it will return a 403
 
-    Returned structure is {marks : {}, markingSections : {}, success : Boolean}
+    Returned structure is {marks : {}, success : Boolean}
 
     The keys for marks and markingSections will be class _ids
     """
@@ -298,7 +298,15 @@ def getMyMarks():
 
     markingSections = dbworker.getMarkingSectionInformation(filt={'_id' : {'$in' : classList}})
 
-    return jsonify({'marks' : marksDict, 'markingSections' : markingSections, 'success' : True})
+    for cl in classList:
+        stredCl = str(cl)
+        marksDict[stredCl]['weights'] = {}
+        marksDict[stredCl]['indexes'] = {}
+        for sectionTitle in markingSections[stredCl]:
+            marksDict[stredCl]['weights'][sectionTitle] = markingSections[stredCl][sectionTitle]['weight']
+            marksDict[stredCl]['indexes'][sectionTitle] = markingSections[stredCl][sectionTitle]['index']
+
+    return jsonify({'marks' : marksDict, 'success' : True})
 
 @app.route('/api/checkemail')
 def checkEmail():
