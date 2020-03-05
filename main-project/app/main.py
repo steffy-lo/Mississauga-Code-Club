@@ -87,7 +87,7 @@ def updatePassword():
     if email.error:
         abort(400)
 
-    if str(emailSess) == str(email) or dbworker.validateAccess(dbworker.userTypeMap['admin']):
+    if dbworker.validateAccess(dbworker.userTypeMap['admin']):
         pass
     else:
         abort(401)
