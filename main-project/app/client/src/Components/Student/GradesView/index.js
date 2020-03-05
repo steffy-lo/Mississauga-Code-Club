@@ -69,9 +69,30 @@ class GradesView extends React.Component {
                 for (let i = 0; i < classIds.length; i++) {
                     const courseDetails = marks[classIds[i].toString()];
                     if (courseDetails !== undefined) {
+                        const gradesData = [];
+                        const grades = courseDetails.marks;
+                        for (let sectionTitle in grades) { // iterating through keys
+                            if (grades.hasOwnProperty(sectionTitle)) {
+                                gradesData.push({
+                                    index: grades[sectionTitle].index,
+                                    name: sectionTitle,
+                                    grade: grades[sectionTitle].mark + "/" + grades[sectionTitle].weight
+                                })
+                            }
+                        }
+                        gradesData.sort((a, b) => {
+                            if (a.index < b.index) {
+                                return -1;
+                            }
+                            if (a.index > b.index) {
+                                return 1;
+                            }
+                            // a must be equal to b
+                            return 0;
+                        });
                         currentComponent.setState({
                             course: this.state.coursesCompleted.courseNames[i],
-                            grades: courseDetails.marks.mark + "/" + courseDetails.marks.weight,
+                            grades: gradesData,
                             comments: courseDetails.comments,
                             recommendations: courseDetails.nextCourse
                         });
