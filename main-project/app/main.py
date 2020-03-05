@@ -336,16 +336,14 @@ def getUsers():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    uList = dbworker.getUsers()
-    correctedList = []
+    uList = dbworker.getUsers(projection={'_id' : 0, 'email' : 1, 'firstName': 1, 'lastName' : 1})
+
+    fixedList = []
     for x in uList:
-        x.pop('password')
-        x.pop('_id')
-        correctedList.append(x)
+        fixedList.append(x)
 
 
-
-    return jsonify({'result' : correctedList, 'success' : True})
+    return jsonify({'result' : fixedList, 'success' : True})
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
