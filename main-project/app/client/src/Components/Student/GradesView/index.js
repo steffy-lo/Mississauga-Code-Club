@@ -30,11 +30,8 @@ class GradesView extends React.Component {
                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \
                 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris \
                 nisi ut aliquip ex ea commodo consequat.",
-                recommendations: [
-                    {courseName: "Project Based Python", courseDesc: "Build your own project using Python" },
-                    {courseName: "Python Physical Computing", courseDesc: "Learn physical computing with Python" },
-                    {courseName: "Interactive Python", courseDesc: "Learn human-computer interaction with Python" }
-                ]
+
+                recommendations: ["Project Based Python", "Python Physical Computing", "Interactive Python"]
             
             },
             {
@@ -49,6 +46,7 @@ class GradesView extends React.Component {
                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \
                 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris \
                 nisi ut aliquip ex ea commodo consequat.",
+
                 recommendations: ["Robotics With Raspberry Pi 4 (2)", "Intermediate course for Robotics With Raspberry Pi 4"]
             }
         ]
