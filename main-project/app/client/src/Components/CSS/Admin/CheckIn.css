@@ -1,0 +1,82 @@
+#checkInMainWindow {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 10px;
+  width: 50%;
+  text-align: center;
+  margin: 0;
+  padding: 5px 0 5px 0;
+  box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
+  flex-wrap: wrap;
+}
+
+#checkInMCSelectorForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#checkInMCSelectorForm  input {
+  border-radius: 0;
+  border: 2px lightgrey solid;
+  font-size: 18px;
+}
+
+#checkInMainWindow  hr {
+  display: inline-block;
+  border-color: transparent;
+  width: 1%;
+  margin: 0;
+  padding: 0;
+}
+
+#checkInMainWindow button {
+  border: none;
+  padding: 5px 40px;
+  font-size: 24px;
+  transition: background-color 0.15s linear;
+  background-color: crimson;
+  color: white;
+}
+
+#checkInMainWindow  button:hover {
+  background-color: darkred;
+}
+
+#checkInMCDetailsHeader {
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+  padding: 20px 10px;
+  justify-content: flex-start;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#ciMCDHName {
+  min-width: 60%;
+}
+
+#ciMCDHTyper {
+  min-width: 40%;
+}
+
+#checkInMCDetailsMain {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#detailPaidSelector {
+  text-align: left;
+  padding: 10px 40px;
+}
+
+#detailEventSelector {
+  padding: 10px 40px;
+}
+
+#mcwButtons {
+  padding: 20px 0 5px 0;
+}
