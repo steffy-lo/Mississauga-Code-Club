@@ -356,11 +356,11 @@ def getUserClasses(email):
         abort(400)
 
     classes = {'instructor': [], 'student': []}
-    for i in dbworker.mclient[dbworker.database]['classes'].find({"instructors": str(email)}):
-        classes['instructor'].append({"name": i["courseTitle"], "ongoing": i["ongoing"]})
+    for i in dbworker.mclient[dbworker.database]['classes'].find({'instructors': str(email)}):
+        classes['instructor'].append({"id": i['class_id'], "name": i['courseTitle'], "ongoing": i['ongoing']})
 
     for j in dbworker.mclient[dbworker.database]['classes'].find({"students": str(email)}):
-        classes['student'].append({"name": j["courseTitle"], "ongoing": j["ongoing"]})
+        classes['student'].append({"id": j['class_id'], "name": j['courseTitle'], "ongoing": j['ongoing']})
     return jsonify(classes)
 
 
