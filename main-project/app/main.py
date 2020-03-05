@@ -59,6 +59,9 @@ def authenticate():
 @app.route('/api/logout')
 @app.route('/logout')
 def logout():
+    if 'email' not in session:
+        abort(400) # Bad request
+
     session.pop('email', None)
     return redirect(url_for('index',_external=True,_scheme='https'))
 
