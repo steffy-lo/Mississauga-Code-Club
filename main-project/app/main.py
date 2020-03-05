@@ -340,6 +340,7 @@ def getUsers():
     correctedList = []
     for x in uList:
         x.pop('password')
+        x.pop('_id')
         correctedList.append(x)
 
 
