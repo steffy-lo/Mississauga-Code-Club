@@ -337,10 +337,14 @@ def getUsers():
         abort(403)
 
     uList = dbworker.getUsers()
+    correctedList = []
     for x in uList:
         x.pop('password')
+        correctedList.append(x)
 
-    return jsonify({'result' : uList, 'success' : True})
+
+
+    return jsonify({'result' : correctedList, 'success' : True})
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
