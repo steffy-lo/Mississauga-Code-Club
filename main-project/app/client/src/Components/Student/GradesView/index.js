@@ -10,6 +10,8 @@ class GradesView extends React.Component {
     constructor(props) {
         super(props);
         this.updateDisplay = this.updateDisplay.bind(this);
+        this.getCompletedClasses = this.getCompletedClasses.bind(this);
+        this.getMarks = this.getMarks.bind(this);
         this.state = {
             email: getState('email'),
             prefix: getState('prefix'),
@@ -47,17 +49,43 @@ class GradesView extends React.Component {
                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \
                 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris \
                 nisi ut aliquip ex ea commodo consequat.",
-                recommendations: [
-                    {courseName: "Robotics With Raspberry Pi 4 (2)", courseDesc: "Intermediate course for Robotics With Raspberry Pi 4" }
-                ]
+                recommendations: ["Robotics With Raspberry Pi 4 (2)", "Intermediate course for Robotics With Raspberry Pi 4"]
             }
         ]
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         if (this.props.location.state != null) {
             this.getCompletedClasses(this.state.email);
+            // this.getMarks(this.state.email);
         }
+    }
+
+    getMarks(email) {
+        const currentComponent = this;
+        const classIds = this.state.coursesCompleted.classIds;
+        axios.get(currentComponent.state.prefix + '/api/mymarks/')
+            .then(res => {
+                console.log(res.data);
+                const marks = res.data;
+                for (let i = 0; i < classIds.length; i++) {
+                    const courseDetails = marks[classIds[i].toString()];
+                    if (courseDetails !== undefined) {
+                        currentComponent.setState({
+                            course: this.state.coursesCompleted.courseNames[i],
+                            grades: courseDetails.marks.mark + "/" + courseDetails.marks.weight,
+                            comments: courseDetails.comments,
+                            recommendations: courseDetails.nextCourse
+                        });
+                    }
+                }
+
+                currentComponent.setState({'loading': false});
+            })
+            .catch(error => {
+                // handle error
+                console.log(error);
+            });
     }
 
     updateDisplay() {
@@ -84,13 +112,16 @@ class GradesView extends React.Component {
                 console.log(response.data);
                 const classes = response.data.student;
                 const completed = [];
+                const completed_id = [];
                 for (let i = 0; i < classes.length; i++) {
                     if (!classes[i].ongoing) {
-                        completed.push(classes[i].name)
+                        completed.push(classes[i].name);
+                        completed_id.push(classes[i].id);
                     }
                 }
-                currentComponent.setState({'coursesCompleted': completed});
+                currentComponent.setState({'coursesCompleted': {'classIds': completed_id, 'courseNames': completed}});
 
+                //===========TEMPORARY CODE: CAN REMOVE ONCE THE BACKEND FOR GETTING MARKS HAS BEEN SETUP ==============
                 const courseName = currentComponent.props.location.state.courseInfo.courseName;
                 for (let i = 0; i < completed.length; i++) {
                     if (completed[i] === courseName) {
@@ -104,6 +135,7 @@ class GradesView extends React.Component {
                 }
 
                 currentComponent.setState({'loading': false});
+                //=====================================================================================================
 
             })
             .catch(function (error) {
@@ -114,8 +146,8 @@ class GradesView extends React.Component {
 
     render() {
         if (this.state.email !== undefined && !this.state.loading) {
-            const index = this.state.coursesCompleted.indexOf(this.state.course);
-            const otherCompletedCourses = [...this.state.coursesCompleted];
+            const index = this.state.coursesCompleted.courseNames.indexOf(this.state.course);
+            const otherCompletedCourses = [...this.state.coursesCompleted.courseNames];
             otherCompletedCourses.splice(index, 1);
             return (
                 <div className="grades-view">
@@ -139,7 +171,7 @@ class GradesView extends React.Component {
                     {this.state.recommendations.map(course => (
                         <dl key={uid(course)} className="recommended-courses">
                             <dt>
-                                <label>{course.courseName}</label>
+                                <label>{course}</label>
                             </dt>
                         </dl>
                     ))}
