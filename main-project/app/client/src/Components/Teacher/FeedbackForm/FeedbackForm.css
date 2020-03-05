@@ -1,0 +1,30 @@
+#feedback-form{
+    display: inline-block;
+    top:50px;
+    position:relative;
+    margin:20px;
+}
+
+#course-recommendation{
+    display: block;
+}
+
+#course-recommendation .input{
+    width:300px;
+}
+
+#feedback .input .MuiInputBase-root{
+    display: inline-block;
+    width:500px;
+    height:200px;
+}
+
+.form-field{
+    display: inline-block;
+    margin:10px;
+    width:100px;
+}
+
+.input{
+    background-color: white;
+}

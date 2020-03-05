@@ -21,15 +21,17 @@ class Course extends React.Component {
             id:2}
         ],
 
+
     }
 
     // Displays the students in the state variable in the right format
-    renderStudents = function(){
+    renderStudents = function(courseId){
         return (this.state.enrolledStudents).map(student =>(
              <li> <EnrolledStudent
                     firstName={student.firstName}
                     lastName = {student.lastName}
                     id={student.id}
+                    courseId={courseId}
                   />
              </li> )
         );
@@ -38,7 +40,7 @@ class Course extends React.Component {
     }
 
     render() {
-        const { course } = this.props;
+        const { course, id } = this.props;
         return (
             <ExpansionPanel>
                       <ExpansionPanelSummary
@@ -57,7 +59,7 @@ class Course extends React.Component {
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                       <ul>
-                        {this.renderStudents()}
+                        {this.renderStudents(id)}
                       </ul>
                       </ExpansionPanelDetails>
             </ExpansionPanel>

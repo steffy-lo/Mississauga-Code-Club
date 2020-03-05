@@ -28,9 +28,9 @@ class TeacherDash extends React.Component {
       if(selection == "courses"){
           return(
             <div>
-              <ul id="courseList">
-                <li><Course course={this.state.coursesTeaching[0]}/></li>
-                <li><Course course={this.state.coursesTeaching[1]}/></li>
+              <ul id="course-list">
+                <li><Course course={this.state.coursesTeaching[0]} id="0"/></li>
+                <li><Course course={this.state.coursesTeaching[1]} id="1"/></li>
               </ul>
             </div>
           )

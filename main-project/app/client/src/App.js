@@ -7,7 +7,10 @@ import StudentDash from './Components/Student/StudentDash';
 import AdminDash from './Components/Admin/AdminDash';
 import VolunteerDash from './Components/Volunteer/VolunteerDash';
 import TeacherDash from './Components/Teacher/TeacherDash';
+import TeacherFeedback from './Components/Teacher/FeedbackForm';
+
 import StudentGrades from './Components/Student/GradesView';
+
 
 function App() {
   return (
@@ -18,6 +21,7 @@ function App() {
         <Route exact path="/a" component={AdminDash}/>
         <Route exact path="/v" component={VolunteerDash}/>
         <Route exact path="/t" component={TeacherDash}/>
+        <Route exact path="/t/course=:cid/student=:sid" component={TeacherFeedback}/>
         <Route exact path="/" component={Login}/>
         <Redirect from="/" to="/" />
       </Switch>
