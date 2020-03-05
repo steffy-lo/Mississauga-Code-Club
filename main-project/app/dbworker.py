@@ -14,11 +14,11 @@ mclient = MongoClient(MONGOURI)
 
 database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 
-def getUsers(filt={}):
+def getUsers(filt={}, projection={}):
     """
     Get all users that match a filter
     """
-    return mclient[database]['users'].find(filt)
+    return mclient[database]['users'].find(filt, projection)
 
 def getUser(username):
     """
@@ -68,7 +68,7 @@ def validateAccessList(expectedUserTypes):
     session data to determine if their username is valid and one of the
     expectedUserTypes, return boolean, True if valid, False if invalid
     """
-    if session['email'] is None:
+    if 'email' not in session or session['email'] is None:
         return False
 
     email = mailsane.normalize(session['email'])

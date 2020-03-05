@@ -59,8 +59,11 @@ def authenticate():
 @app.route('/api/logout')
 @app.route('/logout')
 def logout():
+    if 'email' not in session:
+        abort(400) # Bad request
+
     session.pop('email', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('index',_external=True,_scheme='https'))
 
 @app.route('/api/updatepassword', methods=['POST'])
 @app.route('/updatepassword', methods=['POST'])
@@ -270,7 +273,7 @@ def getMyMarks():
 
     If the logged in user is not a student, then it will return a 403
 
-    Returned structure is {marks : {}, markingSections : {}, success : Boolean}
+    Returned structure is {marks : {}, success : Boolean}
 
     The keys for marks and markingSections will be class _ids
     """
@@ -298,7 +301,15 @@ def getMyMarks():
 
     markingSections = dbworker.getMarkingSectionInformation(filt={'_id' : {'$in' : classList}})
 
-    return jsonify({'marks' : marksDict, 'markingSections' : markingSections, 'success' : True})
+    for cl in classList:
+        stredCl = str(cl)
+        marksDict[stredCl]['weights'] = {}
+        marksDict[stredCl]['indexes'] = {}
+        for sectionTitle in markingSections[stredCl]:
+            marksDict[stredCl]['weights'][sectionTitle] = markingSections[stredCl][sectionTitle]['weight']
+            marksDict[stredCl]['indexes'][sectionTitle] = markingSections[stredCl][sectionTitle]['index']
+
+    return jsonify({'marks' : marksDict, 'success' : True})
 
 @app.route('/api/checkemail')
 def checkEmail():
@@ -331,21 +342,42 @@ def checkEmail():
 @app.route('/api/admin/getusers')
 def getUsers():
     """
-    Returns a json of the form {'result' : list of users with no passwords, 'success' : True}
+    Returns a json of the form {'result' : list of users with emails, first and last names, 'success' : True}
     """
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    uList = dbworker.getUsers()
-    correctedList = []
+    uList = dbworker.getUsers(projection={'_id' : 0, 'email' : 1, 'firstName': 1, 'lastName' : 1})
+
+    fixedList = []
     for x in uList:
-        x.pop('password')
-        x.pop('_id')
-        correctedList.append(x)
+        fixedList.append(x)
 
 
+    return jsonify({'result' : fixedList, 'success' : True})
 
-    return jsonify({'result' : correctedList, 'success' : True})
+@app.route('/api/admin/getuser')
+def getUser():
+    """
+    Takes in a JSON of {'email'}
+
+    Returns {'result' : {user information, no id or password}, 'success' : True}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if 'email' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    u = dbworker.getUser(str(email))
+    u.pop('password')
+    u.pop('_id')
+
+    return jsonify({'result' : u, 'success' : True})
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
@@ -381,7 +413,7 @@ def forcelogin(userid):
 
     userid = str(userid)
     session['email'] = userid
-    return redirect(url_for('index'))
+    return redirect(url_for('index',_external=True,_scheme='https'))
 
 @app.route('/checklogin')
 def checklogin():
@@ -427,7 +459,7 @@ def addSampleUser(username):
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    dbworker.createUser(username + '@roma.it', username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 1, '647-111-1111', '1970/01/01', 'Parent Name')
+    dbworker.createUser(username + '@roma.it', username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 1, '647-111-1111', datetime.datetime.strptime('1970/01/01', '%Y/%m/%d'), 'Parent Name')
     return username
 
 @app.route('/showusers')
