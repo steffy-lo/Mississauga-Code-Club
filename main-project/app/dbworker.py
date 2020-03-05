@@ -3,6 +3,8 @@ import datetime
 from pymongo import MongoClient
 from flask import session
 
+import mailsane
+
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
 DBUSER = "mccgamma"
 DBPASSWORD = "alfdasdf83423j4lsdf8"
@@ -25,7 +27,11 @@ def getCurrentUser():
     if 'email' not in session:
         return None
 
-    return getUser(session['email'])
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        return None
+
+    return getUser(str(email))
 
 def validateCredentials(username, password):
     """
@@ -59,7 +65,11 @@ def validateAccessList(expectedUserTypes):
     if session['email'] is None:
         return False
 
-    uType = getUserType(session['email'])
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        return False
+
+    uType = getUserType(str(email))
 
     for x in expectedUserTypes:
         if uType == x:
@@ -73,7 +83,7 @@ def validateAccess(expectedUserType):
     """
     return validateAccessList([expectedUserType])
 
-def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, age, parentName):
+def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, birthday, parentName):
     """
     Create a user and add them to the database
     """
@@ -81,7 +91,7 @@ def createUser(email, parentEmail, firstName, lastName, password, userType, phon
     password = password.encode()
 
     saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
-    mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
+    mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'birthday' : birthday, 'parentName' : parentName})
 
 def setPassword(email, newPassword):
     """
@@ -101,7 +111,7 @@ def createClass(courseTitle, students, instructors, semester):
 
     Students and instructors are lists of emails
     """
-    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : [], 'ongoing' : True})
+    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -156,7 +166,7 @@ def addInstructor(courseId, email):
 
 def getClasses(email, filt={}):
     """
-    Returns a list of classes that email has access to, either as a student or instructor or admin
+    Returns a json of classes that email has access to, either as a student or instructor or admin
 
     Each class is of the format {'id' : class_id, 'title' : title}
 
@@ -168,22 +178,138 @@ def getClasses(email, filt={}):
     # Potential issue is that we have to search inside of a db object
     allClasses = mclient[database]['classes'].find(filt)
 
-    retList = []
+    retJSON = {'student' : [], 'instructor' : [], 'other' : []}
 
     for c in allClasses:
-        if currUserType == userTypeMap['admin'] or email in c['students'] or email in c['instructors']:
-            dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
+        dataToSend = {'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']}
+        if email in c['students']:
+            retJSON['student'].append(dataToSend)
+        elif email in c['instructors']:
+            retJSON['instructor'].append(dataToSend)
+        elif currUserType == userTypeMap['admin']:
+            retJSON['other'].append(dataToSend)
 
-            retList.append(dataToSend)
 
-    return retList
+    return retJSON
 
 def addEmptyReport(classId, studentEmail):
     """
     Adds an empty marking report for studentEmail to classId to be filled in later
     """
-    mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : []})
+    mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : {}, 'comments' : ""})
 
+def getMarkingSectionInformation(filt={}):
+    """
+    Gets marking section information according to filt
+
+    Returns a json mapping classId -> markingSection
+    """
+    matchingClasses = mclient[database]['classes'].find(filt, projection={'markingSections' : 1})
+
+
+    retJson = {}
+
+    for x in matchingClasses:
+        tmpId = x['_id']
+        x.pop('_id', None)
+        retJson[str(tmpId)] = x['markingSections']
+
+    return retJson
+
+
+def getReports(filt={}):
+    """
+    Gets all reports using filter <filt>
+    """
+    return mclient[database]['reports'].find(filt)
+
+def getClassReports(classId, filt={}):
+    """
+    Get all reports for a specific class
+
+    Additional filter requirements can be specified with filt
+    This will not override the requirement that classId be the class searched for
+    """
+    filt['classId'] = classId
+    return getReports(filt)
+
+def getClass(classId):
+    """
+    Gets the class associated with classId
+    """
+    return mclient[database]['classes'].find({'_id' : classId})
+
+def addMarkingSection(classId, sectionTitle, weightInfo):
+    """
+    Adds/overwrites the marking section associated with sectionTitle in classId, using weightInfo
+    """
+    classContent = getClass(classId)
+
+    classContent['markingSections'][sectionTitle] = weightInfo
+
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
+
+def setMark(classId, studentEmail, sectionTitle, mark):
+    """
+    Set's a student's marking info for <sectionTitle> in
+    classId
+    """
+    reportData = getClassReports(classId, filt={'studentEmail' : studentEmail})
+
+    reportData['marks'][sectionTitle] = mark
+    mclient[database]['reports'].update_one({'classId' : classId, 'studentEmail' : studentEmail}, {'$set' : {'marks' : reportData['marks']}})
+
+def deleteMark(classId, studentEmail, sectionTitle):
+    """
+    Deletes a student's marking info for <sectionTitle> in
+    classId
+    """
+    reportData = getClassReports(classId, filt={'studentEmail' : studentEmail})
+
+    reportData['marks'].pop(sectionTitle, None)
+    mclient[database]['reports'].update_one({'classId' : classId, 'studentEmail' : studentEmail}, {'$set' : {'marks' : reportData['marks']}})
+
+def deleteMarkingSection(classId, sectionTitle):
+    """
+    Deletes a marking section as well as all associated marks for
+    <sectionTitle> in class <classId>
+    """
+
+    classContent = getClass(classId)
+    classContent['markingSections'].pop(sectionTitle, None)
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
+
+    for s in classContent['students']:
+        deleteMark(classId, s, sectionTitle)
+
+def setClassActiveStatus(classId, status):
+    """
+    Sets the active status of a class to status
+    """
+    mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
+
+# Routes to fix issues with the database
+def addMissingEmptyReports():
+    """
+    This route will add all missing empty reports to the database
+
+    If a student should have a report but doesn't, this will fix it
+    """
+    fixCount = 0
+
+    studentList = mclient[database]['users'].find({'userType' : userTypeMap['student']})
+
+    for st in studentList:
+        classes = mclient[database]['classes'].find({'students' : {'$in' : [st['email']]}})
+
+        for cl in classes:
+            rep = mclient[database]['reports'].find_one({'classId' : cl['_id'], 'studentEmail' : st['email']})
+
+            if rep is None:
+                addEmptyReport(cl['_id'], st['email'])
+                fixCount += 1
+
+    return fixCount
 
 # Map of text -> userType (integer)
 userTypeMap = {}
