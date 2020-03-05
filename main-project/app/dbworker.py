@@ -14,6 +14,12 @@ mclient = MongoClient(MONGOURI)
 
 database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 
+def getUsers(filt={}):
+    """
+    Get all users that match a filter
+    """
+    return mclient[database]['users'].find(filt)
+
 def getUser(username):
     """
     Return the user associated with 'username' ie. email

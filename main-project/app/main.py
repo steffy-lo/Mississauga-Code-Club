@@ -328,6 +328,25 @@ def checkEmail():
 
     return jsonify({'message' : None, 'valid' : True})
 
+@app.route('/api/admin/getusers')
+def getUsers():
+    """
+    Returns a json of the form {'result' : list of users with no passwords, 'success' : True}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    uList = dbworker.getUsers()
+    correctedList = []
+    for x in uList:
+        x.pop('password')
+        x.pop('_id')
+        correctedList.append(x)
+
+
+
+    return jsonify({'result' : correctedList, 'success' : True})
+
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
