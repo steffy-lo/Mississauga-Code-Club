@@ -338,7 +338,7 @@ def getUsers():
 
     uList = dbworker.getUsers()
     for x in uList:
-        x.pop('saltedPassword')
+        x.pop('password')
 
     return jsonify({'result' : uList, 'success' : True})
 
