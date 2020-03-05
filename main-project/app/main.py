@@ -60,7 +60,7 @@ def authenticate():
 @app.route('/logout')
 def logout():
     session.pop('email', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('index',_external=True,_scheme='https'))
 
 @app.route('/api/updatepassword', methods=['POST'])
 @app.route('/updatepassword', methods=['POST'])
@@ -410,7 +410,7 @@ def forcelogin(userid):
 
     userid = str(userid)
     session['email'] = userid
-    return redirect(url_for('index'))
+    return redirect(url_for('index',_external=True,_scheme='https'))
 
 @app.route('/checklogin')
 def checklogin():
