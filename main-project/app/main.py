@@ -383,6 +383,9 @@ def getUser():
         abort(400)
 
     u = dbworker.getUser(str(email))
+    if u is None:
+        abort(404)
+
     u.pop('password')
     u.pop('_id')
 
