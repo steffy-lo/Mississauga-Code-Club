@@ -412,11 +412,12 @@ def editUser():
     if dbworker.getUser(email) is None:
         abort(404)
 
-    if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes']:
-        # No changes requested or an attempt was made to change the email or _id
+    if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes'] or 'password' in request.json['newAttributes']:
+        # No changes requested or an attempt was made to change the email or _id or the password
         abort(400)
 
     # TODO: Validate that all the changes made are valid
+    # ie. ban changes to any invalid attributes
 
     # TODO: Validate types of all the changes requested
 
