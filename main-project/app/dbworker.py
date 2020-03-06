@@ -294,6 +294,13 @@ def setClassActiveStatus(classId, status):
     """
     mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
 
+def editUser(email, changes):
+    """
+    Takes in a json of changes and forces them in
+    """
+    mclient[database]['users'].update_one({'email' : email}, {'$set' : changes})
+
+
 # Routes to fix issues with the database
 def addMissingEmptyReports():
     """

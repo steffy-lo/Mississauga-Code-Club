@@ -399,6 +399,29 @@ def editUser():
 
     It can change any attribute that is not the email
     """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if 'currentEmail' not in request.json or 'newAttributes' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['currentEmail'])
+    if email.error:
+        abort(400)
+
+    if dbworker.getUser(email) is None:
+        abort(404)
+
+    if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes']:
+        # No changes requested or an attempt was made to change the email or _id
+        abort(400)
+
+    # TODO: Validate that all the changes made are valid
+
+    # TODO: Validate types of all the changes requested
+
+    dbworker.editUser(str(email), request.json['newAttributes'])
+
     return jsonify({'success' : True})
 
 # This may be a debug route, not sure, made by Steffy
