@@ -388,6 +388,16 @@ def getUser():
 
     return jsonify({'result' : u, 'success' : True})
 
+@app.route('/api/admin/edituser')
+def editUser():
+    """
+    Takes in a json of the form
+    {'currentEmail' : email, 'newAttributes' : {...}}
+
+    It can change any attribute that is not the email
+    """
+    return jsonify({'success' : True})
+
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
