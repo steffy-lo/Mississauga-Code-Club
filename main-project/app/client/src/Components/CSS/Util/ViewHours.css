@@ -1,0 +1,225 @@
+.administratorVH {
+  background-color: crimson;
+}
+
+.teacherVH {
+  background-color: blue;
+}
+
+.volunteerVH {
+  background-color: gold;
+}
+
+.studentVH {
+  background-color: green;
+}
+.administratorVH:hover {
+  background-color: darkred;
+}
+
+.teacherVH:hover {
+  background-color: darkblue;
+}
+
+.volunteerVH:hover {
+  background-color: goldenrod;
+}
+
+.studentVH:hover {
+  background-color: darkgreen;
+}
+
+.hidden {
+  visibility: collapse;
+}
+
+.shown {
+  visibility: inherit;
+}
+
+.unPaid {
+  color: #b71c1c;
+  font-weight: bold;
+  font-size: 22px;
+  background-color: #ef5350;
+}
+
+.paid {
+  color: green;
+  font-weight: bold;
+  font-size: 22px;
+  background-color: lightgreen;
+}
+
+#mainVHoursWindow input[type=radio]:disabled{
+  cursor: not-allowed;
+  color: grey;
+}
+
+#mainVHoursWindow button:disabled, input[type=submit]:disabled, input[type=reset]:disabled {
+  cursor: not-allowed;
+  background-color: lightgrey;
+}
+
+#mainVHoursWindow input[type=submit]:disabled:hover, input[type=reset]:disabled:hover {
+  cursor: not-allowed;
+}
+
+#vhVerboseClear {
+  padding: 5px 20px;
+  border: none;
+  margin: 5px 0;
+  color: white;
+  font-size: 18px;
+}
+
+#vhFuncButtonsWrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 10px;
+}
+
+#vhFuncButtonsWrapper * {
+  padding: 10px 40px;
+  margin: 5px 10px;
+  border: none;
+  color: white;
+  font-size: 18px;
+  transition: background-color 0.25s linear;
+}
+
+#vhFuncButtonsWrapper *:hover {
+  cursor: pointer;
+}
+
+#VHviewTable {
+  width: 100%;
+  text-align: center;
+}
+
+#VHviewTable th {
+  color: transparent;
+  height: 1px;
+  line-height: 0.5px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#VHviewTableHeader {
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+}
+
+#scrollableHoursPane {
+  max-height: 500px;
+  overflow-y: auto;
+  margin: 5px;
+}
+
+#VHviewTableHeader th {
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#mainVHoursWindow {
+  width: 50%;
+  min-width: 600px;
+  background-color: white;
+  box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
+  margin: 10px;
+}
+
+#mVHWindowHeader {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 5px;
+  border-bottom: 2px solid lightgrey;
+  margin: 5px;
+}
+
+#mVHWindowHeader div {
+  flex-grow: 1;
+  font-size: 36px;
+}
+
+#mVHWindowHeader a {
+  text-decoration: none;
+  padding: 5px 30px;
+  color: white;
+  line-height: 36px;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 22px;
+  transition: background-color 0.5s linear;
+}
+
+#vhSettingsWrapper {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 5px rgb(0, 0, 0, 0.2);
+  margin: 0 10px;
+}
+
+#vhsettingsExpand {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0 5px;
+  transition: background-color 0.25s linear;
+}
+
+#vhsettingsExpand:hover {
+  cursor: pointer;
+}
+
+#vhsettingsExpand span {
+  background-color: white;
+  padding: 5px 20px;
+  color: grey;
+  font-size: 20px;
+}
+
+#vhSettingsExpanded {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 10px 5px 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 10px 5px 0;
+  border-top: 2px solid lightgrey;
+}
+
+#vhSettingsExpanded div {
+  margin: 5px;
+}
+
+#vhSettingsExpanded p {
+  font-size: 20px;
+  margin: 0 0 5px 0;
+  text-align: center;
+}
+
+#VHSWMain {
+  width: 95%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#dateFieldSet {
+  text-align: right;
+}
+
+#noHoursLogged {
+  text-align: center;
+  margin: 20px 0 30px;
+  color: darkgrey;
+}

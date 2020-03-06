@@ -9,20 +9,23 @@ import VolunteerDash from './Components/Volunteer/VolunteerDash';
 import TeacherDash from './Components/Teacher/TeacherDash';
 import StudentGrades from './Components/Student/GradesView';
 
-function App() {
-  return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/s" component={StudentDash}/>
-        <Route exact path="/s/grades" component={StudentGrades}/>
-        <Route exact path="/a" component={AdminDash}/>
-        <Route exact path="/v" component={VolunteerDash}/>
-        <Route exact path="/t" component={TeacherDash}/>
-        <Route exact path="/" component={Login}/>
-        <Redirect from="/" to="/" />
-      </Switch>
-    </BrowserRouter>
-  );
+class App extends React.Component {
+
+  render() {
+    return (
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/s" component={StudentDash} />
+            <Route exact path="/s/grades" component={StudentGrades} />
+            <Route exact path="/a" component={AdminDash} />
+            <Route exact path="/v" component={VolunteerDash} />
+            <Route exact path="/t" component={TeacherDash} />
+            <Route exact path="/" component={Login} />
+            <Redirect from="/" to="/"/>
+          </Switch>
+        </BrowserRouter>
+    );
+  }
 }
 
 export default App;
