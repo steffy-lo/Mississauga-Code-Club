@@ -15,48 +15,31 @@ class GradesView extends React.Component {
         this.state = {
             email: getState('email'),
             prefix: getState('prefix'),
-            loading: true
+            loading: true,
+            data: []
         };
-        this.data = [
-            {
-                courseName: "Introduction to Python",
-                grades: [
-                    {name: "Conditions", grade: 0.75},
-                    {name: "Variables", grade: 1},
-                    {name: "Loops", grade: 0.5},
-                    {name: "Functions", grade: 0.75}
-                ],
-                comments: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, \
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris \
-                nisi ut aliquip ex ea commodo consequat.",
-
-                recommendations: ["Project Based Python", "Python Physical Computing", "Interactive Python"]
-            
-            },
-            {
-                courseName: "Robotics With Raspberry Pi 4 (1)",
-                grades: [
-                    {name: "Knowledge", grade: 1},
-                    {name: "Thinking", grade: 0.75},
-                    {name: "Application", grade: 0.5},
-                    {name: "Extra", grade: 0.65}
-                ],
-                comments: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, \
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris \
-                nisi ut aliquip ex ea commodo consequat.",
-
-                recommendations: ["Robotics With Raspberry Pi 4 (2)", "Intermediate course for Robotics With Raspberry Pi 4"]
-            }
-        ]
     }
 
     componentDidMount() {
         if (this.props.location.state != null) {
             this.getCompletedClasses(this.state.email);
-            // this.getMarks(this.state.email);
         }
+    }
+
+    setInitialState() {
+        const courseName = this.props.location.state.courseInfo.courseName;
+        const courses = this.state.coursesCompleted.courseNames;
+        for (let i = 0; i < courses.length; i++) {
+            if (courses[i] === courseName) {
+                this.setState({
+                    course: courseName,
+                    grades: this.state.data[i].grades,
+                    comments: this.state.data[i].comments,
+                    recommendations: this.state.data[i].recommendations
+                });
+            }
+        }
+        this.setState({'loading': false});
     }
 
     getMarks(email) {
@@ -65,41 +48,46 @@ class GradesView extends React.Component {
         axios.get(currentComponent.state.prefix + '/api/mymarks/')
             .then(res => {
                 console.log(res.data);
-                const marks = res.data;
+                const marks = res.data.marks;
                 for (let i = 0; i < classIds.length; i++) {
-                    const courseDetails = marks[classIds[i].toString()];
+                    const courseDetails = marks[classIds[i]];
+                    console.log(courseDetails);
                     if (courseDetails !== undefined) {
-                        const gradesData = [];
                         const grades = courseDetails.marks;
-                        for (let sectionTitle in grades) { // iterating through keys
-                            if (grades.hasOwnProperty(sectionTitle)) {
-                                gradesData.push({
-                                    index: grades[sectionTitle].index,
-                                    name: sectionTitle,
-                                    grade: grades[sectionTitle].mark + "/" + grades[sectionTitle].weight
-                                })
+                        if (grades !== undefined) {
+                            const gradesData = [];
+                            for (let sectionTitle in grades) { // iterating through keys
+                                if (grades.hasOwnProperty(sectionTitle)) {
+                                    const earnedGrade = (grades[sectionTitle].mark === null) ? "-" : grades[sectionTitle].mark;
+                                    gradesData.push({
+                                        index: grades[sectionTitle].index,
+                                        name: sectionTitle,
+                                        grade: earnedGrade + "/" + grades[sectionTitle].weight
+                                    })
+                                }
                             }
+                            gradesData.sort((a, b) => {
+                                if (a.index < b.index) {
+                                    return -1;
+                                }
+                                if (a.index > b.index) {
+                                    return 1;
+                                }
+                                // a must be equal to b
+                                return 0;
+                            });
+                            const new_data = this.state.data;
+                            new_data.push({
+                                course: this.state.coursesCompleted.courseNames[i],
+                                grades: gradesData,
+                                comments: courseDetails.comments,
+                                recommendations: courseDetails.nextCourse.split(",")});
+                            currentComponent.setState({data: new_data});
+                            currentComponent.setInitialState();
                         }
-                        gradesData.sort((a, b) => {
-                            if (a.index < b.index) {
-                                return -1;
-                            }
-                            if (a.index > b.index) {
-                                return 1;
-                            }
-                            // a must be equal to b
-                            return 0;
-                        });
-                        currentComponent.setState({
-                            course: this.state.coursesCompleted.courseNames[i],
-                            grades: gradesData,
-                            comments: courseDetails.comments,
-                            recommendations: courseDetails.nextCourse
-                        });
                     }
                 }
-
-                currentComponent.setState({'loading': false});
+                console.log(this.state.data)
             })
             .catch(error => {
                 // handle error
@@ -110,13 +98,14 @@ class GradesView extends React.Component {
     updateDisplay() {
         const sel = document.querySelector('#course-sel');
         const courseName = sel.value;
-        for (let i = 0; i < this.data.length; i++) {
-            if (this.data[i].courseName === courseName) {
+        const courses = this.state.coursesCompleted.courseNames;
+        for (let i = 0; i < courses.length; i++) {
+            if (courses[i] === courseName) {
                 this.setState({
                     course: courseName,
-                    grades: this.data[i].grades,
-                    comments: this.data[i].comments,
-                    recommendations: this.data[i].recommendations
+                    grades: this.state.data[i].grades,
+                    comments: this.state.data[i].comments,
+                    recommendations: this.state.data[i].recommendations
                 });
                 sel.selectedIndex = 0;
             }
@@ -128,7 +117,6 @@ class GradesView extends React.Component {
         axios.get(currentComponent.state.prefix + '/getClasses/'+ this.state.email)
             .then(function (response) {
                 // handle success
-                console.log(response.data);
                 const classes = response.data.student;
                 const completed = [];
                 const completed_id = [];
@@ -139,22 +127,7 @@ class GradesView extends React.Component {
                     }
                 }
                 currentComponent.setState({'coursesCompleted': {'classIds': completed_id, 'courseNames': completed}});
-
-                //===========TEMPORARY CODE: CAN REMOVE ONCE THE BACKEND FOR GETTING MARKS HAS BEEN SETUP ==============
-                const courseName = currentComponent.props.location.state.courseInfo.courseName;
-                for (let i = 0; i < completed.length; i++) {
-                    if (completed[i] === courseName) {
-                        currentComponent.setState({
-                            course: courseName,
-                            grades: currentComponent.data[i].grades,
-                            comments: currentComponent.data[i].comments,
-                            recommendations: currentComponent.data[i].recommendations
-                        });
-                    }
-                }
-
-                currentComponent.setState({'loading': false});
-                //=====================================================================================================
+                currentComponent.getMarks(email)
 
             })
             .catch(function (error) {
