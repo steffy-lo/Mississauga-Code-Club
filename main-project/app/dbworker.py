@@ -300,6 +300,14 @@ def editUser(email, changes):
     """
     mclient[database]['users'].update_one({'email' : email}, {'$set' : changes})
 
+def isClassInstructor(email, classId):
+    """
+    Returns whether or not <email> is an instructor for <classId>
+    """
+    cl = mclient[database]['classes'].find_one({'_id' : classId})
+
+    return email in cl['instructors']
+
 
 # Routes to fix issues with the database
 def addMissingEmptyReports():
