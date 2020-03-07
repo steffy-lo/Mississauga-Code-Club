@@ -227,7 +227,18 @@ def deleteMarkingSection():
 
     Deletes mark weights and marks for sectionTitle in <classId>
     """
-    # TODO: Validate credentials here
+    # Validate credentials here
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
+        abort(401)
+
+
     for x in ['classId', 'sectionTitle']:
         if x not in request.json:
             abort(400)
@@ -247,7 +258,17 @@ def setMark():
     Sets the mark of sectionTitle in classId to <weight>
     This will override existing values
     """
-    # TODO: Validate credentials here
+    # Validate credentials here
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
+        abort(401)
+
 
     # TODO: Validate types
     for x in ['classId', 'studentEmail', 'sectionTitle', 'mark']:
@@ -269,7 +290,17 @@ def setActive():
 
     Sets the <ongoing> of classId to <status>
     """
-    # TODO: Validate credentials here
+    # Validate credentials here
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
+        abort(401)
+
 
     # TODO: Validate types
     if 'classId' not in request.json or 'status' not in request.json:
