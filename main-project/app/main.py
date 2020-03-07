@@ -2,10 +2,8 @@ from flask import Flask, jsonify, request, abort, session, redirect, url_for, es
 from flask_cors import CORS
 import os
 import bcrypt
-from pymongo import MongoClient
 import datetime
-import dbworker
-import mailsane
+from app import dbworker, mailsane
 
 # Start the app and setup the static directory for the html, css, and js files.
 
@@ -89,7 +87,7 @@ def updatePassword():
     else:
         abort(401)
 
-    if getUser(str(email)) is None:
+    if dbworker.getUser(str(email)) is None:
         abort(404)
 
     dbworker.setPassword(str(email), request.json['password'])
@@ -262,7 +260,6 @@ def setActive():
     return jsonify({'success' : True})
 
 
-
 @app.route('/api/mymarks/')
 def getMyMarks():
     """
@@ -324,6 +321,17 @@ def checkEmail():
         return jsonify({'message' : 'Email address not found', 'valid' : False})
 
     return jsonify({'message' : None, 'valid' : True})
+
+
+@app.route('/api/loghours', methods=['POST'])
+def logHours():
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    for log in request.json:
+        dbworker.addHoursLog(log['email'], log['className'], log['paid'], log['dateTime'], log['hours'])
+
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
