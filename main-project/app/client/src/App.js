@@ -8,6 +8,7 @@ import StudentGrades from './Components/Student/GradesView';
 
 import AdminDash from './Components/Admin/AdminDash';
 import CheckIn from './Components/Admin/CheckIn';
+import SelectUser from './Components/Admin/SelectUser';
 import EditUser from './Components/Admin/EditUser';
 
 import VolunteerDash from './Components/Volunteer/VolunteerDash';
@@ -26,14 +27,13 @@ function App() {
         <Route exact path="/a" component={AdminDash}/>
         <Route exact path="/a/hours" component={ViewHours}/>
         <Route exact path="/a/checkin" component={CheckIn}/>
+        <Route exact path="/a/user" component={SelectUser}/>
         <Route exact path="/a/user/:id" component={EditUser}/>
         <Route exact path="/v" component={ViewHours}/>
         {/*}<Route exact path="/v/hours" component={ViewHours}/>*/}
         <Route exact path="/t" component={TeacherDash}/>
         <Route exact path="/t/hours" component={ViewHours}/>
         <Route exact path="/" component={Login}/>
-
-        <Redirect from="/a/user" to="/a/" />
         <Redirect from="/" to="/" />
       </Switch>
     </BrowserRouter>

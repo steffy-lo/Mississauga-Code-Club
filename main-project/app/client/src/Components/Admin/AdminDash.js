@@ -23,7 +23,7 @@ class AdminDash extends React.Component {
               <h2>Administration</h2>
 
               <Link to="/a/checkin">Check-In Page</Link>
-              <Link to="/a/user/212">Manage Users &amp; Data</Link>
+              <Link to="/a/user">Manage Users &amp; Data</Link>
               <Link to="/">Manage Classes</Link>
               <Link to="/a/hours">View &amp; Manage Your Hours</Link>
             </div>

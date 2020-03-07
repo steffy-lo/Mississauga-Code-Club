@@ -1,0 +1,101 @@
+#selectUserMainWindowPW {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+
+}
+
+#sumwpwTypeSelector {
+  display: flex;
+  flex-direction: row;
+  z-index: 3;
+}
+
+#sumwpwTypeSelector button {
+  border-width: 5px;
+  margin: 0px 1px;
+  border-style: solid;
+  border-bottom: none;
+  padding: 10px 40px;
+  flex-grow: 1;
+  color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.sumwpwSelected {
+  border-color: white;
+  box-shadow: 0 -3px 5px 0px white;
+}
+
+.sumwpwNotSelected {
+  border-color: lightgrey;
+  box-shadow: 0 -3px 5px 0px grey;
+  border-bottom: 1px solid grey;
+}
+
+.sumwpwNotSelected:hover {
+  border-color: ghostwhite;
+  box-shadow: 0 -3px 5px 0px lightgrey;
+  border-bottom: 1px solid grey;
+}
+
+#sumwpwAdmins {
+  background-color: crimson;
+}
+
+#sumwpwStudents {
+  background-color: green;
+}
+
+#sumwpwTeachers {
+  background-color: royalblue;
+}
+
+#sumwpwVolunteers {
+  background-color: goldenrod;
+}
+
+#selectUserMainWindow {
+  margin: 0 1px;
+  background-color: white;
+  box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
+}
+
+#selectUserMainWindow h1 {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 5px;
+  padding: 0 0 5px 0;
+  border-bottom: 2px solid lightgrey;
+  text-align: center;
+}
+
+#selectUserMainWindow p {
+  text-align: center;
+}
+
+#selectUserScrollableList {
+  height: 500px;
+  padding: 5px;
+  overflow-y: auto;
+  margin-bottom: 5px;
+}
+
+#selectUserScrollableList table {
+  width: 100%;
+  text-align: center;
+  border-collapse:collapse
+}
+
+#selectUserScrollableList tr {
+  background-color: ghostwhite;
+}
+
+#selectUserScrollableList td {
+  padding: 5px;
+}
+
+#selectUserScrollableList tr:hover {
+  background-color: lightgrey;
+}
