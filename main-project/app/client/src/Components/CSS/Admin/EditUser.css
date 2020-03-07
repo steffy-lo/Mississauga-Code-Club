@@ -1,0 +1,100 @@
+
+#singleUserEditMainWindow {
+  background-color: white;
+  box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+#singleUserEditMainWindow h1 {
+  border-bottom: 2px solid lightgrey;
+  text-align: center;
+  padding: 5px 0 5px 0;
+  margin: 0 0 5px 0;
+  align-items: flex-start;
+}
+
+#sueIDUserType {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 0 30px 0;
+}
+
+#sueIDUserType span {
+  margin: 5px;
+  text-align: right;
+}
+
+#sueUserTypeSelect {
+  border: 1px solid grey;
+  border-radius: 1px;
+  width: 120px;
+  padding: 2px 10px;
+}
+
+#sueUserTypeSelect:disabled {
+  background-color: whitesmoke;
+  border-color: lightgrey;
+}
+
+#sueStandardFieldsWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  flex-wrap: wrap;
+}
+
+#sueStandardFieldsWrapper div {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+#sueStandardFieldsWrapper div span {
+  margin: 5px;
+}
+
+#suePasswordField {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 5px;
+}
+
+#suePasswordField span {
+  text-align: center;
+  flex-grow: 1;
+  vertical-align: middle;
+}
+
+#suePasswordField input[type=password] {
+  vertical-align: middle;
+}
+
+#suePasswordField input[type=checkbox] {
+  vertical-align: middle;
+}
+
+#sueButtonField  {
+  margin: 20px 0 5px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+#sueButtonField * {
+  margin: 5px;
+  padding: 10px 40px;
+  background-color: crimson;
+  color: white;
+  border: none;
+  transition: background-color 0.15s linear;
+  font-size: 16px;
+}
+
+#sueButtonField *:hover {
+  background-color: darkred;
+}

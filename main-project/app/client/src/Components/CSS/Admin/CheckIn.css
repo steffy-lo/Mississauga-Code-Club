@@ -2,33 +2,35 @@
   display: flex;
   flex-direction: column;
   background-color: white;
-  padding: 10px;
-  width: 50%;
   text-align: center;
   margin: 0;
-  padding: 5px 0 5px 0;
+  padding: 5px 10px 5px 10px;
   box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
   flex-wrap: wrap;
+}
+
+#checkInMainWindow h1 {
+  margin: 5px 0px 10px 0px;
+  padding: 5px 0;
+  border-bottom: 2px solid lightgrey;
+}
+
+#checkInMainWindow:hover h1 {
+  box-shadow: 0 5px 5px -5px lightgrey;
 }
 
 #checkInMCSelectorForm {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
-#checkInMCSelectorForm  input {
+#checkInMCSelectorForm input {
   border-radius: 0;
   border: 2px lightgrey solid;
   font-size: 18px;
-}
-
-#checkInMainWindow  hr {
-  display: inline-block;
-  border-color: transparent;
-  width: 1%;
-  margin: 0;
-  padding: 0;
+  margin: 5px 2px;
 }
 
 #checkInMainWindow button {
@@ -38,6 +40,7 @@
   transition: background-color 0.15s linear;
   background-color: crimson;
   color: white;
+  margin: 5px 2px;
 }
 
 #checkInMainWindow  button:hover {
@@ -46,37 +49,52 @@
 
 #checkInMCDetailsHeader {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   text-align: left;
-  padding: 20px 10px;
+  padding: 5px 10px 0 10px;
   justify-content: flex-start;
   font-size: 18px;
   font-weight: bold;
 }
 
-#ciMCDHName {
-  min-width: 60%;
-}
-
-#ciMCDHTyper {
-  min-width: 40%;
+#checkInMCDetailsHeader div {
+  flex-grow: 1;
 }
 
 #checkInMCDetailsMain {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
-#detailPaidSelector {
+#checkInMCDetailsMain div {
+  flex-grow: 1;
+  padding: 5px;
   text-align: left;
-  padding: 10px 40px;
 }
 
-#detailEventSelector {
-  padding: 10px 40px;
+#checkInMCDetailsMain div:hover h2{
+  box-shadow: 0 3px 3px -3px lightgrey;
+}
+
+#checkInMCDetailsMain div h2 {
+  margin: 5px 0 10px 0;
+  padding: 5px 0;
+  border-bottom: 1px solid lightgrey;
+  font-size: 14px;
+  font-weight: normal;
 }
 
 #mcwButtons {
-  padding: 20px 0 5px 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px 0 5px 0;
+}
+
+#mcwButtons button:disabled {
+  cursor: not-allowed;
 }

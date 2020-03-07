@@ -12,7 +12,7 @@ class Loader extends React.Component {
 
   render() {
     const styling={height: this.height, width: this.width,
-      'border-width': this.border};
+      borderWidth: this.border};
     return (
         <div style={styling}
         id='loaderContainer'>

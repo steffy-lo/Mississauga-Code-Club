@@ -11,66 +11,37 @@ class CheckIn extends React.Component {
     super(props);
     this.state = {
       email: "",
-      userType: "",
-      paid: 0,
-      activity: "",
+      paid: 1,
+      reason: "",
+
+      userRole: "",
+      userName: "",
+
       modalWindow: "",
-      waitingEmail: 0,
-      waitingSubmitted: 0,
-      detailsForm: ""
+      isVolunteer: 0,
+      submittable: 0
     }
-  }
-
-  componentDidMount() {
-    // this.setState({modalWindow: this._generateModal("Success", "User A is now checked-in for <x> at <y>."),
-    // detailsForm: this._generateDetailsForm(1, null, null)});
-    this.setState({detailsForm: this._generateDetailsForm(1, null, null)});
-
+    this.clearParams = () => {
+      this.setState({
+        email: "",
+        paid: 1,
+        reason: "",
+        userName: "",
+        userRole: "",
+        isVolunteer: 0,
+        submittable: 0
+      })
+    };
   }
 
   _generateModal(title, text) {
     return (
-      <StatusModal title={title} text={text} onClose={() => {
-          this.setState({modalWindow: ""})
-        }} colourScheme="adminStyle"/>
+      <StatusModal
+        title={title}
+        text={text}
+        onClose={this.clearParams}
+        colourScheme="adminStyle"/>
     )
-  }
-
-  _generateDetailsForm(status, userDetails, options) {
-    if (status === 1 || status === 2) {
-      const readonly = status === 1;
-      return (
-        <form id="checkInMCDetailsForm">
-          <div id="checkInMCDetailsHeader">
-            <div id="ciMCDHTyper">Type: <span></span></div>
-            <div id="ciMCDHName">Name: <span></span></div>
-          </div>
-          <div id="checkInMCDetailsMain">
-            <fieldset id="detailPaidSelector">
-              <legend>Type of Work</legend>
-              <input type="radio" name="work" value="paid"/>
-              <label htmlFor="paid">Paid</label><br />
-              <input type="radio" name="work" value="unpaid"/>
-              <label htmlFor="unpaid">Unpaid</label><br />
-            </fieldset>
-            <hr />
-            <fieldset id="detailEventSelector">
-              <legend>Event</legend>
-              <input type="text" placeholder=""></input>
-            </fieldset>
-          </div>
-          <div id="mcwButtons">
-            <button type="submit">{"Check-in"}</button>
-            <hr />
-            <button type="reset">{"Clear"}</button>
-          </div>
-        </form>
-      )
-    } else {
-      return {
-
-      }; //Loader.
-    }
   }
 
   render() {
@@ -82,16 +53,84 @@ class CheckIn extends React.Component {
           <div className="flex horizontalCentre">
             <div id="checkInMainWindow">
               <h1>Check-In</h1>
-                <form id="checkInMCSelectorForm" onSubmit={e => {
-                    e.preventDefault();
-                    console.log("Fetch target");
+
+              <form
+                id="checkInMCSelectorForm"
+                onSubmit={e => {
+                  e.preventDefault();
+                  console.log("Fetch target");
+                }}>
+                <input
+                  autoFocus={true}
+                  type="email"
+                  placeholder="email"
+                  value={this.state.email}
+                  onChange={e => this.setState({email: e.target.value})}/>
+
+                <button type="submit" onClick={e => {
+                    //axios.get("/api/gcUser")
                   }}>
-                  <input type="email" placeholder="email" value={this.state.email}
-                    onChange={e => this.setState({email: e.target.value})}/>
-                  <hr />
-                  <button type="submit">Confirm</button>
-                </form>
-                {this.state.detailsForm}
+                  Confirm
+                </button>
+              </form>
+
+              <form id="checkInMCDetailsForm">
+
+                <div id="checkInMCDetailsHeader">
+                  <div>
+                    Role: {this.state.userRole}
+                  </div>
+                  <div>
+                    Name: {this.state.userName}
+                  </div>
+                </div>
+
+                <div id="checkInMCDetailsMain">
+                  <div id="detailPaidSelector">
+                    <h2>
+                      Type of Work:
+                    </h2>
+                    <input type="radio" value="1"
+                      disabled={!this.state.submittable}
+                      checked={this.state.paid === 1}
+                      onChange={e => this.setState({paid: 1})}
+                      readOnly={this.state.isVolunteer}/>
+                    <label htmlFor="0">Teaching</label>
+                    <br />
+                    <input type="radio" value="0"
+                      disabled={!this.state.submittable}
+                      checked={this.state.paid === 0}
+                      onChange={e => this.setState({paid: 0})}
+                      readOnly={this.state.isVolunteer}/>
+                    <label htmlFor="1">Volunteering</label>
+                    <br />
+                  </div>
+                  <div id="detailEventSelector">
+                    <h2>
+                      Reason:
+                    </h2>
+                    <input type="text" placeholder="reason"
+                      value={this.state.reason}
+                      onChange={e=> this.setState({reason: e.target.value})}
+                      disabled={!this.state.submittable}>
+                    </input>
+                  </div>
+                </div>
+
+                <div id="mcwButtons">
+                  <button type="submit"
+                    disabled={!this.state.submittable}
+                    >
+                    {"Check-in"}
+                  </button>
+                  <button type="reset"
+                    disabled={!this.state.submittable}
+                    onClick={this.clearParams}>
+                    {"Clear"}
+                  </button>
+                </div>
+
+              </form>
             </div>
           </div>
         </div>

@@ -23,31 +23,9 @@ class AdminDash extends React.Component {
               <h2>Administration</h2>
 
               <Link to="/a/checkin">Check-In Page</Link>
-              <Link to="/">Manage Users &amp; Data</Link>
+              <Link to="/a/user/212">Manage Users &amp; Data</Link>
               <Link to="/">Manage Classes</Link>
-              <Link to="/">Manage Users Hours</Link>
-            </div>
-            <div className="mainADashWindowS">
-              <h2>Recent Hours</h2>
-              <div id="mADWStableWrapper">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Class</th>
-                      <th>Hours</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>a</td>
-                      <td>s</td>
-                      <td>d</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <Link>View More Details ...</Link>
+              <Link to="/a/hours">View &amp; Manage Your Hours</Link>
             </div>
           </div>
         </div>
