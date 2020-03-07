@@ -14,14 +14,14 @@ import "../CSS/Common.css";
 class EditUser extends React.Component {
   constructor(props) {
     super(props);
-    this.id = props.match.params.id;
+    this.email = props.match.params.email;
     this.state = {
       modalWindow: "",
 
       userType: 1,
       firstName: "",
       lastName: "",
-      email: "",
+      id: "",
       telephone: "",
       parentEmail: "",
       password: "",
@@ -41,8 +41,8 @@ class EditUser extends React.Component {
               <form id="singleUserEditMainWindow">
                 <h1>Edit User</h1>
                 <div id="sueIDUserType">
-                  <span>ID#:&nbsp;
-                    <input type="text" value={this.id} disabled />
+                  <span>Email:&nbsp;
+                    <input type="text" value={this.email} disabled />
                   </span>
                   <span>User Type:&nbsp;
                     <select
@@ -75,9 +75,12 @@ class EditUser extends React.Component {
                     </span>
                   </div>
                   <div id="ssfwRight">
-                    <span>Email:&nbsp;
+                    {/*<span>Email:&nbsp;
                       <input type="text" value={this.state.firstName}
                       onChange={e => this.setState({firstName: e.target.value})}/>
+                    </span>*/}
+                    <span>
+                      <input style={{visibility: "hidden"}} type="text"/>
                     </span>
                     <span>Phone #:&nbsp;
                       <input type="tel" value={this.state.lastName}

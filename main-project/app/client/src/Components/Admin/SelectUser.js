@@ -17,13 +17,136 @@ class SelectUser extends React.Component {
     this.state = {
       modalWindow: "",
       selectedType: 4,
-      userList: ""
+      userList: []
     };
   }
 
-  changeSelection(newSelection) {
+  componentDidMount() {
     this.setState({
-      selectedType: newSelection
+      userList:
+      [
+        {
+          email: "jack@black.hack",
+          firstName: "Jack",
+          lastName: "Black",
+          userType: 3
+        },
+        {
+          email: "flack@black.hack",
+          firstName: "Flack",
+          lastName: "Black",
+          userType: 4
+        },
+        {
+          email: "sack@black.hack",
+          firstName: "Sack",
+          lastName: "Black",
+          userType: 4
+        },
+        {
+          email: "Shack@black.hack",
+          firstName: "Shack",
+          lastName: "Black",
+          userType: 2
+        },
+        {
+          email: "Ark1@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark2@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark3@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark4@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark5@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark6@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark7@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark8@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark9@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark11@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark12@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark13@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark14@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark15@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark16@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+        {
+          email: "Ark17@black.hack",
+          firstName: "Ark",
+          lastName: "Black",
+          userType: 1
+        },
+
+      ]
     });
   }
 
@@ -38,28 +161,28 @@ class SelectUser extends React.Component {
 
               <div id="sumwpwTypeSelector">
                 <button
-                onClick={e => this.changeSelection(4)}
+                onClick={e => this.setState({selectedType: 4})}
                 className={this.state.selectedType === 4 ?
                   "sumwpwSelected" : "sumwpwNotSelected" }
                 id="sumwpwStudents">
                   Students
                 </button>
                 <button
-                onClick={e => this.changeSelection(3)}
+                onClick={e => this.setState({selectedType: 3})}
                 className={this.state.selectedType === 3 ?
                   "sumwpwSelected" : "sumwpwNotSelected" }
                 id="sumwpwVolunteers">
                   Volunteers
                 </button>
                 <button
-                onClick={e => this.changeSelection(2)}
+                onClick={e => this.setState({selectedType: 2})}
                 className={this.state.selectedType === 2 ?
                   "sumwpwSelected" : "sumwpwNotSelected" }
                 id="sumwpwTeachers">
                   Teachers
                 </button>
                 <button
-                onClick={e => this.changeSelection(1)}
+                onClick={e => this.setState({selectedType: 1})}
                 className={this.state.selectedType === 1 ?
                   "sumwpwSelected" : "sumwpwNotSelected" }
                 id="sumwpwAdmins">
@@ -72,8 +195,15 @@ class SelectUser extends React.Component {
                 <p><i>Click on a user to view and edit their information</i></p>
                 <div id="selectUserScrollableList">
                   <table>
+                  <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                  </tr>
+                  </thead>
                   <tbody>
-                    {this.state.userList}
+                    {this.generateHoursRows()}
                   </tbody>
                   </table>
                 </div>
@@ -85,32 +215,51 @@ class SelectUser extends React.Component {
       </React.Fragment>
     );
   }
-}
 
-class UserRow extends React.Component {
-  constructor(props) {
-    super(props);
-    this.email = props.email;
-    this.firstName = props.fName;
-    this.lastName = props.lName;
-    this.url = "/a/user/"
+  generateHoursRows() {
+    const compiledList = [];
+    if (!this.state.userList) {
+      return(
+        <tr>
+          <td>No users found</td>
+        </tr>
+      )
+    }
+    for (let userEntry of this.state.userList) {
+      if (this.state.selectedType === userEntry.userType) {
+        compiledList.push(
+          this.generateHourRow(userEntry.email, userEntry.firstName,
+            userEntry.lastName, userEntry.userType)
+        );
+      }
+    }
+    return compiledList;
   }
 
-  render() {
+  generateHourRow(email, firstName, lastName, userType) {
     return (
-      <tr onClick={e => console.log(this.url + this.email)}>
+      <tr
+      key={email}
+      className={
+        `slu${
+          ["Admin", "Teacher", "Volunteer", "Student"][userType-1]
+        }`
+      }
+      onClick={e => this.props.history.push(`/a/user/${email}`)}
+      >
         <td>
-          {this.email}
+          {email}
         </td>
         <td>
-          {this.firstName}
+          {firstName}
         </td>
         <td>
-          {this.lastName}
+          {lastName}
         </td>
       </tr>
     );
   }
+
 }
 
 

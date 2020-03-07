@@ -32,6 +32,7 @@
   border-color: lightgrey;
   box-shadow: 0 -3px 5px 0px grey;
   border-bottom: 1px solid grey;
+  transition: all 0.15s linear;
 }
 
 .sumwpwNotSelected:hover {
@@ -82,6 +83,38 @@
   margin-bottom: 5px;
 }
 
+#selectUserScrollableListB {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  padding: 5px;
+  overflow-y: auto;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+#selectUserScrollableListB a {
+  text-decoration: none;
+  font-size: 18px;
+  transition: background-color 0.15s linear;
+  color: black;
+  padding: 3px 10px;
+}
+
+#selectUserScrollableListB a:hover { color: white; }
+
+.sluTeacher, .sluAdmin, .sluVolunteer, .sluStudent{
+  background-color: ghostwhite;
+}
+
+.sluTeacher:hover { background-color: royalblue; }
+
+.sluAdmin:hover { background-color: crimson; }
+
+.sluStudent:hover { background-color: green; }
+
+.sluVolunteer:hover { background-color: gold; }
+
 #selectUserScrollableList table {
   width: 100%;
   text-align: center;
@@ -89,7 +122,10 @@
 }
 
 #selectUserScrollableList tr {
-  background-color: ghostwhite;
+  font-size: 18px;
+  transition: background-color 0.15s linear;
+  color: black;
+  padding: 3px 10px;
 }
 
 #selectUserScrollableList td {
@@ -97,5 +133,5 @@
 }
 
 #selectUserScrollableList tr:hover {
-  background-color: lightgrey;
+  color: white;
 }

@@ -24,3 +24,7 @@
 .skipNavBar {
   margin-top: 75px;
 }
+
+.shownF {
+  display: flex;
+}
