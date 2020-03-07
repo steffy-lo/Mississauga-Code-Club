@@ -193,12 +193,25 @@ def setMarkingSection():
     Sets the weight of sectionTitle in classId to <weight>
     This will override existing values
     """
-    # TODO: Validate credentials here
+    if 'classId' not in request.json or 'sectionTitle' not in request.json or 'weightInfo' not in request.json:
+        abort(400)
+
+    for x in ['weight', 'index']:
+        if x not in request.json['weightInfo']:
+            abort(400)
+
+    # Validate credentials here
+    if 'email' not in session or session['email'] is None:
+        abort(401)
+
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
+        abort(401)
 
     # TODO: Validate types
-    for x in ['weight', 'index']:
-        if x not in request.json:
-            abort(400)
 
     dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weightInfo'])
 
