@@ -222,7 +222,7 @@ def setMarkingSection():
 
     return jsonify({'success' : True})
 
-@app.route('/api/deletemarkingsection', methods=['PATCH'])
+@app.route('/api/deletemarkingsection', methods=['PATCH', 'DELETE'])
 def deleteMarkingSection():
     """
     Takes in a JSON of the following format
