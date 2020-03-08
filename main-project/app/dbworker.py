@@ -145,6 +145,9 @@ def addStudent(courseId, email):
 
     studentList = matchingClass['students'][:]
 
+    if email in studentList:
+        return False
+
     studentList.append(email)
 
     mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}})
@@ -171,6 +174,9 @@ def addInstructor(courseId, email):
         return False
 
     staffList = matchingClass['instructors'][:]
+
+    if email in staffList:
+        return False
 
     staffList.append(email)
 
