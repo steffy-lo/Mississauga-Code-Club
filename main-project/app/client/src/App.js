@@ -18,7 +18,6 @@ import VolunteerDash from './Components/Volunteer/VolunteerDash';
 
 
 import TeacherDash from './Components/Teacher/TeacherDash';
-import StudentGrades from './Components/Student/GradesView';
 import ViewHours from './Components/Util/ViewHours';
 
 function App() {
