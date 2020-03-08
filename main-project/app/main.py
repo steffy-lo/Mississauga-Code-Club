@@ -408,7 +408,7 @@ def getUsers():
 
     return jsonify({'result' : fixedList, 'success' : True})
 
-@app.route('/api/admin/getuser')
+@app.route('/api/admin/getuser', methods=['POST'])
 def getUser():
     """
     Takes in a JSON of {'email'}
@@ -427,14 +427,14 @@ def getUser():
 
     u = dbworker.getUser(str(email))
     if u is None:
-        abort(404)
+        abort(405)
 
     u.pop('password')
     u.pop('_id')
 
     return jsonify({'result' : u, 'success' : True})
 
-@app.route('/api/admin/edituser')
+@app.route('/api/admin/edituser', methods=['POST'])
 def editUser():
     """
     Takes in a json of the form

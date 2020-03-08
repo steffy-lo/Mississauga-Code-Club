@@ -2,7 +2,7 @@ import { setState } from "statezero";
 import axios from "axios";
 
 /* For local debugging */
-const DEBUG = 0;
+const DEBUG = 1;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";

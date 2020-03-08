@@ -2,7 +2,7 @@ import axios from "axios";
 import { deauthorise } from './auth';
 
 /* For local debugging */
-const DEBUG = 0;
+const DEBUG = 1;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -11,7 +11,7 @@ export const checkIn = (email, purpose, hours, paid) => {
   return new Promise((resolve, reject) => {
     if (email === "" || purpose === "" || hours === 0)
       reject({stat: 400, msg: "Your request was poorly formatted."});
-    axios.post("/api/checkin",
+    axios.post(PREFIX + "/api/checkin",
     JSON.stringify({ email, purpose, hours, paid}),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
@@ -35,7 +35,7 @@ export const checkIn = (email, purpose, hours, paid) => {
 export const createClass = (title) => {
   return new Promise((resolve, reject) => {
     if (title === "") reject({stat: 400, msg: "Classnames should not be empty"});
-    axios.post("/api/newClass", JSON.stringify(title),
+    axios.post(PREFIX + "/api/newClass", JSON.stringify(title),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
       if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
@@ -49,7 +49,7 @@ export const createClass = (title) => {
 
 export const getClassList = () => {
   return new Promise((resolve, reject) => {
-    axios.get("/api/admin/getclasses", {headers: {"Content-Type": "application/json"}})
+    axios.get(PREFIX + "/api/admin/getclasses", {headers: {"Content-Type": "application/json"}})
     .then(res => {
       if (!res || !res.data || !res.data.classList)
         throw {stat: 500, statusText: "Something went wrong"};
@@ -79,7 +79,7 @@ export const createUser = (details) => {
       compiledReq['parentEmail'] = details.parentEmail;
       compiledReq['age'] = details.age;
     }
-    axios.post("/api/createUser",
+    axios.post(PREFIX + "/api/createUser",
     JSON.stringify(compiledReq),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
@@ -93,12 +93,12 @@ export const createUser = (details) => {
 
 export const getUser = (email) => {
   return new Promise((resolve, reject) => {
-    axios.post("/api/admin/getuser",
-    JSON.stringify({ email }),
+    axios.post(PREFIX + "/api/admin/getuser",
+    { email: email },
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
       if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
-      resolve(res.data);
+      resolve(res.data.result);
     })
     .catch(err => {
       console.log(err);
@@ -146,14 +146,14 @@ export const editUser = (email, details) => {
     const compiledReq = {
       firstName: details.firstName,
       lastName: details.lastName,
-      phoneNumber: details.telephone
+      phoneNumber: details.telephone,
+      birthday: details.birthday
     }
     if (details.userType === 4) {
       compiledReq['parentEmail'] = details.parentEmail;
-      compiledReq['age'] = details.age;
     }
-    axios.post("/api/createUser",
-    JSON.stringify({currentEmail: email , newAttributes: compiledReq}),
+    axios.post(PREFIX + "/api/admin/edituser",
+    JSON.stringify({currentEmail: String(email) , newAttributes: compiledReq}),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
       resolve();

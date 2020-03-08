@@ -24,8 +24,7 @@ class EditUser extends React.Component {
       lastName: "",
       telephone: "",
       parentEmail: "",
-      age: 8,
-      //password: "",
+      birthday: "",
       changePassword: 0,
       isStudent: 0
     };
@@ -42,6 +41,7 @@ class EditUser extends React.Component {
     });
     getUser(this.email)
     .then(user => {
+      console.log(user)
       this.setState({
         modalWindow: "",
         userType: user.userType,
@@ -49,7 +49,7 @@ class EditUser extends React.Component {
         lastName: user.lastName,
         telephone: user.phoneNumber,
         isStudent: ( user.userType == 4 ? 1 : 0 ),
-        age: ( user.userType == 4 ? user.age : "" ),
+        birthday: new Date(user.birthday).toLocaleDateString(),
         parentEmail: ( user.userType == 4 ? user.parentEmail : "")
       });
     })
@@ -154,8 +154,9 @@ class EditUser extends React.Component {
                 <div id="sueStandardFieldsWrapper">
                   <div id="ssfwLeft">
                     <span>First Name:&nbsp;
-                      <input type="text" value={this.state.firstName}
-                      onChange={e => this.setState({firstName: e.target.value})}/>
+                      <input type="text"
+                        value={this.state.firstName}
+                        onChange={e => this.setState({firstName: e.target.value})}/>
                     </span>
                     <span>Surname:&nbsp;
                       <input type="text" value={this.state.lastName}
@@ -163,8 +164,8 @@ class EditUser extends React.Component {
                     </span>
                     <span>Age:&nbsp;
                       <input disabled={!this.state.isStudent}
-                      type="number" value={this.state.age}
-                      onChange={e => this.setState({age: e.target.value})}/>
+                      type="date" value={this.state.birthday}
+                      onChange={e => this.setState({birthday: e.target.value})}/>
                     </span>
                   </div>
                   <div id="ssfwRight">
@@ -199,9 +200,16 @@ class EditUser extends React.Component {
                   disabled={!this.state.changePassword}/>
               </div>*/}
                 <div id="sueButtonField">
-                  <button>Save Changes</button>
+                  <button onClick={e => {
+                    e.preventDefault();
+                    this.editUser()
+                  }}>
+                    Save Changes</button>
                   <input type="reset" value="Reset Changes"
-                    onSubmit={this.getUserDetails}/>
+                    onClick={e => {
+                      e.preventDefault();
+                      this.getUserDetails();
+                    }}/>
                 </div>
               </form>
             </div>
