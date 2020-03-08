@@ -70,3 +70,12 @@
   background-color: grey;
   color: white;
 }
+
+#op2ButtonWrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+#op2ButtonWrapper button {
+  margin: 5px;
+}
