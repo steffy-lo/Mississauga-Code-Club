@@ -452,7 +452,7 @@ def editUser():
     if email.error:
         abort(400)
 
-    if dbworker.getUser(email) is None:
+    if dbworker.getUser(str(email)) is None:
         abort(404)
 
     if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes'] or 'password' in request.json['newAttributes']:
