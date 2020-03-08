@@ -10,7 +10,7 @@ const PREFIX = DEBUG ? "http://localhost:80" : "";
 export const checkIn = (email, purpose, hours, paid) => {
   return new Promise((resolve, reject) => {
     if (email === "" || purpose === "" || hours === 0)
-      reject({stat: 400, msg: "Your request was poorly formatted."});
+      return reject({stat: 400, msg: "Your request was poorly formatted."});
     axios.post(PREFIX + "/api/checkin",
     JSON.stringify({ email, purpose, hours, paid}),
     {headers: {"Content-Type": "application/json"}})
@@ -63,23 +63,30 @@ export const createUser = (details) => {
   return new Promise((resolve, reject) => {
     if (details.firstName === "" || details.lastName === "" ||
     details.email === "" || details.telephone === "" ||
-    (details.userType === 4 && (details.age <= 0 ||
-      details.parentEmail === "")) || details.password === "" )  {
-      reject({state: 400, msg: "Request was poorly formatted"});
+    details.password === "" || (details.userType === 4
+      && (details.parentEmail === "" || details.birthday === "" ||
+      details.parentName === "")) ) {
+      return reject({state: 400, msg: "Some information is missing. Please fill in all the blanks"});
     }
+    console.log(details);
     const compiledReq = {
       email: details.email,
       password: details.password,
       userType: details.userType,
       firstName: details.firstName,
       lastName: details.lastName,
-      phoneNumber: details.telephone
+      phoneNumber: details.telephone,
+      parentEmail: "noparent@email.com",
+      parentName: "",
+      birthday: "1970-01-01"
     }
     if (details.userType === 4) {
       compiledReq['parentEmail'] = details.parentEmail;
-      compiledReq['age'] = details.age;
+      compiledReq['birthday'] = details.birthday;
+      compiledReq['parentName'] = details.parentName;
     }
-    axios.post(PREFIX + "/api/createUser",
+    console.log(compiledReq);
+    axios.post(PREFIX + "/api/admin/createuser",
     JSON.stringify(compiledReq),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
@@ -141,7 +148,7 @@ export const editUser = (email, details) => {
     details.email === "" || details.telephone === "" ||
     (details.userType === 4 && (details.age <= 0 ||
       details.parentEmail === "")) || details.password === "" )  {
-      reject({state: 400, msg: "Request was poorly formatted"});
+      return reject({state: 400, msg: "Request was poorly formatted"});
     }
     const compiledReq = {
       firstName: details.firstName,
@@ -152,7 +159,7 @@ export const editUser = (email, details) => {
     if (details.userType === 4) {
       compiledReq['parentEmail'] = details.parentEmail;
     }
-    axios.post(PREFIX + "/api/admin/edituser",
+    axios.patch(PREFIX + "/api/admin/edituser",
     JSON.stringify({currentEmail: String(email) , newAttributes: compiledReq}),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {

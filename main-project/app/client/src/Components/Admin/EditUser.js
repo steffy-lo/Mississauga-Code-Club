@@ -162,7 +162,7 @@ class EditUser extends React.Component {
                       <input type="text" value={this.state.lastName}
                       onChange={e => this.setState({lastName: e.target.value})}/>
                     </span>
-                    <span>Age:&nbsp;
+                    <span>Birthday:&nbsp;
                       <input disabled={!this.state.isStudent}
                       type="date" value={this.state.birthday}
                       onChange={e => this.setState({birthday: e.target.value})}/>
