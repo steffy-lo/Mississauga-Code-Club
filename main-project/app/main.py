@@ -457,6 +457,24 @@ def editUser():
 
     return jsonify({'success' : True})
 
+@app.route('/api/admin/createcourse')
+def createCourse():
+    """
+    Takes in a JSON of {'courseTitle'}
+
+    Returns {'_id' : newId (String), 'success' : True}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if 'courseTitle' not in request.json:
+        abort(400)
+
+    val = dbworker.createClass(request.json['courseTitle'], [], [], None)
+
+    return jsonify({'_id' : str(val['insertedId']), 'success' : True})
+
+
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
