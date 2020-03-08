@@ -117,6 +117,8 @@ def createClass(courseTitle, students, instructors, semester):
 
     Students and instructors are lists of emails
     """
+
+    # Returns with 'A field insertedId with the _id value of the inserted document.'
     return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
