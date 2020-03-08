@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 import bcrypt
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from jsonschema import validate
 import datetime
 
@@ -202,10 +203,12 @@ def setMarkingSection():
     if email.error:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
+    convClassId = ObjectId(request.json['classId'])
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
         abort(401)
 
-    dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weightInfo'])
+    dbworker.addMarkingSection(convClassId, request.json['sectionTitle'], request.json['weightInfo'])
 
     return jsonify({'success' : True})
 
@@ -227,15 +230,17 @@ def deleteMarkingSection():
     if email.error:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
-        abort(401)
-
-
     for x in ['classId', 'sectionTitle']:
         if x not in request.json:
             abort(400)
 
-    dbworker.deleteMarkingSection(request.json['classId'], request.json['sectionTitle'])
+    convClassId = ObjectId(request.json['classId'])
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
+        abort(401)
+
+
+    dbworker.deleteMarkingSection(convClassId, request.json['sectionTitle'])
 
     return jsonify({'success' : True})
 
@@ -258,15 +263,16 @@ def setMark():
     if email.error:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
-        abort(401)
-
     for x in ['classId', 'studentEmail', 'sectionTitle', 'mark']:
         if x not in request.json:
             abort(400)
 
+    convClassId = ObjectId(request.json['classId'])
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
+        abort(401)
 
-    dbworker.setMark(request.json['classId'], request.json['studentEmail'], request.json['sectionTitle'], request.json['mark'])
+
+    dbworker.setMark(convClassId, request.json['studentEmail'], request.json['sectionTitle'], request.json['mark'])
 
     return jsonify({'success' : True})
 
@@ -288,19 +294,19 @@ def updateCourseInfo():
     if email.error:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
-        abort(401)
-
     if 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
         abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
+        abort(401)
 
 
     # TODO: Validate types
 
     json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
 
-    # TODO: Do we need to convert request.json['classId'] to ObjectId?
-    dbworker.updateClassInfo(request.json['classId'], json)
+    dbworker.updateClassInfo(convClassId, json)
 
     return jsonify({'success' : True})
 
