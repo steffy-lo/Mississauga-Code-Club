@@ -23,7 +23,7 @@ const PREFIX = DEBUG ? "http://localhost:80" : "";
 export const authenticate = (email, password) => {
   return new Promise((resolve, reject) => {
     if (typeof email !== "string" || typeof password !== "string" ||
-        email.length == 0 || password.length == 0) {
+        email.length === 0 || password.length === 0) {
             reject("Input cannot be empty")
     }
     axios.post(PREFIX + "/authenticate",

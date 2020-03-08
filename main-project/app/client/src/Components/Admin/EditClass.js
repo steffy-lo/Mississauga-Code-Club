@@ -97,6 +97,9 @@ class EditClass extends React.Component {
                         this.setState({courseTitle: e.target.value})}
                       }
                       />
+                    <button>
+                      Save Details
+                    </button>
                     </div>
                     <div>
                       <h3>
@@ -168,7 +171,7 @@ class EditClass extends React.Component {
                     </div>
                     <form className="ecBarAdd">
                       <input type="email"
-                      placeholder="studen email"
+                      placeholder="student email"
                       />
                       <input type="submit"
                       value="Add Student"

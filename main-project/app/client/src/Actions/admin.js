@@ -41,6 +41,38 @@ export const createClass = (title) => {
   });
 }
 
+export const createUser = (details) => {
+  return new Promise((resolve, reject) => {
+    if (details.firstName === "" || details.lastName === "" ||
+    details.email === "" || details.telephone === "" ||
+    (details.userType === 4 && (details.age <= 0 ||
+      details.parentEmail === "")) || details.password === "" )  {
+      reject({state: 400, msg: "Request was poorly formatted"});
+    }
+    const compiledReq = {
+      email: details.email,
+      password: details.password,
+      userType: details.userType,
+      firstName: details.firstName,
+      lastName: details.lastName,
+      telephone: details.telephone
+    }
+    if (details.userType === 4) {
+      compiledReq['parentEmail'] = details.parentEmail;
+      compiledReq['age'] = details.age;
+    }
+    axios.post("/api/createUser",
+    JSON.stringify(compiledReq),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => {
+      resolve();
+    })
+    .catch(err => {
+      standardReject(err, reject);
+    })
+  });
+}
+
 const standardReject = (err, reject) => {
   if (err.status === 403 || err.status === 401) {
     deauthorise();

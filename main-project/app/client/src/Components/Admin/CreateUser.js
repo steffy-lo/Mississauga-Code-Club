@@ -7,6 +7,7 @@ import StatusModal from '../Util/StatusModal';
 import LoadingModal from '../Util/LoadingModal';
 
 import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { createUser } from "../../Actions/admin";
 
 import "../CSS/Admin/EditUser.css";
 import "../CSS/Common.css";
@@ -40,7 +41,7 @@ class CreateUser extends React.Component {
                 <h1>Create New User</h1>
                 <div id="sueIDUserType">
                   <span>Email:&nbsp;
-                    <input required type="text"
+                    <input required type="email"
                     value={this.state.email}
                     onChange={e => this.setState({email: e.target.value})}
                     />
@@ -103,7 +104,65 @@ class CreateUser extends React.Component {
                   </div>
                 </div>
                 <div id="sueButtonField">
-                  <input type="submit" value="Create User" />
+                  <input type="submit" value="Create User"
+                    onClick={e => {
+                      e.preventDefault();
+                      this.setState({
+                        modalWindow:
+                          <LoadingModal text="Creating User ..." />
+                      })
+                      createUser(this.state)
+                      .then(() => {
+                        this.setState({modalWindow: ""});
+                        this.setState({
+                          modalWindow:
+                            <StatusModal title="User Creation Succesful"
+                              text={`User ${this.state.email} was created succesfully`}
+                              onClose={() => {
+                                this.setState({
+                                  modalWindow: "",
+                                  firstName: "",
+                                  lastName: "",
+                                  email: "",
+                                  telephone: "",
+                                  parentEmail: "",
+                                  password: "",
+                                  age: 8
+                                })
+                              }}
+                            />
+                        })
+                      })
+                      .catch(err => {
+                          const clFunc = () => this.setState({modalWindow: ""});
+                          if (err.stat === 403) {
+                            this.setState({modalWindow: ""});
+                            this.setState({
+                              modalWindow:
+                                <LoadingModal text={
+                                    <span>
+                                      Your login has expired
+                                      <br />
+                                      Please reauthenticate
+                                      <br />
+                                      Singing you out ...
+                                    </span>
+                                }/>
+                            })
+                            setTimeout(() => window.location.reload(0), 1000);
+                          } else {
+                            this.setState({modalWindow: ""});
+                            this.setState({
+                              modalWindow:
+                                <StatusModal
+                                  title="User Creation Failed"
+                                  text={err.msg}
+                                  onClose={clFunc}
+                                />
+                            })
+                          }
+                      })
+                    }}/>
                   <input type="reset" value="Clear Form"
                   onClick={e => {
                     this.setState({
