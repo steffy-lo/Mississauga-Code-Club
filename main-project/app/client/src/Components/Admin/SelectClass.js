@@ -8,6 +8,7 @@ import LoadingModal from '../Util/LoadingModal';
 import CreateClass from '../Admin/CreateClass';
 
 import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { getClassList } from '../../Actions/admin';
 
 import "../CSS/Admin/SelectUser.css";
 import "../CSS/Common.css";
@@ -23,69 +24,28 @@ class SelectClass extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({
-      classList: [
-        {courseTitle: "Python", class_id: "31", ongoing: 1},
-        {courseTitle: "Python", class_id: "32", ongoing: 1},
-        {courseTitle: "Python", class_id: "33", ongoing: 1},
-        {courseTitle: "Python", class_id: "34", ongoing: 1},
-        {courseTitle: "Python", class_id: "35", ongoing: 1},
-        {courseTitle: "Python", class_id: "36", ongoing: 1},
-        {courseTitle: "Python", class_id: "37", ongoing: 1},
-        {courseTitle: "Python", class_id: "38", ongoing: 1},
-        {courseTitle: "Python", class_id: "39", ongoing: 1},
-        {courseTitle: "Python", class_id: "311", ongoing: 1},
-        {courseTitle: "Python", class_id: "312", ongoing: 1},
-        {courseTitle: "Python", class_id: "313", ongoing: 1},
-        {courseTitle: "Python", class_id: "314", ongoing: 1},
-        {courseTitle: "Python", class_id: "315", ongoing: 1},
-        {courseTitle: "Python", class_id: "325", ongoing: 1},
-        {courseTitle: "Python", class_id: "326", ongoing: 1},
-        {courseTitle: "Python", class_id: "316", ongoing: 1},
-        {courseTitle: "Python", class_id: "317", ongoing: 1},
-        {courseTitle: "Python", class_id: "431", ongoing: 0},
-        {courseTitle: "Python", class_id: "432", ongoing: 0},
-        {courseTitle: "Python", class_id: "433", ongoing: 0},
-        {courseTitle: "Python", class_id: "434", ongoing: 0},
-        {courseTitle: "Python", class_id: "435", ongoing: 0},
-        {courseTitle: "Python", class_id: "436", ongoing: 0},
-        {courseTitle: "Python", class_id: "437", ongoing: 0},
-        {courseTitle: "Python", class_id: "438", ongoing: 0},
-        {courseTitle: "Python", class_id: "439", ongoing: 0},
-        {courseTitle: "Python", class_id: "4311", ongoing: 0},
-        {courseTitle: "Python", class_id: "4312", ongoing: 0},
-        {courseTitle: "Python", class_id: "4313", ongoing: 0},
-        {courseTitle: "Python", class_id: "4314", ongoing: 0},
-        {courseTitle: "Python", class_id: "4315", ongoing: 0},
-        {courseTitle: "Python", class_id: "4316", ongoing: 0},
-        {courseTitle: "Python", class_id: "4317", ongoing: 0},
-        {courseTitle: "C# (C-Sharp)", class_id: "43", ongoing: 0}
-      ]
-    });
-    /*
-    getAllClasses().
-    then(res => {
-
-    })
-    .catch(e => {
-      if (e.status === 404) {
-        console.log("404");
-      } else {
-        this.setState({
-          modalWindow: <StatusModal
-                        title="Error: Could not reach server"
-                        text="Please try again later"
-                        onClose={() => {
-                          this.props.history.push("/a/");
-                        }}/>
-        })
-      }
-    }
-    }
-    })
-    */
+    this.getAllClasses();
   }
 
+
+  getAllClasses() {
+    this.setState({
+      modalWindow:
+        <LoadingModal text="Getting classes ..." />
+    });
+    getClassList()
+    .then(classData => {
+      this.setState({modalWindow: "", classList: classData});
+    })
+    .catch(err => {
+      this.setState({modalWindow: ""});
+      this.setState({
+        modalWindow:
+          <LoadingModal text={err.msg} />
+      })
+      setTimeout(() => this.props.history.push('/a'), 1000);
+    })
+  }
 
   render() {
     return (

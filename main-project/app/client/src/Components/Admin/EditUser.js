@@ -7,6 +7,7 @@ import StatusModal from '../Util/StatusModal';
 import LoadingModal from '../Util/LoadingModal';
 
 import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { getUser, editUser } from '../../Actions/admin';
 
 import "../CSS/Admin/EditUser.css";
 import "../CSS/Common.css";
@@ -21,14 +22,106 @@ class EditUser extends React.Component {
       userType: 1,
       firstName: "",
       lastName: "",
-      id: "",
       telephone: "",
       parentEmail: "",
-      password: "",
+      age: 8,
+      //password: "",
       changePassword: 0,
       isStudent: 0
     };
-    this.resetChanges = () => null;
+  }
+
+  componentDidMount() {
+    this.getUserDetails();
+  }
+
+  getUserDetails() {
+    this.setState({
+      modalWindow:
+        <LoadingModal text="Getting user data ..." />
+    });
+    getUser(this.email)
+    .then(user => {
+      this.setState({
+        modalWindow: "",
+        userType: user.userType,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        telephone: user.phoneNumber,
+        isStudent: ( user.userType == 4 ? 1 : 0 ),
+        age: ( user.userType == 4 ? user.age : "" ),
+        parentEmail: ( user.userType == 4 ? user.parentEmail : "")
+      });
+    })
+    .catch(err => {
+      this.setState({modalWindow: ""})
+      if (err.stat === 403) {
+        this.setState({
+          modalWindow:
+            <LoadingModal text={
+                <span>
+                  Your login has expired
+                  <br />
+                  Please reauthenticate
+                  <br />
+                  Singing you out ...
+                </span>
+            }/>
+        })
+        setTimeout(() => window.location.reload(0), 1000);
+      } else {
+        this.setState({
+          modalWindow:
+            <LoadingModal text={err.msg} />
+        })
+        setTimeout(() => this.props.history.push('/a/user'), 1000);
+      }
+    })
+  }
+
+  editUser() {
+    editUser(this.email, this.state)
+    .then(() => {
+      this.setState({
+        modalWindow:
+          <StatusModal title="User Editing Succesfsul"
+            text={`Changes were successfully applied to ${this.email}.`}
+            onClose={() => this.setState({modalWindow: ""})}
+          />
+      })
+    })
+    .catch(err => {
+      this.setState({modalWindow: ""})
+      if (err.stat === 403) {
+        this.setState({
+          modalWindow:
+            <LoadingModal text={
+                <span>
+                  Your login has expired
+                  <br />
+                  Please reauthenticate
+                  <br />
+                  Singing you out ...
+                </span>
+            }/>
+        })
+        setTimeout(() => window.location.reload(0), 1000);
+      } else if (err.stat === 404) {
+        this.setState({
+          modalWindow:
+            <LoadingModal text={err.msg} />
+        })
+        setTimeout(() => this.props.history.push('/a/user'), 1000);
+      } else {
+        this.setState({
+          modalWindow:
+            <StatusModal title="User Editing Unsuccesfsul"
+              text={err.msg}
+              onClose={() => this.setState({modalWindow: ""})}
+            />
+        })
+      }
+    })
   }
 
   render() {
@@ -70,7 +163,7 @@ class EditUser extends React.Component {
                     </span>
                     <span>Age:&nbsp;
                       <input disabled={!this.state.isStudent}
-                      type="text" value={this.state.age}
+                      type="number" value={this.state.age}
                       onChange={e => this.setState({age: e.target.value})}/>
                     </span>
                   </div>
@@ -83,8 +176,8 @@ class EditUser extends React.Component {
                       <input style={{visibility: "hidden"}} type="text"/>
                     </span>
                     <span>Phone #:&nbsp;
-                      <input type="tel" value={this.state.lastName}
-                      onChange={e => this.setState({lastName: e.target.value})}/>
+                      <input type="tel" value={this.state.telephone}
+                      onChange={e => this.setState({telephone: e.target.value})}/>
                     </span>
                     <span>Parent Email:&nbsp;
                       <input disabled={!this.state.isStudent}
@@ -93,21 +186,22 @@ class EditUser extends React.Component {
                     </span>
                   </div>
                 </div>
-                <div id="suePasswordField">
+                {/*}<div id="suePasswordField">
                   <span>Change Password?&nbsp;&nbsp;
                     <input type="checkbox" onChange={e =>  {
                       this.setState({changePassword: !this.state.changePassword});
                     }}/>
-                    {/* For vertical-centering of what comes before this. */}
+                    {// For vertical-centering of what comes before this.}
                     <input type="text" className="hidden" style={{width: 0}}/>
                   </span>
                   <input type="password"
                   placeholder="new password"
                   disabled={!this.state.changePassword}/>
-                </div>
+              </div>*/}
                 <div id="sueButtonField">
                   <button>Save Changes</button>
-                  <input type="reset" value="Reset Changes"/>
+                  <input type="reset" value="Reset Changes"
+                    onSubmit={this.getUserDetails}/>
                 </div>
               </form>
             </div>
