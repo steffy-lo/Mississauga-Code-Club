@@ -287,6 +287,12 @@ def deleteMarkingSection(classId, sectionTitle):
     for s in classContent['students']:
         deleteMark(classId, s, sectionTitle)
 
+def updateClassInfo(classId, json):
+    """
+    Updates the class info using json
+    """
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : json})
+
 def setClassActiveStatus(classId, status):
     """
     Sets the active status of a class to status
