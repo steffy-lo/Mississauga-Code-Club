@@ -320,7 +320,7 @@ def updateCourseInfo():
 
     return jsonify({'success' : True})
 
-@app.route('/api/getclass')
+@app.route('/api/getclass', methods=['POST'])
 def getClass():
     """
     Takes in a JSON of the form {'_id' : String}

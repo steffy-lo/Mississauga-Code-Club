@@ -59,6 +59,33 @@ export const getClassList = () => {
   });
 }
 
+export const getClass = (id) => {
+  return new Promise((resolve, reject) => {
+    axios.post(PREFIX + "/api/getclass",
+    JSON.stringify({'_id': id}),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => {
+      if (!res || !res.data || !res.data.result) throw {stat: 500, statusText: "Something went wrong"};
+      resolve(res.data.result);
+    })
+    .catch(err => {
+      if (err.response.status === 403 || err.response.status === 401) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: "Missing class id."});
+      } else if (err.response.status === 404) {
+        reject({stat: 404, msg: `There was no class found with the given id.`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
 export const createUser = (details) => {
   return new Promise((resolve, reject) => {
     if (details.firstName === "" || details.lastName === "" ||

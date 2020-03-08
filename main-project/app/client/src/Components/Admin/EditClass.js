@@ -5,8 +5,10 @@ import { uid } from 'react-uid';
 import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
 import LoadingModal from '../Util/LoadingModal';
+import ActiveNotification from '../Util/ActiveNotification';
 
 import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { getClass } from '../../Actions/admin';
 
 import "../CSS/Admin/EditClass.css";
 import "../CSS/Common.css";
@@ -14,10 +16,10 @@ import "../CSS/Common.css";
 class EditClass extends React.Component {
   constructor(props) {
     super(props);
-    this.class_id = props.match.params.class_id;
+    this.id = props.match.params.class_id;
     this.state = {
       modalWindow: "",
-
+      actionDisplay: "",
       //Teachers
       teacherList: [],
       //Students
@@ -31,25 +33,48 @@ class EditClass extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({
-      criteriaList: {
-        "For-loops": 4,
-        "Quantum Magic": 18
-      },
-      teacherList: [
-        "bebil@pebil.com",
-        "debil@gebil.com"
-      ],
-      studentList: [
-        "abla@asdasd.com",
-        "kadabla@asdasdasd.com"
-      ]
-    });
+    this.getClassData();
+  }
+
+  getClassData() {
+    getClass(this.id)
+    .then(classData => {
+      console.log(classData);
+      this.setState({
+
+      })
+    })
+    .catch(err => {
+      console.log(err);
+      this.setState({modalWindow: ""})
+      if (err.stat === 403) {
+        this.setState({
+          modalWindow:
+            <LoadingModal text={
+                <span>
+                  Your login has expired
+                  <br />
+                  Please reauthenticate
+                  <br />
+                  Singing you out ...
+                </span>
+            }/>
+        })
+        setTimeout(() => window.location.reload(0), 1000);
+      } else {
+        this.setState({
+          modalWindow:
+            <LoadingModal text={err.msg} />
+        })
+        setTimeout(() => this.props.history.push('/a/class'), 1000);
+      }
+    })
   }
 
   render() {
     return(
       <React.Fragment>
+        {this.state.actionDisplay}
         {this.state.modalWindow}
         <NavbarGeneric/>
           <div className="absolute fillContainer flex verticalCentre">
@@ -69,7 +94,7 @@ class EditClass extends React.Component {
                       <div className="singleEntry2Spaced">
                         <span>Class ID#:&nbsp;
                           <input disabled type="text"
-                          value={this.class_id}
+                          value={this.id}
                           />
                         </span>
                         <span className="flex verticalCentre">
