@@ -84,7 +84,7 @@ class EditUser extends React.Component {
     .then(() => {
       this.setState({
         modalWindow:
-          <StatusModal title="User Editing Succesfsul"
+          <StatusModal title="User Editing Successful"
             text={`Changes were successfully applied to ${this.email}.`}
             onClose={() => this.setState({modalWindow: ""})}
           />
