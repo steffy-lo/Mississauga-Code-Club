@@ -1,6 +1,9 @@
 import React from 'react';
 import './App.css';
 import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
+
+import { ARoute, TRoute, VRoute, SRoute, LRoute } from './Components/Util/SecuredRoutes';
+
 import Login from './Components/Auth/Login';
 
 import StudentDash from './Components/Student/StudentDash';
@@ -24,21 +27,21 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/s" component={StudentDash}/>
-        <Route exact path="/s/grades" component={StudentGrades}/>
-        <Route exact path="/a" component={AdminDash}/>
-        <Route exact path="/a/hours" component={ViewHours}/>
-        <Route exact path="/a/checkin" component={CheckIn}/>
-        <Route exact path="/a/user" component={SelectUser}/>
-        <Route exact path="/a/c/user" component={CreateUser}/>
-        <Route exact path="/a/user/:email" component={EditUser}/>
-        <Route exact path="/a/class" component={SelectClass}/>
-        <Route exact path="/a/class/:class_id" component={EditClass}/>
-        <Route exact path="/v" component={ViewHours}/>
+        <SRoute exact path="/s" component={StudentDash}/>
+        <SRoute exact path="/s/grades" component={StudentGrades}/>
+        <ARoute exact path="/a" component={AdminDash}/>
+        <ARoute exact path="/a/hours" component={ViewHours}/>
+        <ARoute exact path="/a/checkin" component={CheckIn}/>
+        <ARoute exact path="/a/user" component={SelectUser}/>
+        <ARoute exact path="/a/c/user" component={CreateUser}/>
+        <ARoute exact path="/a/user/:email" component={EditUser}/>
+        <ARoute exact path="/a/class" component={SelectClass}/>
+        <ARoute exact path="/a/class/:class_id" component={EditClass}/>
+        <VRoute exact path="/v" component={ViewHours}/>
         {/*}<Route exact path="/v/hours" component={ViewHours}/>*/}
-        <Route exact path="/t" component={TeacherDash}/>
-        <Route exact path="/t/hours" component={ViewHours}/>
-        <Route exact path="/" component={Login}/>
+        <TRoute exact path="/t" component={TeacherDash}/>
+        <TRoute exact path="/t/hours" component={ViewHours}/>
+        <LRoute exact path="/" component={Login}/>
         <Redirect from="/" to="/" />
       </Switch>
     </BrowserRouter>

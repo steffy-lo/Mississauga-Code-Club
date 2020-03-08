@@ -31,7 +31,7 @@ export const authenticate = (email, password) => {
     {headers: {"Content-Type": "application/json"}})
     .then(type => {
       if (!type || !type.data) throw {status: 500, statusText: "Something went wrong"};
-      localStorage.setItem('uType', type.data.userType);
+      sessionStorage.setItem('uType', type.data.userType);
       setState('email', email);
       setState('prefix', PREFIX);
       resolve(['/a', '/t', '/v', '/s'][type.data.userType - 1]);
@@ -40,6 +40,14 @@ export const authenticate = (email, password) => {
       reject(err);
     })
   })
+}
+
+export const isLocalAuthorised = () => {
+  return ["1", "2", "3", "4"].includes(sessionStorage.getItem('uType'));
+}
+
+export const getAuth = () => {
+  return sessionStorage.getItem('uType');
 }
 
 /*
@@ -55,7 +63,7 @@ export const authenticate = (email, password) => {
 export const logout = () => {
   axios.get(PREFIX + "/logout")
   .then(res => {
-    localStorage.removeItem('uType');
+    sessionStorage.removeItem('uType');
   })
   .catch(err => console.log(err));
 }
