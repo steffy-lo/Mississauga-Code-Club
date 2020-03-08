@@ -7,7 +7,6 @@ class StatusModal extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log(props.colourScheme);
     this.title = props.title === null || props.title === undefined ?
       "" : props.title;
     this.text = props.text === null || props.text === undefined ?

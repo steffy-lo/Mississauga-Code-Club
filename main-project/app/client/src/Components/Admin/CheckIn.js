@@ -2,6 +2,9 @@ import React from 'react';
 
 import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
+import LoadingModal from '../Util/LoadingModal';
+
+import { checkIn } from '../../Actions/admin';
 
 import "../CSS/Admin/CheckIn.css";
 
@@ -13,23 +16,25 @@ class CheckIn extends React.Component {
       email: "",
       paid: 1,
       reason: "",
+      numHours: "",
 
       userRole: "",
       userName: "",
 
       modalWindow: "",
       isVolunteer: 0,
-      submittable: 0
+      submittable: 1
     }
     this.clearParams = () => {
       this.setState({
         email: "",
         paid: 1,
         reason: "",
+        numHours: 0,
         userName: "",
         userRole: "",
-        isVolunteer: 0,
-        submittable: 0
+        isVolunteer: "",
+        submittable: 1
       })
     };
   }
@@ -60,30 +65,30 @@ class CheckIn extends React.Component {
                   e.preventDefault();
                   console.log("Fetch target");
                 }}>
+                <span><b>Email</b>:&nbsp;
                 <input
                   autoFocus={true}
                   type="email"
-                  placeholder="email"
                   value={this.state.email}
                   onChange={e => this.setState({email: e.target.value})}/>
-
-                <button type="submit" onClick={e => {
+                </span>
+                {/*}<button type="submit" onClick={e => {
                     //axios.get("/api/gcUser")
                   }}>
                   Confirm
-                </button>
+                </button>*/}
               </form>
 
               <form id="checkInMCDetailsForm">
 
-                <div id="checkInMCDetailsHeader">
+                {/*}<div id="checkInMCDetailsHeader">
                   <div>
                     Role: {this.state.userRole}
                   </div>
                   <div>
                     Name: {this.state.userName}
                   </div>
-                </div>
+                </div>*/}
 
                 <div id="checkInMCDetailsMain">
                   <div id="detailPaidSelector">
@@ -107,11 +112,16 @@ class CheckIn extends React.Component {
                   </div>
                   <div id="detailEventSelector">
                     <h2>
-                      Reason:
+                      Details:
                     </h2>
                     <input type="text" placeholder="reason"
                       value={this.state.reason}
                       onChange={e=> this.setState({reason: e.target.value})}
+                      disabled={!this.state.submittable}>
+                    </input>
+                    <input type="number" placeholder="hours"
+                      step="0.25" value={this.state.numHours}
+                      onChange={e=> {this.setState({numHours: e.target.value})}}
                       disabled={!this.state.submittable}>
                     </input>
                   </div>
@@ -120,7 +130,62 @@ class CheckIn extends React.Component {
                 <div id="mcwButtons">
                   <button type="submit"
                     disabled={!this.state.submittable}
-                    >
+                    onClick={e => {
+                      e.preventDefault();
+                      const properHours = this.state.numHours -
+                        this.state.numHours % 0.25;
+                      this.setState({
+                        email: this.state.email.trim(),
+                        reason: this.state.reason.trim(),
+                        numHours: properHours,
+                        modalWindow:
+                          <LoadingModal text="Checking in ..."/>
+                      });
+                      checkIn(this.state.email, this.state.reason,
+                        this.state.numHours, this.state.paid)
+                      .then(time => {
+                        this.setState({
+                          modalWindow:
+                            <StatusModal
+                              title="Check-in Successful"
+                              text={<span>{`User: ${this.state.email}`}<br/>
+                              {`checked in for ${this.state.reason}`}<br/>
+                              {`at ${time}`}<br/>
+                              {`for ${this.state.numHours} hours`}</span>}
+                              onClose={() => {
+                                this.clearParams();
+                                this.setState({modalWindow: ""});
+                              }}
+                            />
+                        })
+                      })
+                      .catch(err => {
+                        let clFunc = () => this.setState({modalWindow: ""});
+                        if (err.stat === 403) {
+                          this.setState({modalWindow: ""});
+                          this.setState({
+                            modalWindow:
+                              <LoadingModal text={
+                                  <span>
+                                    Invalid Login
+                                    <br />
+                                    Singing you out ...
+                                  </span>
+                              }/>
+                          })
+                          setTimeout(() => window.location.reload(0), 1000);
+                        } else {
+                          this.setState({
+                            modalWindow:
+                              <StatusModal
+                                title="Check-in Failed"
+                                text={err.msg}
+                                onClose={clFunc}
+                              />
+                          })
+                        }
+                      })
+                    }}>
                     {"Check-in"}
                   </button>
                   <button type="reset"

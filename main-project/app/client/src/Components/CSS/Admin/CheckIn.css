@@ -98,3 +98,12 @@
 #mcwButtons button:disabled {
   cursor: not-allowed;
 }
+
+#detailEventSelector {
+  display: flex;
+  flex-direction: column;
+}
+
+#detailEventSelector input {
+  margin: 5px;
+}

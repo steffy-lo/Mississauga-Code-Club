@@ -42,6 +42,8 @@ export const authenticate = (email, password) => {
   })
 }
 
+export const deauthorise = () => sessionStorage.removeItem('uType');
+
 export const isLocalAuthorised = () => {
   return ["1", "2", "3", "4"].includes(sessionStorage.getItem('uType'));
 }
