@@ -47,11 +47,9 @@ class CreateClass extends React.Component {
                       <StatusModal title="Class Creation Successful"
                         text={
                           <span>
-                            {`Class ${this.state.nameOfClass}`}
+                            {`Class "${this.state.nameOfClass}"`}
                             <br />
-                            {`with id: ${class_id}`}
-                            <br />
-                            created
+                            was successfully created
                           </span>
                           }
                         textB="Edit"

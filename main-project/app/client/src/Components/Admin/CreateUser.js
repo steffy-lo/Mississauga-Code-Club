@@ -23,7 +23,7 @@ class CreateUser extends React.Component {
       email: "",
       telephone: "",
       parentEmail: "",
-      age: 8,
+      birthday: "",
       password: "",
       isStudent: 1
     };

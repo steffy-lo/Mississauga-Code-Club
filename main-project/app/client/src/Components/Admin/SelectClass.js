@@ -18,7 +18,7 @@ class SelectClass extends React.Component {
     super(props);
     this.state = {
       modalWindow: "",
-      onGoing: 1,
+      onGoing: true,
       classList: []
     };
   }
@@ -35,6 +35,7 @@ class SelectClass extends React.Component {
     });
     getClassList()
     .then(classData => {
+      console.log(classData);
       this.setState({modalWindow: "", classList: classData});
     })
     .catch(err => {
@@ -58,15 +59,15 @@ class SelectClass extends React.Component {
 
               <div id="sumwpwTypeSelector">
                 <button
-                onClick={e => this.setState({onGoing: 1})}
-                className={this.state.onGoing === 1 ?
+                onClick={e => this.setState({onGoing: true})}
+                className={this.state.onGoing === true ?
                   "sumwpwSelected" : "sumwpwNotSelected" }
                 id="sumwpwTeachers">
                   Ongoing Classes
                 </button>
                 <button
-                onClick={e => this.setState({onGoing: 0})}
-                className={this.state.onGoing === 0 ?
+                onClick={e => this.setState({onGoing: false})}
+                className={this.state.onGoing === false ?
                   "sumwpwSelected" : "sumwpwNotSelected" }
                 id="sumwpwAdmins">
                   Completed Classes
@@ -81,7 +82,6 @@ class SelectClass extends React.Component {
                   <thead>
                   <tr>
                     <th>Title</th>
-                    <th>ID</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -121,15 +121,11 @@ class SelectClass extends React.Component {
               `${classEntry.ongoing ? "sluTeacher": "sluAdmin"}`
             }
             onClick={e=> {
-
-            this.props.history.push(`/a/class/${classEntry.class_id}`);
+            this.props.history.push(`/a/class/${classEntry.id}`);
             }}
-            key={classEntry.class_id}>
+            key={classEntry.id}>
             <td>
-              {classEntry.courseTitle}
-            </td>
-            <td>
-              {classEntry.class_id}
+              {classEntry.title}
             </td>
           </tr>
         );

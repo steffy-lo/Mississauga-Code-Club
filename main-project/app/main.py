@@ -97,6 +97,16 @@ def updatePassword():
     dbworker.setPassword(str(email), request.json['password'])
     return jsonify({'success' : True})
 
+@app.route('/api/admin/getclasses')
+def getAllClasses():
+    """
+    Returns a list of class ids from the database
+    """
+    if 'email' not in session or session['email'] is None:
+        abort(403)
+
+    return jsonify({'classList' : dbworker.getAllClasses()})
+
 @app.route('/api/getclasses')
 @app.route('/getclasses')
 def getClasses():
@@ -463,7 +473,7 @@ def editUser():
 
     return jsonify({'success' : True})
 
-@app.route('/api/admin/createcourse')
+@app.route('/api/admin/createcourse', methods=['POST'])
 def createCourse():
     """
     Takes in a JSON of {'courseTitle'}
@@ -478,7 +488,7 @@ def createCourse():
 
     val = dbworker.createClass(request.json['courseTitle'], [], [], None)
 
-    return jsonify({'_id' : str(val['insertedId']), 'success' : True})
+    return jsonify({'success' : True})
 
 @app.route('/api/admin/addstudent')
 def addStudent():

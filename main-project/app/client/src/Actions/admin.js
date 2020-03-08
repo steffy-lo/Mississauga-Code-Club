@@ -32,14 +32,14 @@ export const checkIn = (email, purpose, hours, paid) => {
   });
 }
 
-export const createClass = (title) => {
+export const createClass = (courseTitle) => {
   return new Promise((resolve, reject) => {
-    if (title === "") reject({stat: 400, msg: "Classnames should not be empty"});
-    axios.post(PREFIX + "/api/newClass", JSON.stringify(title),
+    if (courseTitle === "") reject({stat: 400, msg: "Classnames should not be empty"});
+    axios.post(PREFIX + "/api/admin/createcourse", JSON.stringify({ courseTitle }),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
-      resolve(res.data.class_id);
+      //if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
+      resolve(res.data.id);
     })
     .catch(err => {
       standardReject(err.response, reject);

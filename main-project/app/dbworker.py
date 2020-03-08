@@ -199,6 +199,15 @@ def getClasses(email, filt={}):
 
     return retJSON
 
+def getAllClasses():
+    allClasses = mclient[database]['classes'].find({})
+    
+    compiledList = []
+
+    for c in allClasses:
+        compiledList.append({'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']})
+    return compiledList
+
 def addEmptyReport(classId, studentEmail):
     """
     Adds an empty marking report for studentEmail to classId to be filled in later
