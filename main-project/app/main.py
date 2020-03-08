@@ -559,6 +559,47 @@ def addInstructor():
     return jsonify({'success' : True})
 
 
+@app.route('/api/admin/createuser')
+def createUser():
+    """
+    Takes in a JSON of the structure
+    {
+    "email": "test@admin.com",
+    "password": "PLAINTEXT PASSWORD HERE",
+    "userType": 1,
+    "firstName": "Test",
+    "lastName": "Admin",
+    "phoneNumber": "555-555-5555",
+    "birthday": "YYYY-MM-DD",
+    "parentEmail" : "",
+    "parentName" : ""
+    }
+
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    for x in ['email', 'password', 'userType', 'firstName', 'lastName', 'phoneNumber', 'birthday', 'parentEmail', 'parentName']:
+        if x not in request.json:
+            abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    # TODO: Verify no duplicate email here or in the dbworker method
+    # likely better to do it there
+
+    parentEmail = mailsane.normalize(request.json['parentEmail'])
+    if parentEmail.error:
+        abort(400)
+
+    # TODO: Validate types
+    dbworker.createUser(email, parentEmail, request.json['firstName'], request.json['lastName'], request.json['password'], request.json['userType'], request.json['phoneNumber'], request.json['birthday'], request.json['parentName'])
+
+    return jsonify({'success' : True})
 
 
 
