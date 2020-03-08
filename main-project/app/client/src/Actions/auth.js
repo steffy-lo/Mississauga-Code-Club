@@ -2,7 +2,7 @@ import { setState } from "statezero";
 import axios from "axios";
 
 /* For local debugging */
-const DEBUG = 1;
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -31,7 +31,7 @@ export const authenticate = (email, password) => {
     {headers: {"Content-Type": "application/json"}})
     .then(type => {
       if (!type || !type.data) throw {status: 500, statusText: "Something went wrong"};
-      setState('uType', type.data.userType);
+      localStorage.setItem('uType', type.data.userType);
       setState('email', email);
       setState('prefix', PREFIX);
       resolve(['/a', '/t', '/v', '/s'][type.data.userType - 1]);
@@ -55,7 +55,7 @@ export const authenticate = (email, password) => {
 export const logout = () => {
   axios.get(PREFIX + "/logout")
   .then(res => {
-    setState('uType', null);
+    localStorage.removeItem('uType');
   })
   .catch(err => console.log(err));
 }
