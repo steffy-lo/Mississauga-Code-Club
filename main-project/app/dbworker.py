@@ -11,8 +11,14 @@ DBPASSWORD = "alfdasdf83423j4lsdf8"
 MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md?retryWrites=false"
 
 mclient = MongoClient(MONGOURI)
-
 database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
+
+# IF DEPLOYING TO DELIVERABLE 2, USE THE FOLLOWING LINES TO SWAP THE DB
+# MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds249035.mlab.com:49035/heroku_nf9149n7?retryWrites=false"
+
+# mclient = MongoClient(MONGOURI)
+# database = 'heroku_nf9149n7' # This is a database within a MongoDB instance
+
 
 def getUsers(filt={}, projection={}):
     """
@@ -253,7 +259,7 @@ def getClass(classId):
     """
     Gets the class associated with classId
     """
-    return mclient[database]['classes'].find({'_id' : classId})
+    return mclient[database]['classes'].find_one({'_id' : classId})
 
 def addMarkingSection(classId, sectionTitle, weightInfo):
     """
