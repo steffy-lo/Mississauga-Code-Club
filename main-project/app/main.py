@@ -399,7 +399,7 @@ def getUsers():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    uList = dbworker.getUsers(projection={'_id' : 0, 'email' : 1, 'firstName': 1, 'lastName' : 1})
+    uList = dbworker.getUsers(projection={'_id' : 0, 'email' : 1, 'firstName': 1, 'lastName' : 1, 'userType': 1})
 
     fixedList = []
     for x in uList:

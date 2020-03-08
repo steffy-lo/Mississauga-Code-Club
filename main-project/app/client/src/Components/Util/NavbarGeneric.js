@@ -17,9 +17,12 @@ class NavbarGeneric extends React.Component {
             console.log('Back to dashboard');
           }}>{type}</Link>
 
-           <Link to='/' id='logoutB' onClick={e => {
-            logout()
-          }}>Logout</Link>
+        <span id='logoutB' onClick={e => {
+            logout().then(() => {
+            console.log("Logged out, I guess")
+            window.location.reload(0)
+            })
+          }}>Logout</span>
 
 
         </div>

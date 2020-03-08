@@ -63,9 +63,16 @@ export const getAuth = () => {
   On failure, outputs error to console.
 */
 export const logout = () => {
-  axios.get(PREFIX + "/logout")
-  .then(res => {
-    sessionStorage.removeItem('uType');
+  return new Promise((resolve, reject) => {
+    axios.get(PREFIX + "/logout")
+    .then(res => {
+      sessionStorage.removeItem('uType');
+      resolve();
+    })
+    .catch(err => {
+      console.log(err);
+      sessionStorage.removeItem('uType');
+      resolve();
+    });
   })
-  .catch(err => console.log(err));
 }

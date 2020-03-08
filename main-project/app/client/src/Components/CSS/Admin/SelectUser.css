@@ -93,8 +93,8 @@
 
 #selectUserScrollableList table {
   width: 100%;
-  text-align: center;
-  border-collapse:collapse
+  text-align: left;
+  border-collapse:collapse;
 }
 
 #selectUserScrollableList tr {
@@ -102,6 +102,15 @@
   transition: background-color 0.15s linear;
   color: black;
   padding: 3px 10px;
+}
+
+#selectUserScrollableList th {
+  padding: 0 10px;
+}
+
+#selectUserScrollableList tr:hover th{
+  background-color: ghostwhite;
+  color: black;
 }
 
 #selectUserScrollableList td {
