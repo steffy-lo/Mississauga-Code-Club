@@ -320,7 +320,30 @@ def updateCourseInfo():
 
     return jsonify({'success' : True})
 
+@app.route('/api/getclass')
+def getClass():
+    """
+    Takes in a JSON of the form {'_id' : String}
 
+    Returns all the information for a class including _id stringified
+
+    {'result' : None/JSON, 'success' : Boolean}
+    """
+
+    if '_id' not in request.json:
+        abort(400)
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(401)
+
+    # TODO: Validate types
+
+    cl = dbworker.getClass(ObjectId(request.json['_id']))
+    if cl is None:
+        abort(404)
+
+    cl['_id'] = str(cl['_id'])
+    return jsonify({'result' : cl, 'success' : True})
 
 @app.route('/api/mymarks/')
 def getMyMarks():
