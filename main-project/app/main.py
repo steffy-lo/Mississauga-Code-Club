@@ -480,6 +480,78 @@ def createCourse():
 
     return jsonify({'_id' : str(val['insertedId']), 'success' : True})
 
+@app.route('/api/admin/addstudent')
+def addStudent():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Adds <email> to <classId> as a student
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] != dbworker.userTypeMap['student']:
+        abort(400)
+
+    dbworker.addStudent(convClassId, str(email))
+
+    return jsonify({'success' : True})
+
+@app.route('/api/admin/addinstructor')
+def addInstructor():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Adds <email> to <classId> as an instructor
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
+        abort(400)
+
+    dbworker.addInstructor(convClassId, str(email))
+
+    return jsonify({'success' : True})
+
+
+
+
+
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
