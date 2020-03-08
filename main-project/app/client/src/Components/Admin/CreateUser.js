@@ -23,6 +23,7 @@ class CreateUser extends React.Component {
       email: "",
       telephone: "",
       parentEmail: "",
+      parentName: "",
       birthday: "",
       password: "",
       isStudent: 1
@@ -74,10 +75,10 @@ class CreateUser extends React.Component {
                       <input required type="text" value={this.state.lastName}
                       onChange={e => this.setState({lastName: e.target.value})}/>
                     </span>
-                    <span>Age:&nbsp;
+                    <span>Birthday:&nbsp;
                       <input disabled={!this.state.isStudent}
-                      type="number" value={this.state.age}
-                      onChange={e => this.setState({age: e.target.value})}/>
+                      type="date" value={this.state.birthday}
+                      onChange={e => this.setState({birthday: e.target.value})}/>
                     </span>
                   </div>
                   <div id="ssfwRight">
@@ -87,14 +88,21 @@ class CreateUser extends React.Component {
                     </span>*/}
                     <span>Phone #:&nbsp;
                       <input type="tel" value={this.state.telephone}
-                      pattern="[0-9]{3} [0-9]{3}-[0-9]{4}"
+                      pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                       onChange={e => this.setState({telephone: e.target.value})}/>
                     </span>
                     <span>
                     Password:&nbsp;
                     <input type="password"
                     placeholder=""
+                    value={this.state.password}
+                    onChange={e => this.setState({password: e.target.value})}
                     />
+                    </span>
+                    <span>Parent Name:&nbsp;
+                      <input disabled={!this.state.isStudent}
+                      type="text" value={this.state.parentName}
+                      onChange={e => this.setState({parentName: e.target.value})}/>
                     </span>
                     <span>Parent Email:&nbsp;
                       <input disabled={!this.state.isStudent}
@@ -164,18 +172,7 @@ class CreateUser extends React.Component {
                       })
                     }}/>
                   <input type="reset" value="Clear Form"
-                  onClick={e => {
-                    this.setState({
-                      modalWindow: "",
-                      firstName: "",
-                      lastName: "",
-                      email: "",
-                      telephone: "",
-                      parentEmail: "",
-                      password: "",
-                      age: 8
-                    })
-                  }}/>
+                  onClick={e => window.location.reload(0)}/>
                 </div>
               </form>
             </div>
