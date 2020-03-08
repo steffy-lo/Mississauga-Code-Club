@@ -151,7 +151,7 @@ def addInstructor(courseId, email):
 
     Returns True if successful, False otherwise
     """
-    # TODO: Maybe merge this with addStudent?
+
     matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
 
     if matchingClass is None:
@@ -180,7 +180,6 @@ def getClasses(email, filt={}):
     """
     currUserType = getUserType(email)
 
-    # TODO: Is there a faster way of doing this lookup?
     # Potential issue is that we have to search inside of a db object
     allClasses = mclient[database]['classes'].find(filt)
 
