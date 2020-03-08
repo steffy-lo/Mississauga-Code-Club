@@ -259,7 +259,7 @@ def getClass(classId):
     """
     Gets the class associated with classId
     """
-    return mclient[database]['classes'].find({'_id' : classId})
+    return mclient[database]['classes'].find_one({'_id' : classId})
 
 def addMarkingSection(classId, sectionTitle, weightInfo):
     """
