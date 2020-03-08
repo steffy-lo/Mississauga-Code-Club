@@ -83,30 +83,6 @@
   margin-bottom: 5px;
 }
 
-#selectUserScrollableListB {
-  display: flex;
-  flex-direction: column;
-  height: 500px;
-  padding: 5px;
-  overflow-y: auto;
-  margin-bottom: 5px;
-  text-align: center;
-}
-
-#selectUserScrollableListB a {
-  text-decoration: none;
-  font-size: 18px;
-  transition: background-color 0.15s linear;
-  color: black;
-  padding: 3px 10px;
-}
-
-#selectUserScrollableListB a:hover { color: white; }
-
-.sluTeacher, .sluAdmin, .sluVolunteer, .sluStudent{
-  background-color: ghostwhite;
-}
-
 .sluTeacher:hover { background-color: royalblue; }
 
 .sluAdmin:hover { background-color: crimson; }
@@ -134,4 +110,32 @@
 
 #selectUserScrollableList tr:hover {
   color: white;
+}
+
+#suUCButton {
+  flex-grow: 1;
+  background-color: white;
+  justify-content: center;
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid lightgrey;
+  margin: 0 5px;
+}
+
+#suUCButton a, #suUCButton button {
+  text-decoration: none;
+  color: white;
+  background-color: crimson;
+  transition: background-color 0.15s linear;
+  padding: 10px 40px;
+  border: none;
+}
+
+#suUCButton button:hover {
+  background-color: darkred;
+  cursor: pointer;
+}
+
+#suUCButton a:hover {
+  background-color: darkred;
 }

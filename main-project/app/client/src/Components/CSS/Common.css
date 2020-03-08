@@ -28,3 +28,16 @@
 .shownF {
   display: flex;
 }
+
+.flexCol {
+  display: flex;
+  flex-direction: row;
+}
+
+.vScrollable {
+  overflow-y: auto;
+}
+
+.fill {
+  width: 100%;
+}

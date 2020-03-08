@@ -207,8 +207,14 @@ class SelectUser extends React.Component {
                   </tbody>
                   </table>
                 </div>
-              </div>
 
+                <div id="suUCButton">
+                  <Link to="/a/c/user">
+                    Create A New User
+                  </Link>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>

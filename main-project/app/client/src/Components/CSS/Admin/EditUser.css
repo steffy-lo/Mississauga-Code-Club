@@ -56,11 +56,20 @@
   margin: 5px;
 }
 
+#sueStandardFieldsWrapper input[type=number] {
+  height: 18px;
+}
+
 #suePasswordField {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   margin: 5px;
+  vertical-align: middle;
+}
+
+#suePasswordField {
+  text-align: right;
 }
 
 #suePasswordField span {

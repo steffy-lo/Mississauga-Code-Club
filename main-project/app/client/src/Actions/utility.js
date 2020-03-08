@@ -2,7 +2,7 @@ import { getState } from 'statezero';
 
 export function getUserTypeExplicit() {
   let type = "";
-  switch(getState('uType')) {
+  switch(parseInt(localStorage.getItem('uType'))) {
     case 1:
       type = "administrator";
       break
@@ -15,12 +15,12 @@ export function getUserTypeExplicit() {
     case 4:
       type = "student";
     default:
-      //type = "error";
+      type = "error";
 
       //type = "student";
       //type = "administrator";
       //type = "teacher";
-      type = "volunteer";
+      //type = "volunteer";
     }
     return type;
 }

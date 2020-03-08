@@ -10,7 +10,9 @@ import AdminDash from './Components/Admin/AdminDash';
 import CheckIn from './Components/Admin/CheckIn';
 import SelectUser from './Components/Admin/SelectUser';
 import EditUser from './Components/Admin/EditUser';
+import CreateUser from './Components/Admin/CreateUser';
 import SelectClass from './Components/Admin/SelectClass';
+import EditClass from './Components/Admin/EditClass';
 
 import VolunteerDash from './Components/Volunteer/VolunteerDash';
 
@@ -29,8 +31,10 @@ function App() {
         <Route exact path="/a/hours" component={ViewHours}/>
         <Route exact path="/a/checkin" component={CheckIn}/>
         <Route exact path="/a/user" component={SelectUser}/>
+        <Route exact path="/a/c/user" component={CreateUser}/>
         <Route exact path="/a/user/:email" component={EditUser}/>
         <Route exact path="/a/class" component={SelectClass}/>
+        <Route exact path="/a/class/:class_id" component={EditClass}/>
         <Route exact path="/v" component={ViewHours}/>
         {/*}<Route exact path="/v/hours" component={ViewHours}/>*/}
         <Route exact path="/t" component={TeacherDash}/>

@@ -5,6 +5,7 @@ import { uid } from 'react-uid';
 import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
 import LoadingModal from '../Util/LoadingModal';
+import CreateClass from '../Admin/CreateClass';
 
 import { getUserTypeExplicit } from '../../Actions/utility.js';
 
@@ -115,11 +116,33 @@ class SelectClass extends React.Component {
               <div id="selectUserMainWindow">
                 <h1>Select a Class</h1>
                 <p><i>Click on a class to view and modify its information</i></p>
-                <div id="selectUserScrollableListB">
+                <div id="selectUserScrollableList">
+                  <table>
+                  <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>ID</th>
+                  </tr>
+                  </thead>
+                  <tbody>
                   {this.generateSelectionList()}
+                  </tbody>
+                  </table>
                 </div>
-              </div>
 
+                <div id="suUCButton">
+                  <button onClick={e => {
+                      this.setState({
+                        modalWindow: <CreateClass onClose={
+                            () => {this.setState({modalWindow: ""})}
+                        }/>
+                      })
+                    }}>
+                    Create A New Class
+                  </button>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
@@ -132,15 +155,23 @@ class SelectClass extends React.Component {
     for (let classEntry of this.state.classList) {
       if (classEntry.ongoing === this.state.onGoing) {
         compiledList.push(
-          <Link
+          <tr
             className=
             {
               `${classEntry.ongoing ? "sluTeacher": "sluAdmin"}`
             }
-            to={`/a/class/${classEntry.class_id}`}
+            onClick={e=> {
+
+            this.props.history.push(`/a/class/${classEntry.class_id}`);
+            }}
             key={classEntry.class_id}>
-            {classEntry.courseTitle}
-          </Link>
+            <td>
+              {classEntry.courseTitle}
+            </td>
+            <td>
+              {classEntry.class_id}
+            </td>
+          </tr>
         );
       }
     }
