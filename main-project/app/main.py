@@ -418,7 +418,7 @@ def getUsers():
 
     return jsonify({'result' : fixedList, 'success' : True})
 
-@app.route('/api/admin/getuser', methods=['POST'])
+@app.route('/api/admin/getuser')
 def getUser():
     """
     Takes in a JSON of {'email'}
@@ -444,7 +444,7 @@ def getUser():
 
     return jsonify({'result' : u, 'success' : True})
 
-@app.route('/api/admin/edituser', methods=['POST'])
+@app.route('/api/admin/edituser', methods=['PATCH'])
 def editUser():
     """
     Takes in a json of the form
@@ -490,7 +490,7 @@ def createCourse():
 
     return jsonify({'success' : True})
 
-@app.route('/api/admin/addstudent')
+@app.route('/api/admin/addstudent', methods=['POST'])
 def addStudent():
     """
     Takes in a JSON of the structure {'email', 'classId'}
@@ -524,7 +524,7 @@ def addStudent():
 
     return jsonify({'success' : True})
 
-@app.route('/api/admin/addinstructor')
+@app.route('/api/admin/addinstructor', methods=['POST'])
 def addInstructor():
     """
     Takes in a JSON of the structure {'email', 'classId'}
@@ -559,7 +559,7 @@ def addInstructor():
     return jsonify({'success' : True})
 
 
-@app.route('/api/admin/createuser')
+@app.route('/api/admin/createuser', methods=['POST'])
 def createUser():
     """
     Takes in a JSON of the structure
