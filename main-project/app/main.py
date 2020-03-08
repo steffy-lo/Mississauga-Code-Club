@@ -597,7 +597,7 @@ def createUser():
         abort(400)
 
     # TODO: Validate types
-    dbworker.createUser(email, parentEmail, request.json['firstName'], request.json['lastName'], request.json['password'], request.json['userType'], request.json['phoneNumber'], request.json['birthday'], request.json['parentName'])
+    dbworker.createUser(email, parentEmail, request.json['firstName'], request.json['lastName'], request.json['password'], request.json['userType'], request.json['phoneNumber'], datetime.datetime.strptime(request.json['birthday'], '%Y-%m-%d'), request.json['parentName'])
 
     return jsonify({'success' : True})
 
