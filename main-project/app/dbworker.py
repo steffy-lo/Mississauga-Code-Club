@@ -117,7 +117,9 @@ def createClass(courseTitle, students, instructors, semester):
 
     Students and instructors are lists of emails
     """
-    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+
+    # Returns with 'A field insertedId with the _id value of the inserted document.'
+    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -287,10 +289,17 @@ def deleteMarkingSection(classId, sectionTitle):
     for s in classContent['students']:
         deleteMark(classId, s, sectionTitle)
 
+def updateClassInfo(classId, json):
+    """
+    Updates the class info using json
+    """
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : json})
+
 def setClassActiveStatus(classId, status):
     """
     Sets the active status of a class to status
     """
+    # TODO: This may no longer be in use, check later
     mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
 
 def editUser(email, changes):

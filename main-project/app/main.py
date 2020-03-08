@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 import bcrypt
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from jsonschema import validate
 import datetime
 
@@ -202,10 +203,12 @@ def setMarkingSection():
     if email.error:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
+    convClassId = ObjectId(request.json['classId'])
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
         abort(401)
 
-    dbworker.addMarkingSection(request.json['classId'], request.json['sectionTitle'], request.json['weightInfo'])
+    dbworker.addMarkingSection(convClassId, request.json['sectionTitle'], request.json['weightInfo'])
 
     return jsonify({'success' : True})
 
@@ -227,15 +230,17 @@ def deleteMarkingSection():
     if email.error:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
-        abort(401)
-
-
     for x in ['classId', 'sectionTitle']:
         if x not in request.json:
             abort(400)
 
-    dbworker.deleteMarkingSection(request.json['classId'], request.json['sectionTitle'])
+    convClassId = ObjectId(request.json['classId'])
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
+        abort(401)
+
+
+    dbworker.deleteMarkingSection(convClassId, request.json['sectionTitle'])
 
     return jsonify({'success' : True})
 
@@ -258,27 +263,28 @@ def setMark():
     if email.error:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
-        abort(401)
-
     for x in ['classId', 'studentEmail', 'sectionTitle', 'mark']:
         if x not in request.json:
             abort(400)
 
+    convClassId = ObjectId(request.json['classId'])
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
+        abort(401)
 
-    dbworker.setMark(request.json['classId'], request.json['studentEmail'], request.json['sectionTitle'], request.json['mark'])
+
+    dbworker.setMark(convClassId, request.json['studentEmail'], request.json['sectionTitle'], request.json['mark'])
 
     return jsonify({'success' : True})
 
-@app.route('/api/setactivestatus', methods=['POST', 'PATCH'])
-def setActive():
+@app.route('/api/updatecourseinfo', methods=['POST', 'PATCH'])
+def updateCourseInfo():
     """
     Takes in a JSON of the following format
-    {classId, status : Boolean}
+    {classId, status : Boolean, newTitle : String}
 
     Returns {success : Boolean}
 
-    Sets the <ongoing> of classId to <status>
+    Sets the <ongoing> of classId to <status>, and <courseTitle> to <newTitle>
     """
     # Validate credentials here
     if 'email' not in session or session['email'] is None:
@@ -288,14 +294,19 @@ def setActive():
     if email.error:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
-        abort(401)
-
-    if 'classId' not in request.json or 'status' not in request.json:
+    if 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
         abort(400)
 
+    convClassId = ObjectId(request.json['classId'])
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
+        abort(401)
 
-    dbworker.setClassActiveStatus(request.json['classId'], request.json['status'])
+
+    # TODO: Validate types
+
+    json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
+
+    dbworker.updateClassInfo(convClassId, json)
 
     return jsonify({'success' : True})
 
@@ -451,6 +462,96 @@ def editUser():
     dbworker.editUser(str(email), request.json['newAttributes'])
 
     return jsonify({'success' : True})
+
+@app.route('/api/admin/createcourse')
+def createCourse():
+    """
+    Takes in a JSON of {'courseTitle'}
+
+    Returns {'_id' : newId (String), 'success' : True}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if 'courseTitle' not in request.json:
+        abort(400)
+
+    val = dbworker.createClass(request.json['courseTitle'], [], [], None)
+
+    return jsonify({'_id' : str(val['insertedId']), 'success' : True})
+
+@app.route('/api/admin/addstudent')
+def addStudent():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Adds <email> to <classId> as a student
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] != dbworker.userTypeMap['student']:
+        abort(400)
+
+    dbworker.addStudent(convClassId, str(email))
+
+    return jsonify({'success' : True})
+
+@app.route('/api/admin/addinstructor')
+def addInstructor():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Adds <email> to <classId> as an instructor
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
+        abort(400)
+
+    dbworker.addInstructor(convClassId, str(email))
+
+    return jsonify({'success' : True})
+
+
+
+
+
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
