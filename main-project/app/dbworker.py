@@ -297,6 +297,7 @@ def setClassActiveStatus(classId, status):
     """
     Sets the active status of a class to status
     """
+    # TODO: This may no longer be in use, check later
     mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
 
 def editUser(email, changes):

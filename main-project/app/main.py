@@ -270,15 +270,15 @@ def setMark():
 
     return jsonify({'success' : True})
 
-@app.route('/api/setactivestatus', methods=['POST', 'PATCH'])
-def setActive():
+@app.route('/api/updatecourseinfo', methods=['POST', 'PATCH'])
+def updateCourseInfo():
     """
     Takes in a JSON of the following format
-    {classId, status : Boolean}
+    {classId, status : Boolean, newTitle : String}
 
     Returns {success : Boolean}
 
-    Sets the <ongoing> of classId to <status>
+    Sets the <ongoing> of classId to <status>, and <courseTitle> to <newTitle>
     """
     # Validate credentials here
     if 'email' not in session or session['email'] is None:
@@ -291,11 +291,16 @@ def setActive():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), request.json['classId']):
         abort(401)
 
-    if 'classId' not in request.json or 'status' not in request.json:
+    if 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
         abort(400)
 
 
-    dbworker.setClassActiveStatus(request.json['classId'], request.json['status'])
+    # TODO: Validate types
+
+    json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
+
+    # TODO: Do we need to convert request.json['classId'] to ObjectId?
+    dbworker.updateClassInfo(request.json['classId'], json)
 
     return jsonify({'success' : True})
 
