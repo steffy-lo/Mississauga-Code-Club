@@ -38,9 +38,7 @@ There are key features implemented for each role. The current implemented roles 
   
 
 ## Instructions
-An end-user can access the web application at this link: https://mcc-deliverable-2.herokuapp.com/
-
-* So where do you start?  
+An end-user can access the web application at this link: https://mcc-deliverable-2.herokuapp.com/ 
 
 We have set up pre-created dummy credentials for the Student and Administrator roles.
 
