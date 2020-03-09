@@ -459,9 +459,6 @@ def getHours():
     Returns a json of the form {datetime: String, purpose: String, Hours: Float, Paid: Boolean}
     """
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-        abort(403)
-
     if 'email' not in request.json:
         abort(400)
 
@@ -469,6 +466,11 @@ def getHours():
 
     if email.error:
         abort(400)
+
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'],
+                                        dbworker.userTypeMap['instructor'],
+                                        dbworker.userTypeMap['volunteer']]):
+        abort(403)
 
     hours = dbworker.getHours(filt={"email": str(email)}, projection={'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1})
 
