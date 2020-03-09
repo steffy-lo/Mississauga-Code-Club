@@ -20,3 +20,6 @@ def normalize(email):
         return NormalizedEmail(v['email'])
     except EmailNotValidError as e:
         return NormalizedEmail(str(e), error=True)
+
+if __name__ == "__main__":
+    print("This file should not be executed directly.")

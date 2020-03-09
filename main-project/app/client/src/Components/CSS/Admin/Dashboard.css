@@ -1,0 +1,87 @@
+.mainADashWindowS {
+  background-color: white;
+  width: 30%;
+  min-width: 300px;
+  margin: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 20px rgb(0, 0, 0, 0.2);
+  min-height: 400px;
+}
+
+#mADwSLeft a { background-color: royalblue; }
+
+#mADwSLeft a:hover { background-color: darkblue; }
+
+#mADwSLeft h2 { border-color: royalblue; }
+
+#mADwSLeft:hover h2 {
+  border-color: darkblue;
+  box-shadow: 0 5px 5px -5px blue;
+}
+
+.mainADashWindowS:hover h2 {
+  border-bottom-color: red;
+  box-shadow: 0 5px 5px -5px red;
+}
+
+.mainADashWindowS table {
+  width: 100%;
+
+}
+
+#aDashWelcomeTag {
+  background-color: white;
+  box-shadow: 0 0 20px rgb(0, 0, 0, 0.2);
+  padding: 10px 40px;
+  text-align: center;
+  font-size: 34px;
+  align-self: center;
+  width: auto;
+  font-weight: bold;
+  font-style: italic;
+}
+
+#mADWStableWrapper {
+  min-height: 190px;
+  align-self: center;
+  width: 95%;
+}
+
+.mainADashWindowS th {
+  background-color: lightgrey;
+  font-size: 18px;
+}
+
+.mainADashWindowS a, .mainADashWindowS span {
+  text-decoration: none;
+  padding: 10px 40px;
+  background-color: crimson;
+  color: white;
+  margin: 5px 0;
+  font-size: 18px;
+  align-self: center;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 50%;
+  border: none;
+}
+
+.mainADashWindowS a:hover, .mainADashWindowS span:hover {
+  background-color: darkred;
+  cursor: pointer;
+}
+
+.mainADashWindowS h2 {
+  font-size: 28px;
+  padding: 0;
+  margin: 0;
+  border-bottom: 2px solid crimson;
+  margin: 5px;
+}
+
+#ADashMainWrapper {
+  flex-wrap: wrap;
+  /* margin-top: -15%; */
+}

@@ -51,3 +51,10 @@ getheroku:
 login:
 	heroku login
 
+
+deltwo: buildreact build shipdeltwo clean
+
+shipdeltwo:
+	heroku container:login
+	heroku container:push web --app mcc-deliverable-2
+	heroku container:release web --app mcc-deliverable-2

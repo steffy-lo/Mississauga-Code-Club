@@ -41,7 +41,7 @@ class Login extends React.Component {
             <img alt="Mississauga Code Club Logo"
                  className="logo"
                  src={require('./images/mcc-logo.png')}/>
-            <input type="text" value={this.state.email} placeholder="email" onChange={e => {
+               <input type="email" value={this.state.email} placeholder="email" onChange={e => {
               this.setState({email: e.target.value});
             }}/>
             <input type="password" value={this.state.pass} placeholder="password" onChange={e => {

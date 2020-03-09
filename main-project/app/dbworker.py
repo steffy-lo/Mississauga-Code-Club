@@ -11,8 +11,20 @@ DBPASSWORD = "alfdasdf83423j4lsdf8"
 MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md?retryWrites=false"
 
 mclient = MongoClient(MONGOURI)
-
 database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
+
+# IF DEPLOYING TO DELIVERABLE 2, USE THE FOLLOWING LINES TO SWAP THE DB
+# MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds249035.mlab.com:49035/heroku_nf9149n7?retryWrites=false"
+
+# mclient = MongoClient(MONGOURI)
+# database = 'heroku_nf9149n7' # This is a database within a MongoDB instance
+
+
+def getUsers(filt={}, projection={}):
+    """
+    Get all users that match a filter
+    """
+    return mclient[database]['users'].find(filt, projection)
 
 def getUser(username):
     """
@@ -62,7 +74,7 @@ def validateAccessList(expectedUserTypes):
     session data to determine if their username is valid and one of the
     expectedUserTypes, return boolean, True if valid, False if invalid
     """
-    if session['email'] is None:
+    if 'email' not in session or session['email'] is None:
         return False
 
     email = mailsane.normalize(session['email'])
@@ -83,7 +95,7 @@ def validateAccess(expectedUserType):
     """
     return validateAccessList([expectedUserType])
 
-def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, age, parentName):
+def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, birthday, parentName):
     """
     Create a user and add them to the database
     """
@@ -91,7 +103,7 @@ def createUser(email, parentEmail, firstName, lastName, password, userType, phon
     password = password.encode()
 
     saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
-    mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'age' : age, 'parentName' : parentName})
+    mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'birthday' : birthday, 'parentName' : parentName})
 
 def setPassword(email, newPassword):
     """
@@ -111,7 +123,9 @@ def createClass(courseTitle, students, instructors, semester):
 
     Students and instructors are lists of emails
     """
-    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+
+    # Returns with 'A field insertedId with the _id value of the inserted document.'
+    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -131,6 +145,9 @@ def addStudent(courseId, email):
 
     studentList = matchingClass['students'][:]
 
+    if email in studentList:
+        return False
+
     studentList.append(email)
 
     mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}})
@@ -145,7 +162,7 @@ def addInstructor(courseId, email):
 
     Returns True if successful, False otherwise
     """
-    # TODO: Maybe merge this with addStudent?
+
     matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
 
     if matchingClass is None:
@@ -157,6 +174,9 @@ def addInstructor(courseId, email):
         return False
 
     staffList = matchingClass['instructors'][:]
+
+    if email in staffList:
+        return False
 
     staffList.append(email)
 
@@ -174,7 +194,6 @@ def getClasses(email, filt={}):
     """
     currUserType = getUserType(email)
 
-    # TODO: Is there a faster way of doing this lookup?
     # Potential issue is that we have to search inside of a db object
     allClasses = mclient[database]['classes'].find(filt)
 
@@ -197,6 +216,15 @@ def addHoursLog(email, purpose, paid, datetime, hours):
     Adds an hours log for a user by email
     """
     mclient[database]['hours'].insert_one({'email' : email, 'purpose': purpose, 'paid' : paid, 'dateTime' : datetime, 'hours' : hours})
+
+def getAllClasses():
+    allClasses = mclient[database]['classes'].find({})
+    
+    compiledList = []
+
+    for c in allClasses:
+        compiledList.append({'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']})
+    return compiledList
 
 def addEmptyReport(classId, studentEmail):
     """
@@ -243,7 +271,7 @@ def getClass(classId):
     """
     Gets the class associated with classId
     """
-    return mclient[database]['classes'].find({'_id' : classId})
+    return mclient[database]['classes'].find_one({'_id' : classId})
 
 def addMarkingSection(classId, sectionTitle, weightInfo):
     """
@@ -288,11 +316,33 @@ def deleteMarkingSection(classId, sectionTitle):
     for s in classContent['students']:
         deleteMark(classId, s, sectionTitle)
 
+def updateClassInfo(classId, json):
+    """
+    Updates the class info using json
+    """
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : json})
+
 def setClassActiveStatus(classId, status):
     """
     Sets the active status of a class to status
     """
+    # TODO: This may no longer be in use, check later
     mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
+
+def editUser(email, changes):
+    """
+    Takes in a json of changes and forces them in
+    """
+    mclient[database]['users'].update_one({'email' : email}, {'$set' : changes})
+
+def isClassInstructor(email, classId):
+    """
+    Returns whether or not <email> is an instructor for <classId>
+    """
+    cl = mclient[database]['classes'].find_one({'_id' : classId})
+
+    return email in cl['instructors']
+
 
 # Routes to fix issues with the database
 def addMissingEmptyReports():

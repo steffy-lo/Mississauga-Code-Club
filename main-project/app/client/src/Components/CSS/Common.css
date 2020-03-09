@@ -1,0 +1,43 @@
+.flex {
+  display: flex;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.horizontalCentre {
+  flex-direction: row;
+  justify-content: center;
+}
+
+.verticalCentre {
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fillContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.skipNavBar {
+  margin-top: 75px;
+}
+
+.shownF {
+  display: flex;
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: row;
+}
+
+.vScrollable {
+  overflow-y: auto;
+}
+
+.fill {
+  width: 100%;
+}
