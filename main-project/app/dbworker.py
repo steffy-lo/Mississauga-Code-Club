@@ -211,6 +211,12 @@ def getClasses(email, filt={}):
 
     return retJSON
 
+def addHoursLog(email, purpose, paid, datetime, hours):
+    """
+    Adds an hours log for a user by email
+    """
+    mclient[database]['hours'].insert_one({'email' : email, 'purpose': purpose, 'paid' : paid, 'dateTime' : datetime, 'hours' : hours})
+
 def getAllClasses():
     allClasses = mclient[database]['classes'].find({})
     

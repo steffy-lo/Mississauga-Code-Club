@@ -91,7 +91,7 @@ def updatePassword():
     else:
         abort(401)
 
-    if getUser(str(email)) is None:
+    if dbworker.getUser(str(email)) is None:
         abort(404)
 
     dbworker.setPassword(str(email), request.json['password'])
@@ -439,6 +439,20 @@ def checkEmail():
 
     return jsonify({'message' : None, 'valid' : True})
 
+@app.route('/api/loghours', methods=['POST', 'PUT'])
+def logHours():
+
+    valid_access = [dbworker.userTypeMap['admin'], dbworker.userTypeMap['teacher'], dbworker.userTypeMap['volunteer']]
+
+    if not dbworker.validateAccessList(valid_access):
+        abort(403)
+
+    date = datetime.datetime.now()
+
+    dbworker.addHoursLog(request.json['email'], request.json['purpose'], request.json['paid'], date, request.json['hours'])
+
+    return jsonify({'dateTime': date})
+
 @app.route('/api/admin/getusers')
 def getUsers():
     """
@@ -638,8 +652,6 @@ def createUser():
     dbworker.createUser(str(email), str(parentEmail), request.json['firstName'], request.json['lastName'], request.json['password'], request.json['userType'], request.json['phoneNumber'], datetime.datetime.strptime(request.json['birthday'], '%Y-%m-%d'), request.json['parentName'])
 
     return jsonify({'success' : True})
-
-
 
 
 # This may be a debug route, not sure, made by Steffy

@@ -1,3 +1,5 @@
+local: buildreact build start
+
 dev: buildreact build shipdev clean
 
 devlight: cleanreact build shipdev clean
@@ -15,6 +17,10 @@ rerebuild: clean buildreact build
 build:
 	docker build -t a1-301 .
 	docker run -d --name a1-301-container -p 80:80 a1-301:latest
+
+start:
+	docker start a1-301-container
+	docker run a1-301
 
 shipprod:
 	heroku container:login
