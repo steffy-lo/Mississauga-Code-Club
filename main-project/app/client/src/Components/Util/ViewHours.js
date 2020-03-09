@@ -77,7 +77,7 @@ class ViewHours extends React.Component {
                 <div>
                   Hours Worked
                 </div>
-                {(this.uTE !== "administrator") ? "" :
+                {/*}{(this.uTE !== "administrator") ? "" :
                   (
                     <Link
                       className={`${this.uTE}VH`}
@@ -85,7 +85,7 @@ class ViewHours extends React.Component {
                       Edit Hours
                     </Link>
                   )
-                }
+                }*/}
               </div>
               <table id="VHviewTableHeader">
                 <thead>
