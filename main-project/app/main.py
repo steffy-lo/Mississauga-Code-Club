@@ -456,6 +456,7 @@ def logHours():
 @app.route('/api/gethours', methods=['GET'])
 def getHours():
     """
+    Takes in a JSON of the form {'email' : string}
     Returns a json of the form {datetime: String, purpose: String, Hours: Float, Paid: Boolean}
     """
 
