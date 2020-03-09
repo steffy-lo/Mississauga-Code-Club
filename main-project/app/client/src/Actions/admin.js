@@ -11,7 +11,7 @@ export const checkIn = (email, purpose, hours, paid) => {
   return new Promise((resolve, reject) => {
     if (email === "" || purpose === "" || hours === 0)
       return reject({stat: 400, msg: "Your request was poorly formatted."});
-    axios.post(PREFIX + "/api/checkin",
+    axios.post(PREFIX + "/api/loghours",
     JSON.stringify({ email, purpose, hours, paid}),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
@@ -289,7 +289,6 @@ export const editUser = (email, details) => {
 }
 
 const standardReject = (err, reject) => {
-  console.log(err);
   if (err !== undefined && (err.status === 403 || err.status === 401)) {
     deauthorise();
     reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
