@@ -217,6 +217,12 @@ def addHoursLog(email, purpose, paid, datetime, hours):
     """
     mclient[database]['hours'].insert_one({'email' : email, 'purpose': purpose, 'paid' : paid, 'dateTime' : datetime, 'hours' : hours})
 
+def getHours(filt={}, projection={}):
+    """
+    Get all user hours that match a filter
+    """
+    return mclient[database]['hours'].find(filt, projection)
+
 def getAllClasses():
     allClasses = mclient[database]['classes'].find({})
     
