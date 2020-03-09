@@ -13,6 +13,7 @@ from schemaprovider import SchemaFactory
 
 # Start the app and setup the static directory for the html, css, and js files.
 
+# TODO: Get this working, maybe
 STATIC_FOLDER = 'client/build'
 # STATIC_FOLDER = 'static' # Default static folder to display warnings
 # if os.path.exists('client/build'):
@@ -43,6 +44,7 @@ def authenticate():
     # Use this route to log in and get a token
     # Takes in a json of the form {email : '', password : ''}
 
+    # TODO: Likely need to validate email is good input here
     for x in ['email', 'password']:
         if x not in request.json:
             abort(400)
@@ -72,8 +74,11 @@ def logout():
 def updatePassword():
     # Takes in a json of the form {email : '', password : ''}
 
+    # TODO: Likely need to validate that email is good input
+
     # Validate that the user calling this has access
     # Either that they are the same user or that they are an admin
+    # TODO: Make this prettier while keeping short circuit
     for x in ['email', 'password']:
         if x not in request.json:
             abort(400)
@@ -166,6 +171,7 @@ def getStudentDashboardInfo():
     studentDashboardDict['Classes'] = []
     studentDashboardDict['Classes'] = studentDashboardDict['Classes'] + classes['student']
 
+    # TODO: set up mock grades to put in here
     classReports = dbworker.mclient[dbworker.database]['reports']
 
     for c in studentDashboardDict['Classes']:
@@ -218,6 +224,7 @@ def setMarkingSection():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
         abort(401)
 
+    # TODO: Validate types
     dbworker.addMarkingSection(convClassId, request.json['sectionTitle'], request.json['weightInfo'])
 
     return jsonify({'success' : True})
@@ -273,6 +280,8 @@ def setMark():
     if email.error:
         abort(400)
 
+
+    # TODO: Validate types
     for x in ['classId', 'studentEmail', 'sectionTitle', 'mark']:
         if x not in request.json:
             abort(400)
@@ -325,7 +334,6 @@ def updateCourseInfo():
     convClassId = ObjectId(request.json['classId'])
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
         abort(401)
-
 
     # TODO: Validate types
 
@@ -423,6 +431,9 @@ def checkEmail():
 
     'message' will refer to the specific reason an email address is invalid
     """
+    # TODO: Add some sort of timeout?
+
+    # TODO: Sanitize input?
 
     if 'email' not in request.json:
         abort(400)
@@ -520,6 +531,11 @@ def editUser():
     if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes'] or 'password' in request.json['newAttributes']:
         # No changes requested or an attempt was made to change the email or _id or the password
         abort(400)
+
+    # TODO: Validate that all the changes made are valid
+    # ie. ban changes to any invalid attributes
+
+    # TODO: Validate types of all the changes requested
 
     dbworker.editUser(str(email), request.json['newAttributes'])
 
