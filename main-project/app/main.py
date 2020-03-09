@@ -551,8 +551,8 @@ def addStudent():
 
     Returns {'success' : Boolean}
     """
-#    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-#        abort(403)
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
 
     if 'email' not in request.json or 'classId' not in request.json:
         abort(400)
