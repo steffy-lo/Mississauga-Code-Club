@@ -24,6 +24,8 @@ There are key features implemented for each role. The current implemented roles 
 
 -   Add courses, in a similar fashion to adding accounts  
     - As with the accounts feature, this provides a much easier route to adding and organizing courses than spreadsheets.
+-   Log in Teaching and Volunteer Hours
+    - Administrators can now easily enter and update hours for their volunteers. This is a great improvement from the spreadsheet bookkeeping they were reliant upon before.
 
 #### Students
 
@@ -39,6 +41,8 @@ There are key features implemented for each role. The current implemented roles 
 
 ## Instructions
 An end-user can access the web application at this link: https://mcc-deliverable-2.herokuapp.com/
+
+* So where do you start?  
 
 We have set up pre-created dummy credentials for the Student and Administrator roles.
 
@@ -83,14 +87,12 @@ Inputting either of these credentials will take an end-user to their respective 
 1) From the Administrator dashboard, click “Create New Classes”
 2) Enter your desired name for the course and click OK.
 3) To check if the course was added, refer to steps (1-2) of the **View and edit courses** guide.
-
--   **Log Teaching or Volunteer Hours**
+	-   **Log Teaching or Volunteer Hours**
 1)From the Administrator dashboard, click “Check-In Page”.
 2)Enter the email associated with the account one wants to log hours with.
 3)Under **Type of Work**, choose between the **Teaching** or **Volunteering** toggles.
 4)Under **Details**, input a message and the amount of hours one wishes to log.
 5)Click **Check-in** to confirm your submission; a pop-up should appear confirming the changes.
-
 
 #### Student Features Guide
 
