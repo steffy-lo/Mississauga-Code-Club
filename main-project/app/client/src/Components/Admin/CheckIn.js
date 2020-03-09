@@ -14,7 +14,7 @@ class CheckIn extends React.Component {
     super(props);
     this.state = {
       email: "",
-      paid: 1,
+      paid: true,
       reason: "",
       numHours: "",
 
@@ -63,7 +63,45 @@ class CheckIn extends React.Component {
                 id="checkInMCSelectorForm"
                 onSubmit={e => {
                   e.preventDefault();
-                  console.log("Fetch target");
+                  checkIn()
+                  .then(datetime => {
+                    const dateStamp = new Date(datetime);
+                    this.setState({
+                    modalWindow:
+                      <StatusModal title="Check-in successful"
+                        onClose={() => this.setState({modalWindow: ""})}
+                        text={`Signed it at ${dateStamp.toLocalTimeString()}
+                          on ${dateStamp.toLocalDateString()}`}/>
+                  })})
+                  .catch(err => {
+                      const clFunc = () => this.setState({modalWindow: ""});
+                      if (err.stat === 403) {
+                        this.setState({modalWindow: ""});
+                        this.setState({
+                          modalWindow:
+                            <LoadingModal text={
+                                <span>
+                                  Your login has expired
+                                  <br />
+                                  Please reauthenticate
+                                  <br />
+                                  Singing you out ...
+                                </span>
+                            }/>
+                        })
+                        setTimeout(() => window.location.reload(0), 1000);
+                      } else {
+                        this.setState({modalWindow: ""});
+                        this.setState({
+                          modalWindow:
+                            <StatusModal
+                              title="Checki-In Failed"
+                              text={err.msg}
+                              onClose={clFunc}
+                            />
+                        })
+                      }
+                  })
                 }}>
                 <span><b>Email</b>:&nbsp;
                 <input
@@ -97,15 +135,15 @@ class CheckIn extends React.Component {
                     </h2>
                     <input type="radio" value="1"
                       disabled={!this.state.submittable}
-                      checked={this.state.paid === 1}
-                      onChange={e => this.setState({paid: 1})}
+                      checked={this.state.paid === true}
+                      onChange={e => this.setState({paid: true})}
                       readOnly={this.state.isVolunteer}/>
                     <label htmlFor="0">Teaching</label>
                     <br />
                     <input type="radio" value="0"
                       disabled={!this.state.submittable}
-                      checked={this.state.paid === 0}
-                      onChange={e => this.setState({paid: 0})}
+                      checked={this.state.paid === false}
+                      onChange={e => this.setState({paid: false})}
                       readOnly={this.state.isVolunteer}/>
                     <label htmlFor="1">Volunteering</label>
                     <br />

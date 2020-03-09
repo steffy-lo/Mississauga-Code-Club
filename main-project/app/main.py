@@ -442,7 +442,7 @@ def checkEmail():
 @app.route('/api/loghours', methods=['POST', 'PUT'])
 def logHours():
 
-    valid_access = [dbworker.userTypeMap['admin'], dbworker.userTypeMap['teacher'], dbworker.userTypeMap['volunteer']]
+    valid_access = [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]
 
     if not dbworker.validateAccessList(valid_access):
         abort(403)

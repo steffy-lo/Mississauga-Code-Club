@@ -1,5 +1,6 @@
 import { getState } from 'statezero';
 import axios from "axios";
+import { deauthorise } from './auth';
 
 export function getUserTypeExplicit() {
   let type = "";
@@ -27,15 +28,23 @@ export function getUserTypeExplicit() {
     return type;
 }
 
-export function getUserHours() {
+export const getCurrentUserHours = () => {
   return new Promise((resolve, reject) => {
-    axios.get()
-    .then()
-    .then()
-    .catch(e => {
-      if (e.status === 403 || e.status === 401) {
-        sessionStorage.removeItem('uType');
-      } else reject("Could not process your request. Please, try again later.");
+    axios.get("/api/getownhours", {headers: {"Content-Type": "application/json"}})
+    .then(res => {
+      if (!res || !res.data || !res.data.hours) throw {stat: 500, statusText: "Something went wrong"};
+      resolve(this.data.hours)
     })
-  });
+    .catch(err => {
+      if (err !== undefined && (err.status === 403 || err.status === 401)) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else {
+        reject({
+          stat: err.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  })
 }

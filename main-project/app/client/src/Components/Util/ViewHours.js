@@ -6,7 +6,7 @@ import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
 import LoadingModal from '../Util/LoadingModal';
 
-import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { getUserTypeExplicit, getCurrentUserHours } from '../../Actions/utility.js';
 
 import "../CSS/Util/ViewHours.css";
 import "../CSS/Common.css";
@@ -26,23 +26,43 @@ class ViewHours extends React.Component {
       isPaid: this.uTE === "volunteer" ? 0 : -1,
       filterBoxState: 'hidden'
     };
-    //getOwnHours()
-    // .then(res => {
-    //  return res.json()
-    // }).then(json => {
-    //  this.setState({fullList: json});
-    //  repopulateDeployedList();
-    //  this.setState({modalWindow: ""});
-    // })
-    // .catch(error => {
-    //   const msg = error.status === 401 ?
-    //     "Login invalid or expired. Please login, again." :
-    //     "Could not get data from server, please try again later.";
-    //   const closeFunc = error.status === 401 ? () => this.props.history.push("/")
-    //     : () => this.setState({modalWindow: ""});
-    //   this.setState({modalWindow: <StatusModal title="Error"
-    //     text={msg} onClose={closeFunc}/>})
-    // })
+  }
+
+  componentDidMount() {
+    this.getOwnHours();
+  }
+
+  getOwnHours() {
+    getCurrentUserHours()
+    .then()
+    .catch(err => {
+        const clFunc = () => this.setState({modalWindow: ""});
+        if (err.stat === 403) {
+          this.setState({modalWindow: ""});
+          this.setState({
+            modalWindow:
+              <LoadingModal text={
+                  <span>
+                    Your login has expired
+                    <br />
+                    Please reauthenticate
+                    <br />
+                    Singing you out ...
+                  </span>
+              }/>
+          })
+          setTimeout(() => window.location.reload(0), 1000);
+        } else {
+          this.setState({modalWindow: ""});
+          this.setState({
+            modalWindow:
+              <LoadingModal
+                text={err.msg}
+              />
+          })
+          setTimeout(() => this.props.history.push("/"), 1000);
+        }
+    })
   }
 
   render() {
@@ -184,7 +204,7 @@ class ViewHours extends React.Component {
                 </div>
                 <div id="vhFuncButtonsWrapper">
 
-                  <button
+                  {/*}<button
                     className={`${this.uTE}VH`}
                     disabled={this.state.deployedList === ""}
                     onClick={e => {
@@ -192,7 +212,7 @@ class ViewHours extends React.Component {
                       //    this.state.isPaid)
                     }}>
                     Get Report
-                  </button>
+                  </button>*/}
                   <input
                     className={`${this.uTE}VH`}
                     type="submit"
@@ -273,15 +293,6 @@ class ViewHours extends React.Component {
           this.hours = props.hours;
           this.event = props.event;
         }
-
-        // setVisiblity(isVisible) {
-        //   const v = isVisible ? "shown" : "hidden";
-        //   this.setState({isVisible: v});
-        // }
-        //
-        // getStats() {
-        //   return [this.date, this.event, this.hours, this.paid];
-        // }
 
         render() {
           return(
