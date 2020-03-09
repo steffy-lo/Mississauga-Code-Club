@@ -2,7 +2,7 @@
 
 ## Description
 
-Our web application provides Mississauga Code Club (MCC) a portal to manage its employees, volunteers, and students more effectively and efficiently. This ranges from providing an easy way for instructors to provide performance reports for students and parents to view, to giving administrators a simplified way to track work hours of their staff members. Overall, our web application will provide MCC a modernized management system to smooth their workflow, and the resulting boost in productivity will help MCC achieve its mission of helping kids and youth become technology innovators and creators. 
+Our web application provides Mississauga Code Club (MCC) a portal to manage its employees, volunteers, and students more effectively and efficiently. This ranges from providing an easy way for instructors to provide performance reports for students and parents to view, to giving administrators a simplified way to track work hours of their staff members. Overall, our web application will provide MCC a modernized management system to smooth their workflow, and the resulting boost in productivity will help MCC achieve its mission of helping kids and youth become technology innovators and creators.
 
 With this web application, we are combating the disorganization within MCC’s current management system. MCC has historically used analog methods for almost all administration, such as creating student progress reports, and volunteer/instructor time auditing; there is currently no digital method of tracking work hours or providing progress reports to parents and students. As everything is done analog by hand, the labour required has been taking time away from more productive pursuits at MCC. Our web application aims to provide a single platform to automate and improve some of their current processes.
 
@@ -17,7 +17,7 @@ There are key features implemented for each role. The current implemented roles 
     - This allows for easy access to staff information and ensures all changes are universal. This helps solve the book keeping issues MCC has had with their earlier analog methods.  
 
 -   View and edit courses
-    - Similar to the staff information, our app supports quick universal changes across the database. An Administrator can change a course’s name, toggle its Active/Inactive status, and add teachers and students. 
+    - Similar to the staff information, our app supports quick universal changes across the database. An Administrator can change a course’s name, toggle its Active/Inactive status, and add teachers and students.
 
 -   Add accounts manually
     - Unlike the excel spreadsheets MCC was relying on earlier, the app provides an organized form for each manual addition of a user, which will then be updated in the database.  
@@ -35,23 +35,23 @@ There are key features implemented for each role. The current implemented roles 
 
 -   View course recommendations  
     - Students can now view upcoming courses based on the courses they are currently undertaking.  
-  
+
 
 ## Instructions
-An end-user can access the web application at this link: https://mcc-deliverable-2.herokuapp.com/ 
+An end-user can access the web application at this link: https://mcc-deliverable-2.herokuapp.com/
 
 We have set up pre-created dummy credentials for the Student and Administrator roles.
 
-**Administrator**: 
+**Administrator**:
 Email: test@admin.com  
 Password: password
 
-**Student**: 
+**Student**:
 Email: test@student.com  
 Password: password
 
 Inputting either of these credentials will take an end-user to their respective dashboards. At the login screen, a user enters a valid MCC email and password. According to MCC, these will be provided to them by an administrator through some means outside the scope of our app.
- 
+
 
 #### Administrator Features Guide
 
@@ -79,18 +79,26 @@ Inputting either of these credentials will take an end-user to their respective 
 4) When all necessary information has been filled in, select “Create New User” at the bottom left corner of the form. If all required fields have been filled, a pop-up will appear on the screen informing that the user was successfully added. To check, refer to steps (1-2) of the  **View and edit staff, volunteer and teacher account** guide.  
 
 -   **Add courses, in a similar fashion to adding accounts**
-	
+
 1) From the Administrator dashboard, click “Create New Classes”
 2) Enter your desired name for the course and click OK.
 3) To check if the course was added, refer to steps (1-2) of the **View and edit courses** guide.
 
+-   **Log Teaching or Volunteer Hours**
+1)From the Administrator dashboard, click “Check-In Page”.
+2)Enter the email associated with the account one wants to log hours with.
+3)Under **Type of Work**, choose between the **Teaching** or **Volunteering** toggles.
+4)Under **Details**, input a message and the amount of hours one wishes to log.
+5)Click **Check-in** to confirm your submission; a pop-up should appear confirming the changes.
+
+
 #### Student Features Guide
 
 -   **Track their performance**
-1) From the Student Homepage/Dashboard, navigate to any of the listed courses under the header “Completed Courses”. Under the relevant course’s name, select the button labelled “View Grades”. 
+1) From the Student Homepage/Dashboard, navigate to any of the listed courses under the header “Completed Courses”. Under the relevant course’s name, select the button labelled “View Grades”.
 2) A new page should load up. To the left from top to bottom is the current course title dropdown, a list of grades for the course, teacher comments, and “Next Steps”. The header “Next Steps” contains a list of course recommendations for a student who has completed the selected course.
 3) To navigate to a new course, select the dropdown at the top of the screen and select the new course title to access its report.
-  
+
 -   **View all courses taken or in-progress**
 1) On the Student Homepage, on the left is a list of ongoing courses under the header “Enrolled Courses”. On the right is a list of completed courses under the header “Completed Courses”.  
 
@@ -129,7 +137,7 @@ We elected not to use pull requests at the start of the project to increase the 
 We elected that if issues began to arise, that we would begin using pull requests for changes, however we did not run into any issues.  
 
 Deployment is done manually through a Makefile, with both a development and production Heroku set up.
-  
+
 The code for this deliverable can be accessed in the branch deliverable-2-branch
 
 ## Licenses
@@ -137,5 +145,3 @@ The code for this deliverable can be accessed in the branch deliverable-2-branch
 We have chosen the MIT License for this project. It allows any party obtaining our code to do with it as they see fit. This may include publishing, modifying, and distributing the software. As the authors, we are not held liable to any claim or damages that arise from use of our code.  
 
 We chose this license as it allows MCC free rein to work with and further improve on our codebase after the project is finished. They can outsource to any other group to make changes should they choose to. It also frees us of responsibility for the code after its completion.
-
-
