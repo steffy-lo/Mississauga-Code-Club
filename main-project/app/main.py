@@ -91,7 +91,7 @@ def updatePassword():
     else:
         abort(401)
 
-    if getUser(str(email)) is None:
+    if dbworker.getUser(str(email)) is None:
         abort(404)
 
     dbworker.setPassword(str(email), request.json['password'])
