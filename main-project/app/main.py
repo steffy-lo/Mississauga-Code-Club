@@ -472,7 +472,7 @@ def getHours():
                                         dbworker.userTypeMap['volunteer']]):
         abort(403)
 
-    hours = dbworker.getHours(filt={"email": str(email)}, projection={'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1})
+    hours = dbworker.getHours(filt={"email": str(email)}, projection={'_id' : 0, 'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1})
 
     return hours
 
