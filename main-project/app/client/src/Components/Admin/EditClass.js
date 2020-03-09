@@ -8,7 +8,7 @@ import LoadingModal from '../Util/LoadingModal';
 import ActiveNotification from '../Util/ActiveNotification';
 
 import { getUserTypeExplicit } from '../../Actions/utility.js';
-import { getClass } from '../../Actions/admin';
+import { getClass, updateCourseInfo, addStudent, addTeacher } from '../../Actions/admin';
 
 import "../CSS/Admin/EditClass.css";
 import "../CSS/Common.css";
@@ -25,9 +25,13 @@ class EditClass extends React.Component {
       //Students
       studentList: [],
       //Criteria
-      criteriaList: {},
+      criteriaList: [],
       courseTitle: "",
-      activeCourse: 1
+      activeCourse: true,
+
+      studentEmail: "",
+
+      teacherEmail: ""
     };
     this.resetChanges = () => null;
   }
@@ -37,11 +41,24 @@ class EditClass extends React.Component {
   }
 
   getClassData() {
+    this.setState({modalWindow: <LoadingModal text="Getting class data ..."/>});
     getClass(this.id)
     .then(classData => {
       console.log(classData);
+      const critList = [];
+      Object.keys(classData.markingSections).forEach((key) => critList.push(
+        {
+          criterion: key,
+          details: classData.markingSections[key]
+        }
+      ));
       this.setState({
-
+        modalWindow: "",
+        courseTitle: classData.courseTitle,
+        activeCourse: classData.ongoing,
+        teacherList: classData.instructors,
+        studentList: classData.students,
+        criteriaList: critList
       })
     })
     .catch(err => {
@@ -100,16 +117,16 @@ class EditClass extends React.Component {
                         <span className="flex verticalCentre">
                           <span>
                             <input type="radio"
-                            checked={this.state.activeCourse === 1}
+                            checked={this.state.activeCourse === true}
                             value={1}
-                            onChange={e => this.setState({activeCourse: 1})} />
+                            onChange={e => this.setState({activeCourse: true})} />
                             &nbsp;Active
                           </span>
                           <span>
                             <input type="radio"
-                            checked={this.state.activeCourse === 0}
+                            checked={this.state.activeCourse === false}
                             value={0}
-                            onChange={e => this.setState({activeCourse: 0})} />
+                            onChange={e => this.setState({activeCourse: false})} />
                             &nbsp;Inactive
                           </span>
                         </span>
@@ -122,7 +139,41 @@ class EditClass extends React.Component {
                         this.setState({courseTitle: e.target.value})}
                       }
                       />
-                    <button>
+                    <button onClick={ e=> {
+                        this.setState({
+                          modalWindow: <LoadingModal text="Updating course info ..." />
+                        })
+                        updateCourseInfo(this.id, this.state.activeCourse, this.state.courseTitle)
+                        .then(() => {
+                          this.setState({modalWindow: ""})
+                        })
+                        .catch(err => {
+                          console.log(err);
+                          this.setState({modalWindow: ""})
+                          if (err.stat === 403) {
+                            this.setState({
+                              modalWindow:
+                                <LoadingModal text={
+                                    <span>
+                                      Your login has expired
+                                      <br />
+                                      Please reauthenticate
+                                      <br />
+                                      Singing you out ...
+                                    </span>
+                                }/>
+                            })
+                            setTimeout(() => window.location.reload(0), 1000);
+                          } else {
+                            this.setState({
+                              modalWindow:
+                                <StatusModal title="Update Unsuccesfsul"
+                                  text={err.msg}
+                                  onClose={() => this.setState({modalWindow: ""})}/>
+                            })
+                          }
+                        })
+                      }}>
                       Save Details
                     </button>
                     </div>
@@ -136,7 +187,7 @@ class EditClass extends React.Component {
                           <tr>
                             <th>Criterion</th>
                             <th>Points</th>
-                            <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                            <th>Index</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -146,18 +197,21 @@ class EditClass extends React.Component {
                       </div>
 
                       <form className="ecBarAdd">
-                        <input type="text"
+                        {/*}<input type="text"
                         placeholder="criterion title"
                         />
                         <input type="number"
-                        placeholder="marks"
+                        placeholder="weight"
+                        />
+                        <input type="number"
+                        placeholder="index"
                         />
                         <input type="submit"
                         value="Add Criterion"
                         onClick={e => {
                           e.preventDefault();
                         }}
-                        />
+                        />*/}
                       </form>
                     </div>
                   </div>
@@ -168,17 +222,38 @@ class EditClass extends React.Component {
                     </h2>
                     <div id="tchLstW" className="flexCol">
                       <div id="tchLst" className="vScrollable fill">
-                        {this.generateEmailList("teacherList")}
+                        {this.generateTeacherList()}
                       </div>
                     </div>
                     <form className="ecBarAdd">
                       <input type="email"
                       placeholder="teacher Email"
+                      value={this.state.teacherEmail}
+                      onChange={e => this.setState({teacherEmail: e.target.value})}
                       />
                       <input type="submit"
                       value="Add Teacher"
                       onClick={e => {
                         e.preventDefault();
+                        addTeacher(this.state.teacherEmail, this.id)
+                        .then(() => {
+                          const trEm = this.state.teacherEmail;
+                          const stList = this.state.teacherList;
+                          stList.push(trEm)
+                          this.setState({
+                            modalWindow: "",
+                            teacherList: stList
+                          })
+                        })
+                        .catch(err => {
+                          this.setState({
+                            modalWindow:
+                              <StatusModal title="Could Not Add Teacher"
+                                text={err.msg}
+                                onClose={e => this.setState({modalWindow: ""})}
+                                />
+                          })
+                        })
                       }}
                       />
                     </form>
@@ -191,17 +266,38 @@ class EditClass extends React.Component {
                     </h2>
                     <div id="stdLstW" className="flexCol">
                       <div id="stdLst" className="vScrollable fill">
-                        {this.generateEmailList("studentList")}
+                        {this.generateStudentList()}
                       </div>
                     </div>
                     <form className="ecBarAdd">
                       <input type="email"
                       placeholder="student email"
+                      value={this.state.studentEmail}
+                      onChange={e => this.setState({studentEmail: e.target.value})}
                       />
                       <input type="submit"
                       value="Add Student"
                       onClick={e => {
                         e.preventDefault();
+                        addStudent(this.state.studentEmail, this.id)
+                        .then(() => {
+                          const stdEm = this.state.studentEmail;
+                          const stList = this.state.studentList;
+                          stList.push(stdEm)
+                          this.setState({
+                            modalWindow: "",
+                            studentList: stList
+                          })
+                        })
+                        .catch(err => {
+                          this.setState({
+                            modalWindow:
+                              <StatusModal title="Could Not Add Student"
+                                text={err.msg}
+                                onClose={e => this.setState({modalWindow: ""})}
+                                />
+                          })
+                        })
                       }}
                       />
                     </form>
@@ -214,23 +310,44 @@ class EditClass extends React.Component {
     );
   }
 
-  generateEmailList(selector) {
+  generateStudentList(selector) {
     const compiledList = [];
-    for(let email of this.state[selector]) {
+    for(let email of this.state.studentList) {
       compiledList.push(
         <div className="ecEmailEntry" key={email}>
           <p>{email}</p>
-          <button
+          {/*}<button
           onClick={e => {
-            const changed = this.state[selector];
+            const changed = this.state.studentList;
             changed.forEach((ei, i) => {
               if (ei === email) changed.splice(i, 1);
             });
-            if (selector==="teacherList") this.setState({teacherList: changed});
-            else this.setState({studentList: changed});
+            this.setState({studentList: changed});
+            }}>
+            Delete
+          </button>*/}
+        </div>
+      );
+    }
+    return compiledList;
+  }
+
+  generateTeacherList() {
+    const compiledList = [];
+    for(let email of this.state.teacherList) {
+      compiledList.push(
+        <div className="ecEmailEntry" key={email}>
+          <p>{email}</p>
+          {/*}<button
+          onClick={e => {
+            const changed = this.state.teacherList;
+            changed.forEach((ei, i) => {
+              if (ei === email) changed.splice(i, 1);
+            });
+            this.setState({teacherList: changed});
           }}>
             Delete
-          </button>
+          </button>*/}
         </div>
       );
     }
@@ -240,13 +357,14 @@ class EditClass extends React.Component {
   generateCriteriaList() {
     const compiledList = [];
     const criteria = this.state.criteriaList
-    for(let entry in criteria) {
+    for(let entry of criteria) {
       compiledList.push(
-        <tr key={entry}>
-          <td>{entry}</td>
-          <td>{criteria[entry]}</td>
+        <tr key={entry.criterion}>
+          <td>{entry.criterion}</td>
+          <td>{entry.details.weight}</td>
           <td>
-            <button className="ecDeleteButton"
+            {entry.details.index}
+            {/*}<button className="ecDeleteButton"
             onClick={e => {
               const changed = this.state.criteriaList;
               delete changed[entry];
@@ -256,7 +374,7 @@ class EditClass extends React.Component {
             }}
             >
               Delete
-            </button>
+            </button>*/}
           </td>
         </tr>
       );

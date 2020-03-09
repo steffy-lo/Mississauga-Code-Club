@@ -286,6 +286,21 @@ def setMark():
 
     return jsonify({'success' : True})
 
+@app.route('/api/admin/updatecourseinfo', methods=['POST'])
+def changeCourseInfo():
+    if 'email' not in session or session['email'] is None:
+        abort(403)    
+
+    if 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
+        abort(400)
+    convClassId = ObjectId(request.json['classId'])
+    json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
+
+    dbworker.updateClassInfo(convClassId, json)
+
+    return jsonify({'success' : True})
+    
+
 @app.route('/api/updatecourseinfo', methods=['POST', 'PATCH'])
 def updateCourseInfo():
     """
@@ -298,7 +313,7 @@ def updateCourseInfo():
     """
     # Validate credentials here
     if 'email' not in session or session['email'] is None:
-        abort(401)
+        abort(403)
 
     email = mailsane.normalize(session['email'])
     if email.error:
@@ -441,7 +456,7 @@ def getUsers():
 
     return jsonify({'result' : fixedList, 'success' : True})
 
-@app.route('/api/admin/getuser')
+@app.route('/api/admin/getuser', methods=['POST'])
 def getUser():
     """
     Takes in a JSON of {'email'}
@@ -522,8 +537,8 @@ def addStudent():
 
     Returns {'success' : Boolean}
     """
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-        abort(403)
+#    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+#        abort(403)
 
     if 'email' not in request.json or 'classId' not in request.json:
         abort(400)
@@ -556,8 +571,8 @@ def addInstructor():
 
     Returns {'success' : Boolean}
     """
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-        abort(403)
+#    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+#        abort(403)
 
     if 'email' not in request.json or 'classId' not in request.json:
         abort(400)

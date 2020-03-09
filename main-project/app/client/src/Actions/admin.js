@@ -2,7 +2,7 @@ import axios from "axios";
 import { deauthorise } from './auth';
 
 /* For local debugging */
-const DEBUG = 1;
+const DEBUG = 0
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -84,6 +84,84 @@ export const getClass = (id) => {
       }
     })
   })
+}
+
+export const addStudent = (email, classId) => {
+  return new Promise((resolve, reject) => {
+    if (classId === "" || email === "")
+      return reject({stat: 500, msg: "Missing class id or email"});
+    axios.post(PREFIX + "/api/admin/addstudent",
+    JSON.stringify({ email, classId }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 404) {
+        reject({stat: 404, msg: "Class or student does not exist."});
+      } else if (err.response.status === 400) {
+        reject({stat: 401, msg: `No student exists with the given email address`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const addTeacher = (email, classId) => {
+  return new Promise((resolve, reject) => {
+    if (classId === "" || email === "")
+      return reject({stat: 500, msg: "Missing class id or email"});
+    axios.post(PREFIX + "/api/admin/addinstructor",
+    JSON.stringify({ email, classId }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 404) {
+        reject({stat: 404, msg: "Class or teacher does not exist."});
+      } else if (err.response.status === 400) {
+        reject({stat: 401, msg: `No teacher exists with the given email address`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const updateCourseInfo = ( classId, status, newTitle ) => {
+  return new Promise((resolve, reject) => {
+    if (classId === "" || newTitle === "")
+      return reject({stat: 500, msg: "Missing class id or title"});
+    axios.post(PREFIX + "/api/admin/updatecourseinfo",
+    JSON.stringify({ classId, status, newTitle }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: "Missing class sid &/or missing/invalid email."});
+      } else if (err.response.status === 401) {
+        reject({stat: 401, msg: `Unsufficient access.`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  });
 }
 
 export const createUser = (details) => {
