@@ -25,7 +25,8 @@ Another decision that was not as successful was our lack of a long term dedicate
 
 #### Q3. Planned changes
 
-To address some of our decisions that were not as successful, we are planning on having more specific goals to achieve in meetings going forward. We will also assign one or two team members to handle maintenance and being a subject matter expert on our documentation, especially about database schemas.
+###### Address specific feature goals at weekly meetings
+To address some of our decisions that were not as successful, we are planning on having more specific goals to achieve in meetings going forward, such as reviewing specific feature goals that we have set for the week. We will also assign one or two team members to handle maintenance and being a subject matter expert on our documentation, especially about database schemas.
 
 ## Product - Review
 
