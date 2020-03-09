@@ -3,7 +3,8 @@ from flask_cors import CORS
 import os
 import bcrypt
 import datetime
-from app import dbworker, mailsane
+import dbworker
+import mailsane
 
 # Start the app and setup the static directory for the html, css, and js files.
 
@@ -323,14 +324,17 @@ def checkEmail():
     return jsonify({'message' : None, 'valid' : True})
 
 
-@app.route('/api/loghours', methods=['POST'])
+@app.route('/api/loghours', methods=['POST', 'PUT'])
 def logHours():
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+    if not dbworker.validateAccessList(['admin', 'instructor', 'volunteer']):
         abort(403)
 
-    for log in request.json:
-        dbworker.addHoursLog(log['email'], log['className'], log['paid'], log['dateTime'], log['hours'])
+    date = datetime.datetime.now()
+
+    dbworker.addHoursLog(request.json['email'], request.json['purpose'], request.json['paid'], date, request.json['hours'])
+
+    return jsonify({'dateTime': date})
 
 
 # This may be a debug route, not sure, made by Steffy

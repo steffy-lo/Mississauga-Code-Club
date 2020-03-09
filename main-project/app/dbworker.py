@@ -3,7 +3,7 @@ import datetime
 from pymongo import MongoClient
 from flask import session
 
-from app import mailsane
+import mailsane
 
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
 DBUSER = "mccgamma"
@@ -192,11 +192,11 @@ def getClasses(email, filt={}):
 
     return retJSON
 
-def addHoursLog(email, paid, datetime, hours):
+def addHoursLog(email, purpose, paid, datetime, hours):
     """
     Adds an hours log for a user by email
     """
-    mclient[database]['hours'].insert_one({'email' : email, 'paid' : paid, 'dateTime' : datetime, 'hours' : hours})
+    mclient[database]['hours'].insert_one({'email' : email, 'purpose': purpose, 'paid' : paid, 'dateTime' : datetime, 'hours' : hours})
 
 def addEmptyReport(classId, studentEmail):
     """
