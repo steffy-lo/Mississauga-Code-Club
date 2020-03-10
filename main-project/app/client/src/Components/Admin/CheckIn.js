@@ -30,7 +30,7 @@ class CheckIn extends React.Component {
         email: "",
         paid: 1,
         reason: "",
-        numHours: 0,
+        numHours: "",
         userName: "",
         userRole: "",
         isVolunteer: "",
