@@ -1,6 +1,6 @@
 import bcrypt
 import datetime
-from pymongo import MongoClient
+from pymongo import MongoClient, IndexModel, TEXT
 from flask import session
 
 import mailsane
@@ -18,6 +18,11 @@ database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 
 # mclient = MongoClient(MONGOURI)
 # database = 'heroku_nf9149n7' # This is a database within a MongoDB instance
+
+
+# These lines ensure that indexes are created that ensure uniqueness of data
+indx = IndexModel([("email", TEXT)], unique=True)
+mclient[database]['users'].create_indexes([indx])
 
 
 def getUsers(filt={}, projection={}):
