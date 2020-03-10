@@ -464,6 +464,30 @@ def logHours():
 
     return jsonify({'dateTime': date})
 
+@app.route('/api/gethours', methods=['GET'])
+def getHours():
+    """
+    Takes in a JSON of the form {'email' : string}
+    Returns a json of the form {datetime: String, purpose: String, Hours: Float, Paid: Boolean}
+    """
+
+    if 'email' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'],
+                                        dbworker.userTypeMap['instructor'],
+                                        dbworker.userTypeMap['volunteer']]):
+        abort(403)
+
+    hours = dbworker.getHours(filt={"email": str(email)}, projection={'_id' : 0, 'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1})
+
+    return hours
+
 @app.route('/api/admin/getusers')
 def getUsers():
     """
