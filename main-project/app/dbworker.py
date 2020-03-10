@@ -1,6 +1,6 @@
 import bcrypt
 import datetime
-from pymongo import MongoClient, IndexModel, TEXT
+from pymongo import MongoClient, IndexModel, TEXT, HASHED
 from flask import session
 
 import mailsane
@@ -24,6 +24,9 @@ database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 indx = IndexModel([("email", TEXT)], unique=True)
 mclient[database]['users'].create_indexes([indx])
 
+
+indx2 = IndexModel([("email", TEXT), ("class_id", HASHED)], unique=True)
+mclient[database]['reports'].create_indexes([indx2])
 
 def getUsers(filt={}, projection={}):
     """
