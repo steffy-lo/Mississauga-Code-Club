@@ -184,6 +184,29 @@ def addInstructor(courseId, email):
 
     return True
 
+def removeInstructor(courseId, email):
+    """
+    Removes an instructor from the class with _id == courseId
+
+    Returns True if successful, False otherwise
+    """
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    found = False
+    staffList = [x for x in matchingClass['instructors'] if x != email]
+
+    if len(matchingClass['instructors']) == len(staffList):
+        # Instructor was not found in the list
+        return False
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}})
+
+    return True
+
+
 def getClasses(email, filt={}):
     """
     Returns a json of classes that email has access to, either as a student or instructor or admin
