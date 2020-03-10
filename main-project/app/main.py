@@ -612,9 +612,7 @@ def addStudent():
     if us['userType'] != dbworker.userTypeMap['student']:
         abort(400)
 
-    dbworker.addStudent(convClassId, str(email))
-
-    return jsonify({'success' : True})
+    return jsonify({'success' : dbworker.addStudent(convClassId, str(email))})
 
 @app.route('/api/admin/addinstructor', methods=['POST'])
 def addInstructor():
@@ -646,9 +644,7 @@ def addInstructor():
     if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
         abort(400)
 
-    dbworker.addInstructor(convClassId, str(email))
-
-    return jsonify({'success' : True})
+    return jsonify({'success' : dbworker.addInstructor(convClassId, str(email))})
 
 @app.route('/api/admin/removeinstructor', methods=['POST'])
 def removeInstructor():
@@ -680,9 +676,9 @@ def removeInstructor():
     if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
         abort(400)
 
-    dbworker.removeInstructor(convClassId, str(email))
 
-    return jsonify({'success' : True})
+
+    return jsonify({'success' : dbworker.removeInstructor(convClassId, str(email))})
 
 
 @app.route('/api/admin/createuser', methods=['POST'])
