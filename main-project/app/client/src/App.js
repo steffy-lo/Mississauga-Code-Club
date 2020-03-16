@@ -24,7 +24,6 @@ import TeacherDash from './Components/Teacher/TeacherDash';
 import ViewHours from './Components/Util/ViewHours';
 import TeacherFeedback from './Components/Teacher/FeedbackForm';
 
-import StudentGrades from './Components/Student/GradesView';
 
 
 function App() {
