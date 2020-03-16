@@ -1,10 +1,15 @@
 .form-input{
    display: block;
-   
+
+}
+.label{
+   display: inline-block;
+   width: 50px;
 }
 
 #hours-form {
     margin-left: 20%;
     display: inline-block;
+
 
 }
