@@ -11,10 +11,13 @@ class StatusModal extends React.Component {
       "" : props.title;
     this.text = props.text === null || props.text === undefined ?
       "" : props.text;
-    this.onClose = props.onClose === null || props.onClose === undefined ?
-      () => true : props.onClose;
+    this.onA = props.onA === null || props.onA === undefined ?
+      () => true : props.onA;
+    this.onB = props.onB === null || props.onB === undefined ?
+      () => true : props.onB;
     this.colourScheme = props.colourScheme === null || props.colourScheme === undefined ?
       "defaultStatusButton" : props.colourScheme;
+    this.textB = props.textB;
   }
 
   render() {
@@ -24,10 +27,16 @@ class StatusModal extends React.Component {
           <div id="statusModalWindow">
             <h1>{this.title}</h1>
             <p>{this.text}</p>
-            <button className={`${this.colourScheme}`}
-            onClick={e => this.onClose()}>
-              OK
-            </button>
+            <div id="op2ButtonWrapper">
+              <button className={`${this.colourScheme}`}
+              onClick={e => this.onA()}>
+                OK
+              </button>
+              <button className={`${this.colourScheme}`}
+              onClick={e => this.onB()}>
+                {this.textB}
+              </button>
+            </div>
           </div>
         </div>
       </div>

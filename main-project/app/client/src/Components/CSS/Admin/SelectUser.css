@@ -1,0 +1,150 @@
+#selectUserMainWindowPW {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+
+}
+
+#sumwpwTypeSelector {
+  display: flex;
+  flex-direction: row;
+  z-index: 3;
+}
+
+#sumwpwTypeSelector button {
+  border-width: 5px;
+  margin: 0px 1px;
+  border-style: solid;
+  border-bottom: none;
+  padding: 10px 40px;
+  flex-grow: 1;
+  color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.sumwpwSelected {
+  border-color: white;
+  box-shadow: 0 -3px 5px 0px white;
+}
+
+.sumwpwNotSelected {
+  border-color: lightgrey;
+  box-shadow: 0 -3px 5px 0px grey;
+  border-bottom: 1px solid grey;
+  transition: all 0.15s linear;
+}
+
+.sumwpwNotSelected:hover {
+  border-color: ghostwhite;
+  box-shadow: 0 -3px 5px 0px lightgrey;
+  border-bottom: 1px solid grey;
+}
+
+#sumwpwAdmins {
+  background-color: crimson;
+}
+
+#sumwpwStudents {
+  background-color: green;
+}
+
+#sumwpwTeachers {
+  background-color: royalblue;
+}
+
+#sumwpwVolunteers {
+  background-color: goldenrod;
+}
+
+#selectUserMainWindow {
+  margin: 0 1px;
+  background-color: white;
+  box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
+}
+
+#selectUserMainWindow h1 {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 5px;
+  padding: 0 0 5px 0;
+  border-bottom: 2px solid lightgrey;
+  text-align: center;
+}
+
+#selectUserMainWindow p {
+  text-align: center;
+}
+
+#selectUserScrollableList {
+  height: 500px;
+  padding: 5px;
+  overflow-y: auto;
+  margin-bottom: 5px;
+}
+
+.sluTeacher:hover { background-color: royalblue; }
+
+.sluAdmin:hover { background-color: crimson; }
+
+.sluStudent:hover { background-color: green; }
+
+.sluVolunteer:hover { background-color: gold; }
+
+#selectUserScrollableList table {
+  width: 100%;
+  text-align: left;
+  border-collapse:collapse;
+}
+
+#selectUserScrollableList tr {
+  font-size: 18px;
+  transition: background-color 0.15s linear;
+  color: black;
+  padding: 3px 10px;
+}
+
+#selectUserScrollableList th {
+  padding: 0 10px;
+}
+
+#selectUserScrollableList tr:hover th{
+  background-color: ghostwhite;
+  color: black;
+}
+
+#selectUserScrollableList td {
+  padding: 5px;
+}
+
+#selectUserScrollableList tr:hover {
+  color: white;
+}
+
+#suUCButton {
+  flex-grow: 1;
+  background-color: white;
+  justify-content: center;
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid lightgrey;
+  margin: 0 5px;
+}
+
+#suUCButton a, #suUCButton button {
+  text-decoration: none;
+  color: white;
+  background-color: crimson;
+  transition: background-color 0.15s linear;
+  padding: 10px 40px;
+  border: none;
+}
+
+#suUCButton button:hover {
+  background-color: darkred;
+  cursor: pointer;
+}
+
+#suUCButton a:hover {
+  background-color: darkred;
+}

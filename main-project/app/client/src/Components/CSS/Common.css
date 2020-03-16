@@ -24,3 +24,20 @@
 .skipNavBar {
   margin-top: 75px;
 }
+
+.shownF {
+  display: flex;
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: row;
+}
+
+.vScrollable {
+  overflow-y: auto;
+}
+
+.fill {
+  width: 100%;
+}

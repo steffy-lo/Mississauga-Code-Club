@@ -7,6 +7,8 @@ import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import {uid} from "react-uid";
 
+import LoadingModal from '../Util/LoadingModal';
+
 class StudentDash extends React.Component {
     constructor(props) {
         super(props);
@@ -86,7 +88,7 @@ class StudentDash extends React.Component {
             </React.Fragment>
         );
     } else {
-        return null;
+        return <LoadingModal text="Getting student data ..."/>;
     }
   }
 }

@@ -11,8 +11,20 @@ DBPASSWORD = "alfdasdf83423j4lsdf8"
 MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md?retryWrites=false"
 
 mclient = MongoClient(MONGOURI)
-
 database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
+
+# IF DEPLOYING TO DELIVERABLE 2, USE THE FOLLOWING LINES TO SWAP THE DB
+# MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds249035.mlab.com:49035/heroku_nf9149n7?retryWrites=false"
+
+# mclient = MongoClient(MONGOURI)
+# database = 'heroku_nf9149n7' # This is a database within a MongoDB instance
+
+
+def getUsers(filt={}, projection={}):
+    """
+    Get all users that match a filter
+    """
+    return mclient[database]['users'].find(filt, projection)
 
 def getUser(username):
     """
@@ -62,7 +74,7 @@ def validateAccessList(expectedUserTypes):
     session data to determine if their username is valid and one of the
     expectedUserTypes, return boolean, True if valid, False if invalid
     """
-    if session['email'] is None:
+    if 'email' not in session or session['email'] is None:
         return False
 
     email = mailsane.normalize(session['email'])
@@ -111,7 +123,9 @@ def createClass(courseTitle, students, instructors, semester):
 
     Students and instructors are lists of emails
     """
-    mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+
+    # Returns with 'A field insertedId with the _id value of the inserted document.'
+    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -130,6 +144,9 @@ def addStudent(courseId, email):
         return False
 
     studentList = matchingClass['students'][:]
+
+    if email in studentList:
+        return False
 
     studentList.append(email)
 
@@ -158,11 +175,37 @@ def addInstructor(courseId, email):
 
     staffList = matchingClass['instructors'][:]
 
+    if email in staffList:
+        return False
+
     staffList.append(email)
 
     mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}})
 
     return True
+
+def removeInstructor(courseId, email):
+    """
+    Removes an instructor from the class with _id == courseId
+
+    Returns True if successful, False otherwise
+    """
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    found = False
+    staffList = [x for x in matchingClass['instructors'] if x != email]
+
+    if len(matchingClass['instructors']) == len(staffList):
+        # Instructor was not found in the list
+        return False
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}})
+
+    return True
+
 
 def getClasses(email, filt={}):
     """
@@ -191,6 +234,27 @@ def getClasses(email, filt={}):
 
 
     return retJSON
+
+def addHoursLog(email, purpose, paid, datetime, hours):
+    """
+    Adds an hours log for a user by email
+    """
+    mclient[database]['hours'].insert_one({'email' : email, 'purpose': purpose, 'paid' : paid, 'dateTime' : datetime, 'hours' : hours})
+
+def getHours(filt={}, projection={}):
+    """
+    Get all user hours that match a filter
+    """
+    return mclient[database]['hours'].find(filt, projection)
+
+def getAllClasses():
+    allClasses = mclient[database]['classes'].find({})
+    
+    compiledList = []
+
+    for c in allClasses:
+        compiledList.append({'id' : str(c['_id']), 'title' : c['courseTitle'], 'ongoing' : c['ongoing']})
+    return compiledList
 
 def addEmptyReport(classId, studentEmail):
     """
@@ -237,7 +301,7 @@ def getClass(classId):
     """
     Gets the class associated with classId
     """
-    return mclient[database]['classes'].find({'_id' : classId})
+    return mclient[database]['classes'].find_one({'_id' : classId})
 
 def addMarkingSection(classId, sectionTitle, weightInfo):
     """
@@ -282,11 +346,33 @@ def deleteMarkingSection(classId, sectionTitle):
     for s in classContent['students']:
         deleteMark(classId, s, sectionTitle)
 
+def updateClassInfo(classId, json):
+    """
+    Updates the class info using json
+    """
+    mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : json})
+
 def setClassActiveStatus(classId, status):
     """
     Sets the active status of a class to status
     """
+    # TODO: This may no longer be in use, check later
     mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
+
+def editUser(email, changes):
+    """
+    Takes in a json of changes and forces them in
+    """
+    mclient[database]['users'].update_one({'email' : email}, {'$set' : changes})
+
+def isClassInstructor(email, classId):
+    """
+    Returns whether or not <email> is an instructor for <classId>
+    """
+    cl = mclient[database]['classes'].find_one({'_id' : classId})
+
+    return email in cl['instructors']
+
 
 # Routes to fix issues with the database
 def addMissingEmptyReports():

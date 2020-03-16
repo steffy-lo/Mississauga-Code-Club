@@ -1,0 +1,64 @@
+.activeNotCondFail, .activeNotCondClear, .activeNotCondLoading {
+  z-index: 200;
+  padding: 10px 20px;
+  vertical-align: middle;
+  width: 30%;
+  min-width: 300px;
+  margin-top: 35px;
+  position: fixed;
+}
+
+.activeNotCondFail {
+  background-color: pink;
+  border-bottom: 4px solid darkred;
+}
+
+.activeNotCondFail span,.activeNotCondFail h6 {
+  color: darkred;
+}
+
+.activeNotCondClear {
+  background-color: lightgreen;
+  border-bottom: 4px solid darkgreen;
+}
+
+.activeNotCondClear span, .activeNotCondClear h6 {
+  color: darkgreen;
+}
+
+.activeNotCondLoading {
+  background-color: lightblue;
+  border-bottom: 4px solid darkblue;
+}
+
+.activeNotCondLoading span, .activeNotCondLoading h6 {
+  color: darkblue;
+}
+
+.activeNotCondLoading span {
+  margin: 10px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.activeNotCondFail h6, .activeNotCondClear h6, .activeNotCondLoading h6 {
+  font-size: 18px;
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.activeNotCondFail span, .activeNotCondClear span, .activeNotCondLoading span {
+  font-size: 18px;
+  flex-grow: 1;
+  padding-left: 10px;
+}
+
+.activeNotCondFail p, .activeNotCondClear p, .activeNotCondLoading p {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  vertical-align: middle;
+  width: 100%;
+  margin: 0;
+}
