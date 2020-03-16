@@ -6,3 +6,8 @@
 #course-list{
     list-style-type: none;
 }
+
+#teacher-view{
+    margin-top:50px;
+    display: inline-block;
+}
