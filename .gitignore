@@ -2,6 +2,4 @@ venv/
 .idea/
 main-project/app/.idea/
 main-project/app/__pycache__
-**/.DS_Store
-*.DS_Store
 .DS_Store
