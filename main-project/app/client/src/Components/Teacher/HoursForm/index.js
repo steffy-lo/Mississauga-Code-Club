@@ -16,9 +16,11 @@ class HoursForm extends React.Component {
       });
     };
 
+    componentDidMount(){
 
+    }
     render() {
-        const { onButtonClick, value, name} = this.props;
+        const { onButtonClick, name, email} = this.props;
 
 
 
@@ -39,7 +41,7 @@ class HoursForm extends React.Component {
                     </DatePicker>
                     </div>
                     <div className='form-input'>
-                    <Button onClick={()=>onButtonClick(this, this.state)}>
+                    <Button onClick={()=>onButtonClick(this, this.state, email)}>
                     Check Work Hours
                     </Button>
                     </div>
