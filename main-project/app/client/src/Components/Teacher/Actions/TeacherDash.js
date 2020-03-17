@@ -2,7 +2,7 @@ import React from 'react';
 import axios from "axios";
 
 /* For local debugging */
-const DEBUG = 1;
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:3000" : "";
