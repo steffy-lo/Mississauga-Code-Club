@@ -32,8 +32,8 @@ export const authenticate = (email, password) => {
     .then(type => {
       if (!type || !type.data) throw {status: 500, statusText: "Something went wrong"};
       sessionStorage.setItem('uType', type.data.userType);
-      setState('email', email);
-      setState('prefix', PREFIX);
+      sessionStorage.setItem('email', email);
+      sessionStorage.setItem('prefix', PREFIX);
       resolve(['/a', '/t', '/v', '/s'][type.data.userType - 1]);
     })
     .catch(err => {
@@ -67,11 +67,13 @@ export const logout = () => {
     axios.get(PREFIX + "/logout")
     .then(res => {
       sessionStorage.removeItem('uType');
+      sessionStorage.removeItem('email');
       resolve();
     })
     .catch(err => {
       console.log(err);
       sessionStorage.removeItem('uType');
+      sessionStorage.removeItem('email');
       resolve();
     });
   })
