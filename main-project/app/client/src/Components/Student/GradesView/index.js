@@ -170,7 +170,12 @@ class GradesView extends React.Component {
                 </div>
             );
         } else {
-            return null;
+            return (
+                <div className="unavailable">
+                    <h1>ERROR! Cannot Find Student...</h1>
+                    <p>Please login and try again.</p>
+                </div>
+            );
         }
     }
 }
