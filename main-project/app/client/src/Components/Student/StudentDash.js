@@ -4,7 +4,6 @@ import NavBarGeneric from '../Util/NavbarGeneric';
 import './StudentDash.css';
 import {getState} from "statezero";
 import {Link} from "react-router-dom";
-import Button from "@material-ui/core/Button";
 import {uid} from "react-uid";
 
 import LoadingModal from '../Util/LoadingModal';
@@ -78,7 +77,7 @@ class StudentDash extends React.Component {
                                 <dt>
                                     <Link to={{pathname: '/s/grades',
                                         state: {courseInfo: course}}}>
-                                        <Button>View Grades</Button>
+                                        <button>View Grades</button>
                                     </Link>
                                 </dt>
                             </dl>
