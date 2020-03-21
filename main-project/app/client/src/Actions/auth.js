@@ -2,7 +2,7 @@ import { setState } from "statezero";
 import axios from "axios";
 
 /* For local debugging */
-const DEBUG = 1;
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -23,7 +23,7 @@ const PREFIX = DEBUG ? "http://localhost:80" : "";
 export const authenticate = (email, password) => {
   return new Promise((resolve, reject) => {
     if (typeof email !== "string" || typeof password !== "string" ||
-        email.length == 0 || password.length == 0) {
+        email.length === 0 || password.length === 0) {
             reject("Input cannot be empty")
     }
     axios.post(PREFIX + "/authenticate",
@@ -31,15 +31,25 @@ export const authenticate = (email, password) => {
     {headers: {"Content-Type": "application/json"}})
     .then(type => {
       if (!type || !type.data) throw {status: 500, statusText: "Something went wrong"};
-      setState('uType', type.data.userType);
-      setState('email', email);
-      setState('prefix', PREFIX);
+      sessionStorage.setItem('uType', type.data.userType);
+      sessionStorage.setItem('email', email);
+      sessionStorage.setItem('prefix', PREFIX);
       resolve(['/a', '/t', '/v', '/s'][type.data.userType - 1]);
     })
     .catch(err => {
       reject(err);
     })
   })
+}
+
+export const deauthorise = () => sessionStorage.removeItem('uType');
+
+export const isLocalAuthorised = () => {
+  return ["1", "2", "3", "4"].includes(sessionStorage.getItem('uType'));
+}
+
+export const getAuth = () => {
+  return sessionStorage.getItem('uType');
 }
 
 /*
@@ -53,9 +63,18 @@ export const authenticate = (email, password) => {
   On failure, outputs error to console.
 */
 export const logout = () => {
-  axios.get(PREFIX + "/logout")
-  .then(res => {
-    setState('uType', null);
+  return new Promise((resolve, reject) => {
+    axios.get(PREFIX + "/logout")
+    .then(res => {
+      sessionStorage.removeItem('uType');
+      sessionStorage.removeItem('email');
+      resolve();
+    })
+    .catch(err => {
+      console.log(err);
+      sessionStorage.removeItem('uType');
+      sessionStorage.removeItem('email');
+      resolve();
+    });
   })
-  .catch(err => console.log(err));
 }

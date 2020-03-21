@@ -6,6 +6,10 @@
   margin: 50px;
 }
 
+.unavailable {
+    text-align: center;
+}
+
 select {
     display: inline-block;
     width: 30%;

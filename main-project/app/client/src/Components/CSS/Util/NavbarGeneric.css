@@ -19,8 +19,8 @@
 }
 
 #topBarWrapper {
-  z-index: 100;
   position: absolute;
+  z-index: 100;
   top: 0;
   left: 0;
   right: 0;
@@ -68,4 +68,5 @@
 #logoutB:hover {
   text-shadow: 0 0 10px white;
   transition: all 0.25s ease-in-out;
+  cursor: pointer;
 }

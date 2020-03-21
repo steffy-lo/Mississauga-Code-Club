@@ -1,0 +1,8 @@
+.MuiToolbar-root{
+    display: inline-block;
+    top:30px;
+}
+
+#course-list{
+    list-style-type: none;
+}
