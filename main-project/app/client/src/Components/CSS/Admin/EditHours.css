@@ -1,0 +1,22 @@
+#wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-wrap: wrap;
+}
+
+#wrapper div {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+#wrapper div span {
+    margin: 10px;
+}
+
+.buttonSectionWrapper {
+    margin-top: 20px;
+}
+
+
