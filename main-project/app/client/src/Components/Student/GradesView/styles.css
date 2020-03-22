@@ -1,9 +1,11 @@
 #comments {
-    max-width: 50%;
+    width: 50%;
+    height: 100px;
+    resize: none;
 }
 
 .grades-view {
-  margin: 50px;
+    margin: 120px 50px 50px;
 }
 
 .unavailable {
