@@ -581,6 +581,16 @@ def getUser():
     u.pop('password')
     u.pop('_id')
 
+    now = datetime.datetime.now()
+
+    bday = now
+    if 'birthday' in u:
+        bday = u['birthday']
+
+    delta = now - bday
+    age = delta.total_seconds / (31536000)
+
+    u['age'] = age
     return jsonify({'result' : u, 'success' : True})
 
 @app.route('/api/admin/edituser', methods=['PATCH'])
