@@ -588,7 +588,7 @@ def getUser():
         bday = u['birthday']
 
     delta = now - bday
-    age = delta.total_seconds / (31536000)
+    age = int(delta.total_seconds / (31536000))
 
     u['age'] = age
     return jsonify({'result' : u, 'success' : True})
