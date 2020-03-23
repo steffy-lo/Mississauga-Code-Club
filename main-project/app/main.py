@@ -474,7 +474,7 @@ def getHours():
     if 'email' not in request.json:
         abort(400)
 
-    email = mailsane.normalize(request.json['email'])
+    email = mailsane.normalize('test@admin.com')
 
     if email.error:
         abort(400)
@@ -484,8 +484,11 @@ def getHours():
                                         dbworker.userTypeMap['volunteer']]):
         abort(403)
 
-    hours = [doc for doc in dbworker.getHours(filt={"email": str(email)},
-                                          projection={'_id' : 0, 'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1})]
+    hours = []
+    for doc in dbworker.getHours(filt={"email": str(email)},
+                                 projection={'_id' : 1, 'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1}):
+        doc['_id'] = str(doc['_id']) # Convert to string
+        hours.append(doc)
 
     return jsonify({'hours': hours, 'success': True})
 
