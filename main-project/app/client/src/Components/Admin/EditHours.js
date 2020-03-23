@@ -7,6 +7,8 @@ import LoadingModal from '../Util/LoadingModal';
 import "../CSS/Common.css";
 import "../CSS/Util/StatusModal.css";
 import "../CSS/Admin/EditHours.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 class EditHours extends React.Component {
 
@@ -15,9 +17,10 @@ class EditHours extends React.Component {
         this.onClose = props.onClose;
         this.state = {
             toDisplay: null,
-            paid: false,
-            numHours: "",
-            purpose: "",
+            paid: props.text === null || props.text === undefined ? null : props.paid,
+            numHours: props.numHours === null || props.numHours === undefined ? 0 : props.numHours,
+            purpose: props.purpose === null || props.purpose === undefined ? "" : props.purpose,
+            date: props.text === null || props.text === undefined ? null : props.date,
             submittable: 1
         }
         this.saveChanges = this.saveChanges.bind(this);
@@ -39,16 +42,12 @@ class EditHours extends React.Component {
                     <div id="statusModalSubBlackout" className="flex horizontalCentre">
                         <div id="statusModalWindow">
                             <h1>Edit Hours Record</h1>
+                            <span>Date & Time:&nbsp;
+                                <DatePicker id='date' onChange={(date)=>this.setState({date: date})} selected={this.state.date}>
+                                    </DatePicker>
+                                </span>
                             <div id="wrapper">
                                 <div className="left">
-                                <span>Date & Time:&nbsp;
-                                    <input type="text"
-                                           value={this.state.nameOfClass}
-                                           onChange={e => {
-                                               this.setState({nameOfClass: e.target.value});
-                                           }}
-                                    />
-                                </span>
                                 <span>Hours:&nbsp;
                                     <input type="number"
                                            step="0.25" value={this.state.numHours}
