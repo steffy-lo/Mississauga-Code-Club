@@ -45,6 +45,9 @@ def authenticate():
     # Takes in a json of the form {email : '', password : ''}
 
     # TODO: Likely need to validate email is good input here
+    if request.json is None:
+        abort(400)
+
     for x in ['email', 'password']:
         if x not in request.json:
             abort(400)
@@ -79,6 +82,9 @@ def updatePassword():
     # Validate that the user calling this has access
     # Either that they are the same user or that they are an admin
     # TODO: Make this prettier while keeping short circuit
+    if request.json is None:
+        abort(400)
+
     for x in ['email', 'password']:
         if x not in request.json:
             abort(400)
@@ -204,7 +210,7 @@ def setMarkingSection():
     Sets the weight of sectionTitle in classId to <weight>
     This will override existing values
     """
-    if 'classId' not in request.json or 'sectionTitle' not in request.json or 'weightInfo' not in request.json:
+    if request.json is None or 'classId' not in request.json or 'sectionTitle' not in request.json or 'weightInfo' not in request.json:
         abort(400)
 
     for x in ['weight', 'index']:
@@ -247,6 +253,9 @@ def deleteMarkingSection():
     if email.error:
         abort(400)
 
+    if request.json is None:
+        abort(400)
+
     for x in ['classId', 'sectionTitle']:
         if x not in request.json:
             abort(400)
@@ -282,6 +291,9 @@ def setMark():
 
 
     # TODO: Validate types
+    if request.json is None:
+        abort(400)
+
     for x in ['classId', 'studentEmail', 'sectionTitle', 'mark']:
         if x not in request.json:
             abort(400)
@@ -300,7 +312,7 @@ def changeCourseInfo():
     if 'email' not in session or session['email'] is None:
         abort(403)    
 
-    if 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
+    if request.json is None or 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
         abort(400)
     convClassId = ObjectId(request.json['classId'])
     json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
@@ -328,7 +340,7 @@ def updateCourseInfo():
     if email.error:
         abort(400)
 
-    if 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
+    if request.json is None or 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
         abort(400)
 
     convClassId = ObjectId(request.json['classId'])
@@ -353,7 +365,7 @@ def getClass():
     {'result' : None/JSON, 'success' : Boolean}
     """
 
-    if '_id' not in request.json:
+    if request.json is None or '_id' not in request.json:
         abort(400)
 
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
@@ -435,7 +447,7 @@ def checkEmail():
 
     # TODO: Sanitize input?
 
-    if 'email' not in request.json:
+    if request.json is None or 'email' not in request.json:
         abort(400)
 
     # Use the verification library to check that it is a valid email
@@ -452,15 +464,38 @@ def checkEmail():
 
 @app.route('/api/loghours', methods=['POST', 'PUT'])
 def logHours():
+    # request.json['hours'] is currently a string that gets converted server side
 
     valid_access = [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]
 
     if not dbworker.validateAccessList(valid_access):
         abort(403)
 
+    if request.json is None:
+        abort(400)
+
+    for x in ['email', 'purpose', 'paid', 'hours']:
+        if x not in request.json:
+            abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+
+    if email.error:
+        abort(400)
+
+    hours = 0
+    try:
+        # Handle conversion from a string to a float
+        hours = float(request.json['hours'])
+    except:
+        abort(400)
+
+    if hours <= 0:
+        abort(400)
+
     date = datetime.datetime.now()
 
-    dbworker.addHoursLog(request.json['email'], request.json['purpose'], request.json['paid'], date, request.json['hours'])
+    dbworker.addHoursLog(str(email), request.json['purpose'], request.json['paid'], date, hours)
 
     return jsonify({'dateTime': date})
 
@@ -468,10 +503,10 @@ def logHours():
 @app.route('/api/hours/', methods=['GET'])
 def getHours():
 
-#    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'],
-#                                        dbworker.userTypeMap['instructor'],
-#                                        dbworker.userTypeMap['volunteer']]):
-#        abort(403)
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'],
+                                        dbworker.userTypeMap['instructor'],
+                                        dbworker.userTypeMap['volunteer']]):
+        abort(403)
 
     pre_email = request.args.get('user', default=None, type=str)
 
@@ -483,8 +518,8 @@ def getHours():
         if email is None:
             abort(500)
     else:
-#        if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]):
-#            abort(403)
+        if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]):
+            abort(403)
         
         email = mailsane.normalize(pre_email)
 
@@ -527,7 +562,7 @@ def getUser():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'email' not in request.json:
+    if request.json is None or 'email' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -554,7 +589,7 @@ def editUser():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'currentEmail' not in request.json or 'newAttributes' not in request.json:
+    if request.json is None or 'currentEmail' not in request.json or 'newAttributes' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['currentEmail'])
@@ -587,10 +622,14 @@ def createCourse():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'courseTitle' not in request.json:
+    if request.json is None or 'courseTitle' not in request.json:
         abort(400)
 
-    val = dbworker.createClass(request.json['courseTitle'], [], [], None)
+    semester = None
+    if 'semester' in request.json:
+        semester = request.json['semester']
+
+    val = dbworker.createClass(request.json['courseTitle'], [], [], semester)
 
     return jsonify({'success' : True})
 
@@ -606,7 +645,7 @@ def addStudent():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'email' not in request.json or 'classId' not in request.json:
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -638,7 +677,7 @@ def addInstructor():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'email' not in request.json or 'classId' not in request.json:
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -670,7 +709,7 @@ def removeInstructor():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'email' not in request.json or 'classId' not in request.json:
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -714,6 +753,9 @@ def createUser():
     """
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
+
+    if request.json is None:
+        abort(400)
 
     for x in ['email', 'password', 'userType', 'firstName', 'lastName', 'phoneNumber', 'birthday', 'parentEmail', 'parentName']:
         if x not in request.json:
@@ -848,6 +890,10 @@ def fixReportIssues():
         abort(404)
 
     return jsonify({'result' : dbworker.addMissingEmptyReports()})
+
+
+# This blocks off routes like /a/.../.../.........
+# This is used to allow the React app to have routes that won't throw a 404
 
 @app.route('/a')
 @app.route('/a/')
