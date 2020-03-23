@@ -880,6 +880,10 @@ def fixReportIssues():
 
     return jsonify({'result' : dbworker.addMissingEmptyReports()})
 
+
+# This blocks off routes like /a/.../.../.........
+# This is used to allow the React app to have routes that won't throw a 404
+
 @app.route('/a')
 @app.route('/a/')
 @app.route('/a/<path:path>')
