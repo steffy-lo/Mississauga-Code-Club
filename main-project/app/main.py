@@ -331,6 +331,8 @@ def updateCourseInfo():
     Returns {success : Boolean}
 
     Sets the <ongoing> of classId to <status>, and <courseTitle> to <newTitle>
+
+    If <semesterInfo> is in request.json, it will update <semester> to <semesterInfo>
     """
     # Validate credentials here
     if 'email' not in session or session['email'] is None:
@@ -350,6 +352,9 @@ def updateCourseInfo():
     # TODO: Validate types
 
     json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
+
+    if 'semesterInfo' in request.json:
+        json['semester'] = request.json['semesterInfo']
 
     dbworker.updateClassInfo(convClassId, json)
 
