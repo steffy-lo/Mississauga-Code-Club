@@ -344,6 +344,7 @@ def deleteMarkingSection(classId, sectionTitle):
     mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
 
     for s in classContent['students']:
+        # TODO: This has cascade related issues
         deleteMark(classId, s, sectionTitle)
 
 def updateClassInfo(classId, json):
