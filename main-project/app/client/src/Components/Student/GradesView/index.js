@@ -4,6 +4,7 @@ import Grades from "../Grades"
 import './styles.css'
 import axios from "axios";
 import {getState} from "statezero";
+import NavBarGeneric from "../../Util/NavbarGeneric";
 
 class GradesView extends React.Component {
 
@@ -142,6 +143,8 @@ class GradesView extends React.Component {
             const otherCompletedCourses = [...this.state.coursesCompleted.courseNames];
             otherCompletedCourses.splice(index, 1);
             return (
+                <div>
+                <NavBarGeneric/>
                 <div className="grades-view">
                     <select onChange={this.updateDisplay} className="courses-list" id="course-sel">
                         <option value="DEFAULT" name={this.state.course}>{this.state.course}</option>
@@ -168,9 +171,15 @@ class GradesView extends React.Component {
                         </dl>
                     ))}
                 </div>
+            </div>
             );
         } else {
-            return null;
+            return (
+                <div className="unavailable">
+                    <h1>ERROR! Cannot Find Student...</h1>
+                    <p>Please login and try again.</p>
+                </div>
+            );
         }
     }
 }

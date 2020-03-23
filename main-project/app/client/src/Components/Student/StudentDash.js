@@ -2,9 +2,7 @@ import React from 'react';
 import axios from "axios";
 import NavBarGeneric from '../Util/NavbarGeneric';
 import './StudentDash.css';
-import {getState} from "statezero";
 import {Link} from "react-router-dom";
-import Button from "@material-ui/core/Button";
 import {uid} from "react-uid";
 
 import LoadingModal from '../Util/LoadingModal';
@@ -13,8 +11,8 @@ class StudentDash extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: getState('email'),
-            prefix: getState('prefix'),
+            email: sessionStorage.getItem('email'),
+            prefix: sessionStorage.getItem('prefix'),
             loading: true
         };
         this.getClasses = this.getClasses.bind(this);
@@ -78,7 +76,7 @@ class StudentDash extends React.Component {
                                 <dt>
                                     <Link to={{pathname: '/s/grades',
                                         state: {courseInfo: course}}}>
-                                        <Button>View Grades</Button>
+                                        <button>View Grades</button>
                                     </Link>
                                 </dt>
                             </dl>
