@@ -487,7 +487,7 @@ def logHours():
 
     date = datetime.datetime.now()
 
-    dbworker.addHoursLog(email, request.json['purpose'], request.json['paid'], date, request.json['hours'])
+    dbworker.addHoursLog(str(email), request.json['purpose'], request.json['paid'], date, request.json['hours'])
 
     return jsonify({'dateTime': date})
 
