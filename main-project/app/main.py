@@ -625,7 +625,7 @@ def createCourse():
     if request.json is None or 'courseTitle' not in request.json:
         abort(400)
 
-    semester = None
+    semester = ""
     if 'semester' in request.json:
         semester = request.json['semester']
 
