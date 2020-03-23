@@ -202,7 +202,7 @@ def removeInstructor(courseId, email):
         # Instructor was not found in the list
         return False
 
-    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}})
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}}) # TODO: Check if this update was successful
 
     return True
 
