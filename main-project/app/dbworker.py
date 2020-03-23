@@ -374,9 +374,11 @@ def isClassInstructor(email, classId):
     return email in cl['instructors']
 
 
-def deleteStudent(email, classId):
+def removeStudent(courseId, email):
     """
-    Returns whether or not the deletion was successful
+    Removes a student from the class with _id == courseId
+
+    Returns whether or not the removal was successful
     """
     matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
 
