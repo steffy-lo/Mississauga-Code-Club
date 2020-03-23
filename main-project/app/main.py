@@ -731,6 +731,40 @@ def removeInstructor():
 
     return jsonify({'success' : dbworker.removeInstructor(convClassId, str(email))})
 
+@app.route('/api/admin/removestudent', methods=['POST', 'DELETE'])
+def removeStudent():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Removes <email> from <classId> as a student
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] not in [dbworker.userTypeMap['student']]:
+        abort(400)
+
+
+
+    return jsonify({'success' : dbworker.removeStudent(convClassId, str(email))})
+
 
 @app.route('/api/admin/createuser', methods=['POST'])
 def createUser():
