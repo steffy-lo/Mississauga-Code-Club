@@ -480,9 +480,14 @@ def logHours():
     if request.json['hours'] <= 0:
         abort(400)
 
+    email = mailsane.normalize(request.json['email'])
+
+    if email.error:
+        abort(400)
+
     date = datetime.datetime.now()
 
-    dbworker.addHoursLog(request.json['email'], request.json['purpose'], request.json['paid'], date, request.json['hours'])
+    dbworker.addHoursLog(email, request.json['purpose'], request.json['paid'], date, request.json['hours'])
 
     return jsonify({'dateTime': date})
 
