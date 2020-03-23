@@ -618,7 +618,11 @@ def createCourse():
     if request.json is None or 'courseTitle' not in request.json:
         abort(400)
 
-    val = dbworker.createClass(request.json['courseTitle'], [], [], None)
+    semester = None
+    if 'semester' in request.json:
+        semester = request.json['semester']
+
+    val = dbworker.createClass(request.json['courseTitle'], [], [], semester)
 
     return jsonify({'success' : True})
 
