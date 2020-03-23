@@ -496,7 +496,7 @@ def getHours():
     if request.json is None or 'email' not in request.json:
         abort(400)
 
-    email = mailsane.normalize('test@admin.com')
+    email = mailsane.normalize(request.json['email'])
 
     if email.error:
         abort(400)
