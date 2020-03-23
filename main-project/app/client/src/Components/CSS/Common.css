@@ -41,3 +41,19 @@
 .fill {
   width: 100%;
 }
+
+.administratorText {
+  color: crimson;
+}
+
+.teacherText {
+  color: royalblue;
+}
+
+.volunteerText {
+  color: #ffa801;
+}
+
+.studentText {
+  color: green;
+}

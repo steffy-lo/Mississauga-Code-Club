@@ -2,6 +2,12 @@ import { getState } from 'statezero';
 import axios from "axios";
 import { deauthorise } from './auth';
 
+/* For local debugging */
+const DEBUG = 0;
+
+/* Debug variables.*/
+const PREFIX = DEBUG ? "http://localhost:80" : "";
+
 export function getUserTypeExplicit() {
   let type = "";
   switch(sessionStorage.getItem('uType')) {
@@ -30,10 +36,10 @@ export function getUserTypeExplicit() {
 
 export const getCurrentUserHours = () => {
   return new Promise((resolve, reject) => {
-    axios.get("/api/getownhours", {headers: {"Content-Type": "application/json"}})
+    axios.get(PREFIX + "/api/hours/")
     .then(res => {
       if (!res || !res.data || !res.data.hours) throw {stat: 500, statusText: "Something went wrong"};
-      resolve(this.data.hours)
+      resolve(res.data.hours)
     })
     .catch(err => {
       if (err !== undefined && (err.status === 403 || err.status === 401)) {
