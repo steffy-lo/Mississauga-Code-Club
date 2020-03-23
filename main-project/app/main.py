@@ -45,6 +45,9 @@ def authenticate():
     # Takes in a json of the form {email : '', password : ''}
 
     # TODO: Likely need to validate email is good input here
+    if request.json is None:
+        abort(400)
+
     for x in ['email', 'password']:
         if x not in request.json:
             abort(400)
@@ -79,6 +82,9 @@ def updatePassword():
     # Validate that the user calling this has access
     # Either that they are the same user or that they are an admin
     # TODO: Make this prettier while keeping short circuit
+    if request.json is None:
+        abort(400)
+
     for x in ['email', 'password']:
         if x not in request.json:
             abort(400)
@@ -204,7 +210,7 @@ def setMarkingSection():
     Sets the weight of sectionTitle in classId to <weight>
     This will override existing values
     """
-    if 'classId' not in request.json or 'sectionTitle' not in request.json or 'weightInfo' not in request.json:
+    if request.json is None or 'classId' not in request.json or 'sectionTitle' not in request.json or 'weightInfo' not in request.json:
         abort(400)
 
     for x in ['weight', 'index']:
@@ -247,6 +253,9 @@ def deleteMarkingSection():
     if email.error:
         abort(400)
 
+    if request.json is None:
+        abort(400)
+
     for x in ['classId', 'sectionTitle']:
         if x not in request.json:
             abort(400)
@@ -282,6 +291,9 @@ def setMark():
 
 
     # TODO: Validate types
+    if request.json is None:
+        abort(400)
+
     for x in ['classId', 'studentEmail', 'sectionTitle', 'mark']:
         if x not in request.json:
             abort(400)
@@ -300,7 +312,7 @@ def changeCourseInfo():
     if 'email' not in session or session['email'] is None:
         abort(403)    
 
-    if 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
+    if request.json is None or 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
         abort(400)
     convClassId = ObjectId(request.json['classId'])
     json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
@@ -328,7 +340,7 @@ def updateCourseInfo():
     if email.error:
         abort(400)
 
-    if 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
+    if request.json is None or 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
         abort(400)
 
     convClassId = ObjectId(request.json['classId'])
@@ -353,7 +365,7 @@ def getClass():
     {'result' : None/JSON, 'success' : Boolean}
     """
 
-    if '_id' not in request.json:
+    if request.json is None or '_id' not in request.json:
         abort(400)
 
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
@@ -435,7 +447,7 @@ def checkEmail():
 
     # TODO: Sanitize input?
 
-    if 'email' not in request.json:
+    if request.json is None or 'email' not in request.json:
         abort(400)
 
     # Use the verification library to check that it is a valid email
@@ -471,7 +483,7 @@ def getHours():
     Returns a json of the form {datetime: String, purpose: String, Hours: Float, Paid: Boolean}
     """
 
-    if 'email' not in request.json:
+    if request.json is None or 'email' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -515,7 +527,7 @@ def getUser():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'email' not in request.json:
+    if request.json is None or 'email' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -542,7 +554,7 @@ def editUser():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'currentEmail' not in request.json or 'newAttributes' not in request.json:
+    if request.json is None or 'currentEmail' not in request.json or 'newAttributes' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['currentEmail'])
@@ -575,7 +587,7 @@ def createCourse():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'courseTitle' not in request.json:
+    if request.json is None or 'courseTitle' not in request.json:
         abort(400)
 
     val = dbworker.createClass(request.json['courseTitle'], [], [], None)
@@ -594,7 +606,7 @@ def addStudent():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'email' not in request.json or 'classId' not in request.json:
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -626,7 +638,7 @@ def addInstructor():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'email' not in request.json or 'classId' not in request.json:
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -658,7 +670,7 @@ def removeInstructor():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
-    if 'email' not in request.json or 'classId' not in request.json:
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
         abort(400)
 
     email = mailsane.normalize(request.json['email'])
@@ -702,6 +714,9 @@ def createUser():
     """
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
+
+    if request.json is None:
+        abort(400)
 
     for x in ['email', 'password', 'userType', 'firstName', 'lastName', 'phoneNumber', 'birthday', 'parentEmail', 'parentName']:
         if x not in request.json:
