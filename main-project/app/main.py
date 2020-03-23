@@ -697,7 +697,7 @@ def addInstructor():
 
     return jsonify({'success' : dbworker.addInstructor(convClassId, str(email))})
 
-@app.route('/api/admin/removeinstructor', methods=['POST'])
+@app.route('/api/admin/removeinstructor', methods=['POST', 'DELETE'])
 def removeInstructor():
     """
     Takes in a JSON of the structure {'email', 'classId'}
