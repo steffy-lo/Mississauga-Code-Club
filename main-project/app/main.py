@@ -464,29 +464,41 @@ def logHours():
 
     return jsonify({'dateTime': date})
 
-@app.route('/api/gethours', methods=['GET'])
+@app.route('/api/gethours/', methods=['GET'])
+@app.route('/api/hours/', methods=['GET'])
 def getHours():
-    """
-    Takes in a JSON of the form {'email' : string}
-    Returns a json of the form {datetime: String, purpose: String, Hours: Float, Paid: Boolean}
-    """
 
-    if 'email' not in request.json:
-        abort(400)
+#    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'],
+#                                        dbworker.userTypeMap['instructor'],
+#                                        dbworker.userTypeMap['volunteer']]):
+#        abort(403)
 
-    email = mailsane.normalize(request.json['email'])
+    pre_email = request.args.get('user', default=None, type=str)
 
-    if email.error:
-        abort(400)
+    email = None
 
-    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'],
-                                        dbworker.userTypeMap['instructor'],
-                                        dbworker.userTypeMap['volunteer']]):
-        abort(403)
+    if pre_email is None:
+        email = session.get('email')
 
-    hours = dbworker.getHours(filt={"email": str(email)}, projection={'_id' : 0, 'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1})
+        if email is None:
+            abort(500)
+    else:
+#        if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]):
+#            abort(403)
+        
+        email = mailsane.normalize(pre_email)
 
-    return hours
+        if email.error:
+            abort(400)
+    
+    hours = dbworker.getHours(filt={"email": str(email)}, projection={'_id' : 1, 'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1})
+    
+    hours_list = []
+    for doc in hours:
+        doc['_id'] = str(doc['_id'])
+        hours_list.append(doc)
+
+    return jsonify({"hours": hours_list})
 
 @app.route('/api/admin/getusers')
 def getUsers():

@@ -30,6 +30,7 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
+        <LRoute exact path="/" component={Login}/>
         <SRoute exact path="/s" component={StudentDash}/>
         <SRoute exact path="/s/grades" component={StudentGrades}/>
         <ARoute exact path="/a" component={AdminDash}/>
@@ -44,14 +45,7 @@ function App() {
         {/*}<Route exact path="/v/hours" component={ViewHours}/>*/}
         <TRoute exact path="/t" component={TeacherDash}/>
         <TRoute exact path="/t/hours" component={ViewHours}/>
-        <LRoute exact path="/" component={Login}/>
-        <Route exact path="/s" component={StudentDash}/>
-        <Route exact path="/s/grades" component={StudentGrades}/>
-        <Route exact path="/a" component={AdminDash}/>
-        <Route exact path="/v" component={VolunteerDash}/>
-        <Route exact path="/t" component={TeacherDash}/>
-        <Route exact path="/t/course=:cid/student=:sid" component={TeacherFeedback}/>
-        <Route exact path="/" component={Login}/>
+        <TRoute exact path="/t/course=:cid/student=:sid" component={TeacherFeedback}/>
         <Redirect from="/" to="/" />
       </Switch>
     </BrowserRouter>

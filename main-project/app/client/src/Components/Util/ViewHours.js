@@ -22,19 +22,29 @@ class ViewHours extends React.Component {
       deployedList: "",
       fromDate: "",
       toDate: "",
-      eventQuery: "",
-      isPaid: this.uTE === "volunteer" ? 0 : -1,
-      filterBoxState: 'hidden'
+      purposeQuery: "",
+      isPaid: this.uTE === "volunteer" ? false : null,
+      filterBoxState: 'hidden',
+      totalHours: 0
     };
+    this.idTicker = 0;
   }
 
   componentDidMount() {
+    //this.setState({deployedList: this.generateHoursRows(this.state.fullList)})
     this.getOwnHours();
   }
 
   getOwnHours() {
     getCurrentUserHours()
-    .then()
+    .then(hours => {
+      const deployment = this.generateHoursRows(hours)
+      this.setState({
+        fullList: hours,
+        deployedList: deployment
+      })
+      this.setState({modalWindow: ""});
+    })
     .catch(err => {
         const clFunc = () => this.setState({modalWindow: ""});
         if (err.stat === 403) {
@@ -77,7 +87,7 @@ class ViewHours extends React.Component {
                 <div>
                   Hours Worked
                 </div>
-                {/*}{(this.uTE !== "administrator") ? "" :
+                {(this.uTE !== "administrator") ? "" :
                   (
                     <Link
                       className={`${this.uTE}VH`}
@@ -85,9 +95,9 @@ class ViewHours extends React.Component {
                       Edit Hours
                     </Link>
                   )
-                }*/}
+                }
               </div>
-              <table id="VHviewTableHeader">
+              {/*<table id="VHviewTableHeader">
                 <thead>
                   <tr>
                     <th>Date</th>
@@ -96,7 +106,7 @@ class ViewHours extends React.Component {
                     <th>Paid</th>
                   </tr>
                 </thead>
-              </table>
+              </table>*/}
               {this.state.deployedList === "" ?
                 (
                   <h2 id="noHoursLogged">
@@ -109,7 +119,7 @@ class ViewHours extends React.Component {
                     <thead>
                       <tr>
                         <th>Date</th>
-                        <th>Event</th>
+                        <th>Reason</th>
                         <th>Hours</th>
                         <th>Paid</th>
                       </tr>
@@ -118,6 +128,13 @@ class ViewHours extends React.Component {
                       {this.state.deployedList}
                     </tbody>
                   </table>
+                  <div id="VHhoursCount">
+                    <span>
+                      Total in selection: <span className={`${this.uTE}Text`}>
+                        {this.state.totalHours}
+                        </span> <b>hour(s)</b>
+                    </span>
+                  </div>
                 </div>
               }
 
@@ -144,10 +161,16 @@ class ViewHours extends React.Component {
                       <label>From: </label>
                       <input
                         type="date"
-                        onChange={e => console.log(e.target.value)}/>
+                        onChange={e => {
+                          this.setState({fromDate: e.target.value})
+                        }}/>
                       <br/>
                       <label>To: </label>
-                      <input type="date">
+                      <input
+                        type="date"
+                        onChange={e => {
+                          this.setState({toDate: e.target.value})
+                        }}>
                       </input>
                     </div>
                     <div>
@@ -155,9 +178,9 @@ class ViewHours extends React.Component {
                       <input
                         type="search"
                         placeholder="event name"
-                        value={this.state.eventQuery}
+                        value={this.state.purposeQuery}
                         onChange={e =>
-                          {this.setState({eventQuery: e.target.value})}
+                          {this.setState({purposeQuery: e.target.value})}
                         }>
                       </input>
                       <br/>
@@ -166,7 +189,7 @@ class ViewHours extends React.Component {
                         id="vhVerboseClear"
                         onClick={e => {
                           e.preventDefault();
-                          this.setState({eventQuery: ""});
+                          this.setState({purposeQuery: ""});
                         }}>
                         Clear Query
                       </button>
@@ -176,25 +199,26 @@ class ViewHours extends React.Component {
                       <input
                         type="radio"
                         value={-1}
-                        checked={this.state.isPaid === -1}
-                        onChange={_ => this.setState({isPaid: -1})} />
+                        disabled={this.uTE === 'volunteer'}
+                        checked={this.state.isPaid === null}
+                        onChange={_ => this.setState({isPaid: null})} />
                       <label htmlFor={null}>All</label>
                       <br />
                       <input
                         type="radio"
                         value={1}
-                        checked={this.state.isPaid === 1}
-                        onChange={_ => this.setState({isPaid: 1})} />
+                        disabled={this.uTE === 'volunteer'}
+                        checked={this.state.isPaid === true}
+                        onChange={_ => this.setState({isPaid: true})} />
                       <label htmlFor={1}>
                         Only Teaching
-                      </label>
+                      </label>purposeQuery
                       <br />
                       <input
                         type="radio"
                         value={0}
-
-                        checked={this.state.isPaid === 0}
-                        onChange={_ => this.setState({isPaid: 0})} />
+                        checked={this.state.isPaid === false}
+                        onChange={_ => this.setState({isPaid: false})} />
                       <label htmlFor={0}>
                         Only Volunteering
                       </label>
@@ -204,7 +228,7 @@ class ViewHours extends React.Component {
                 </div>
                 <div id="vhFuncButtonsWrapper">
 
-                  {/*}<button
+                  <button
                     className={`${this.uTE}VH`}
                     disabled={this.state.deployedList === ""}
                     onClick={e => {
@@ -212,12 +236,12 @@ class ViewHours extends React.Component {
                       //    this.state.isPaid)
                     }}>
                     Get Report
-                  </button>*/}
+                  </button>
                   <input
                     className={`${this.uTE}VH`}
                     type="submit"
                     value="Apply Filter"
-                    disabled={this.state.deployedList === ""}
+                    disabled={this.state.fullList.length === 0}
                     onClick={e => {
                       e.preventDefault();
                       this.repopulateDeployedList();
@@ -226,9 +250,10 @@ class ViewHours extends React.Component {
                       className={`${this.uTE}VH`}
                       type="reset"
                       value="Clear Filters"
-                      disabled={this.state.deployedList === ""}
+                      disabled={this.state.fullList.length === 0}
                       onClick={e => {
                         e.preventDefault();
+
                       }}/>
                     </div>
                   </form>
@@ -240,18 +265,18 @@ class ViewHours extends React.Component {
       }
 
       constructFilterFunction() {
-        const payCheck = this.state.isPaid === -1 ? (_) => true :
+        const payCheck = this.state.isPaid === null ? (_) => true :
         (paid) => paid === this.state.isPaid;
-        const queryCheck = (evnt) => evnt.includes(this.state.eventQuery);
+        const queryCheck = (evnt) => evnt.includes(this.state.purposeQuery);
         const fromCheck = this.state.fromDate === "" ? (_) => true :
-        (date) => new Date(date) >= new Date(this.state.fromDate);
+        (date) => new Date(date) >= new Date(this.state.fromDate + ' 0:00:00');
         const toCheck = this.state.toDate === "" ? (_) => true :
-        (date) => new Date(date) <= new Date(this.state.toDate);
+        (date) => new Date(date) <= new Date(this.state.toDate + ' 23:59:59');
         const compiledFunc = (hours_record) => {
           return (hours_record &&
-            payCheck(hours_record.isPaid) &&
-            queryCheck(hours_record.event) &&
-            fromCheck(hours_record.date) &&
+            payCheck(hours_record.paid) &&
+            queryCheck(hours_record.purpose) &&
+            fromCheck(hours_record.dateTime) &&
             toCheck(hours_record.date));
           };
         return compiledFunc;
@@ -264,19 +289,23 @@ class ViewHours extends React.Component {
         }
 
         generateHoursRows(inputList, filter=(_) => true) {
+          console.log(inputList)
+          let hoursSum = 0
           const compiledList = [];
           for (let record of inputList) {
             if (filter(record)) {
-              compiledList.append(
+              compiledList.push(
                 <HoursRow
-                  key={uid()}
-                  date={record.date}
-                  event={record.event}
+                  key={uid(this.idTicker++)}
+                  date={new Date(record.dateTime).toLocaleString()}
+                  event={record.purpose}
                   hours={record.hours}
-                  paid={record.isPaid} />
+                  paid={record.paid} />
               )
+              hoursSum += record.hours
             }
           }
+          this.setState({totalHours: hoursSum})
           return compiledList;
         }
 
