@@ -401,9 +401,16 @@ def removeStudent(courseId, email):
 
     res = mclient[database]['reports'].delete_one({'email' : email}) # TODO: Check if this delete worked
 
+    if res.deleted_count != 1:
+        return False
+
     # TODO: If the delete did not work, then it needs to be reverted and false returned
 
-    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}}) # TODO: Check if this update worked
+    res = mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}}) # TODO: Check if this update worked
+
+    if res.modified_count != 1:
+        mclient[database]['reports'].insert_one(backupReport)
+        return False
 
     # TODO: If the update did not work, then the whole thing needs to be reverted
 
