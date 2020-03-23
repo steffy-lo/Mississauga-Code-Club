@@ -464,6 +464,7 @@ def checkEmail():
 
 @app.route('/api/loghours', methods=['POST', 'PUT'])
 def logHours():
+    # request.json['hours'] is currently a string that gets converted server side
 
     valid_access = [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]
 
@@ -477,17 +478,24 @@ def logHours():
         if x not in request.json:
             abort(400)
 
-    if request.json['hours'] <= 0:
-        abort(400)
-
     email = mailsane.normalize(request.json['email'])
 
     if email.error:
         abort(400)
 
+    hours = 0
+    try:
+        # Handle conversion from a string to a float
+        hours = float(request.json['hours'])
+    except:
+        abort(400)
+
+    if hours <= 0:
+        abort(400)
+
     date = datetime.datetime.now()
 
-    dbworker.addHoursLog(str(email), request.json['purpose'], request.json['paid'], date, request.json['hours'])
+    dbworker.addHoursLog(str(email), request.json['purpose'], request.json['paid'], date, hours)
 
     return jsonify({'dateTime': date})
 
