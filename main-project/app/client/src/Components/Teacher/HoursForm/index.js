@@ -6,52 +6,54 @@ import {TextField, Button} from '@material-ui/core';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './HoursForm.css';
-
+import moment from 'moment';
 /* For local debugging */
 const DEBUG = 1;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
+const dateFormat = 'MMMM D, YYYY'
+
 class HoursForm extends React.Component {
     state={
-        from:0,
-        to:0,
+        from:"",
+        to:"",
+        hours:0,
+        formSubmitted: false,
         email: ""
     }
 
     setDate = function(date, name){
-      this.setState({
-        [name]: date
-      });
+        this.setState({
+            [name]: date
+        });
     };
 
     componentDidMount(){
 
     }
 
+    // Updates state with work hours within the supplied interval
     getWorkHours(){
         const currentComponent = this;
-        console.log(this.state.email)
 
 
         axios.post(PREFIX + '/api/gethours' , {email: this.state.email})
             .then(function (response) {
                 // handle success
-                console.log("response", response)
-                // const classes = response.data.instructor;
-                // const enrolled = [];
-                // const completed = [];
+                let hours = response.data.hours
 
-                // Update state
-                // for (let i = 0; i < classes.length; i++) {
-                //     if (classes[i].ongoing) {
-                //         enrolled.push({'courseName': classes[i].name})
-                //     } else {
-                //         completed.push({'courseName': classes[i].name})
-                //     }
-                // }
-                //currentComponent.setState({'coursesTeaching': enrolled, 'coursesCompleted': completed});
+                // Keep hours within interval (from, to) in current state
+                hours = hours.filter(hourEntry =>
+                     (moment(hourEntry.dateTime).isAfter(currentComponent.state.from)
+                     && moment(hourEntry.dateTime).isBefore(currentComponent.state.to)));
+
+                for(let hourEntry of hours){
+                    currentComponent.state.hours += hourEntry.hours;
+                }
+                currentComponent.state.formSubmitted = true;
+                currentComponent.forceUpdate();
 
             })
             .catch(function (error) {
@@ -59,6 +61,17 @@ class HoursForm extends React.Component {
                 console.log(error);
             })
 
+    }
+
+    // Return a div containing the total hours worked
+    renderHoursOutput(){
+        if(this.state.formSubmitted){
+            const from = moment(this.state.from).format(dateFormat).toString()
+            const to = moment(this.state.to).format(dateFormat).toString()
+            return (<div id='hours-output'>
+                        Hours worked from {from} to {to}: {this.state.hours}
+                    </div>);
+        }
     }
 
     render() {
@@ -83,15 +96,13 @@ class HoursForm extends React.Component {
                     </DatePicker>
                     </div>
                     <div className='form-input'>
-                    <Button onClick={()=>onButtonClick(this, this.state, email)}>
-                    Check Work Hours
-                    </Button>
                     <Button onClick={()=>this.getWorkHours()}>
-                    Test Route
+                    Check Hours
                     </Button>
                     </div>
 
                 </div>
+                {this.renderHoursOutput()}
             </div>
           );
     }

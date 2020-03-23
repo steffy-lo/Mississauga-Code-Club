@@ -8,12 +8,12 @@ import Course from './Course';
 import TeacherToolbar from './TeacherToolbar';
 import HoursForm from './HoursForm';
 import {AppBar, Toolbar, Button} from "@material-ui/core";
-import {getActiveClasses, loadToolbarSelection, displayWorkHours} from "./Actions/TeacherDash";
+import {getActiveClasses, loadToolbarSelection} from "./Actions/TeacherDash";
 import axios from "axios";
 import "./TeacherDash.css";
 
 /* For local debugging */
-const DEBUG = 0;
+const DEBUG = 1;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -22,7 +22,7 @@ class TeacherDash extends React.Component {
    state = {
       coursesTeaching: [],
       coursesCompleted:[],
-      email: getState('email'),
+      email: sessionStorage.getItem('email'),
       loading: true,
       toolbarSelection: "courses"
 
@@ -122,7 +122,7 @@ class TeacherDash extends React.Component {
       } else if(selection == "hours"){
           return(
             <HoursForm
-            onButtonClick={displayWorkHours}
+            
             email={this.state.email}>
 
             </HoursForm>
@@ -157,7 +157,7 @@ class TeacherDash extends React.Component {
 
 
   render() {
-    console.log("STATE: ", this.state)
+    console.log("EMAIL: ", this.state.email)
     return(
       <React.Fragment>
         <NavbarGeneric/>

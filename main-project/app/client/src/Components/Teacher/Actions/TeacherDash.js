@@ -15,8 +15,3 @@ export const loadToolbarSelection = (teacherDash, value) => {
     teacherDash.state.toolbarSelection = value;
     teacherDash.forceUpdate();
 };
-
-export const displayWorkHours = (hoursForm, hours, email) =>{
-    hoursForm.state = hours;
-
-};
