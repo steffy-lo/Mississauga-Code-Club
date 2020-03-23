@@ -399,7 +399,7 @@ def removeStudent(courseId, email):
 
     backupReport = mclient[database]['reports'].find_one({'email' : email})
 
-    mclient[database]['reports'].remove({'email' : email}) # TODO: Check if this delete worked
+    res = mclient[database]['reports'].delete_one({'email' : email}) # TODO: Check if this delete worked
 
     # TODO: If the delete did not work, then it needs to be reverted and false returned
 
