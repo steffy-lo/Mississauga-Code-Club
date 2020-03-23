@@ -374,6 +374,33 @@ def isClassInstructor(email, classId):
     return email in cl['instructors']
 
 
+def deleteStudent(email, classId):
+    """
+    Returns whether or not the deletion was successful
+    """
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    lookup = getUser(email)
+    if lookup is None or lookup['userType'] != userTypeMap['student']:
+        # User is not a valid user to add as a student
+        return False
+
+    studentList = matchingClass['students'][:]
+
+    if email not in studentList:
+        return False
+
+    studentList.remove(email)
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}}) # TODO: Check if this update worked
+
+    mclient[database]['reports'].remove({'email' : email}) # TODO: Check if this update worked
+
+    return True
+
 # Routes to fix issues with the database
 def addMissingEmptyReports():
     """
