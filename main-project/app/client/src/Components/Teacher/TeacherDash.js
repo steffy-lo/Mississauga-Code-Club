@@ -32,27 +32,64 @@ class TeacherDash extends React.Component {
       this.getClasses();
   }
 
+
+  // Converts courseData's student list with the full student info
+  getStudentInfo(courseData, idx){
+
+
+      const currentComponent = this;
+      axios.post(PREFIX + '/api/admin/getuser', {email : courseData.students[idx]})
+          .then(function(response){
+              courseData.students[idx] = response.data.result
+      })
+          .catch(function (error) {
+              // handle error
+              console.log(error);
+      })
+
+  }
+
+  // Adds the course to the appropriate state variable with enrolled students
+  getEnrollment(classId, ongoing){
+
+      const currentComponent = this;
+
+      axios.post(PREFIX + '/api/getclass', {_id : classId})
+          .then(function(response){
+              const courseData = {students:response.data.result.students,
+                            id:classId,
+                            name:response.data.result.courseTitle}
+
+              for(let studentNum in courseData.students){
+                  currentComponent.getStudentInfo(courseData, studentNum)
+              }
+
+              console.log("STUDENTS: ", courseData)
+              if(ongoing){
+                  currentComponent.state.coursesCompleted.push(courseData)
+              } else {
+                  currentComponent.state.coursesTeaching.push(courseData)
+              }
+      })
+          .catch(function (error) {
+              // handle error
+              console.log(error);
+      })
+
+  }
+
+  // Populates state variables for courses
   getClasses(){
       const currentComponent = this;
+
       axios.get(PREFIX + '/getClasses/'+ this.state.email)
           .then(function (response) {
               // handle success
-              console.log("response", response)
-              const classes = response.data.instructor;
-              const enrolled = [];
-              const completed = [];
-              console.log("\tclasses ", classes)
-
-              // Update state
-              for (let i = 0; i < classes.length; i++) {
-                  if (classes[i].ongoing) {
-                      enrolled.push({'courseName': classes[i].name})
-                  } else {
-                      completed.push({'courseName': classes[i].name})
-                  }
+              const courses = response.data.instructor;
+              for(let course of courses){
+                  currentComponent.getEnrollment(course.id, course.ongoing);
               }
-              console.log('completed ', completed)
-              currentComponent.setState({'coursesTeaching': enrolled, 'coursesCompleted': completed});
+              console.log(currentComponent.state)
               currentComponent.setState({'loading': false});
 
           })
@@ -62,6 +99,8 @@ class TeacherDash extends React.Component {
           })
   }
 
+
+  // Return either the list of courses of work hours form, depending on the selection
   renderToolbarSelection = function(){
       const selection = this.state.toolbarSelection;
       if(selection == "courses"){
@@ -85,7 +124,7 @@ class TeacherDash extends React.Component {
             <HoursForm
             onButtonClick={displayWorkHours}
             email={this.state.email}>
-                       
+
             </HoursForm>
           )
       }
@@ -96,8 +135,9 @@ class TeacherDash extends React.Component {
   renderCurrentCourses = function(){
       return (this.state.coursesTeaching).map((course, idx) =>(
            <li> <Course
-                  course={course}
-                  id={idx}
+                  name={course.name}
+                  id={course.id}
+                  enrolledStudents={course.students}
                 />
            </li> )
       );
@@ -107,8 +147,9 @@ class TeacherDash extends React.Component {
   renderCompletedCourses = function(){
       return (this.state.coursesCompleted).map((course, idx) =>(
            <li> <Course
-                  course={course}
-                  id={idx}
+                  name={course.name}
+                  id={course.id}
+                  enrolledStudents={course.students}
                 />
            </li> )
       );
@@ -116,14 +157,16 @@ class TeacherDash extends React.Component {
 
 
   render() {
+    console.log("STATE: ", this.state)
     return(
       <React.Fragment>
         <NavbarGeneric/>
-        This is the teacher dashboard.
-        <TeacherToolbar
-            handleButtonSelect={value=>loadToolbarSelection(this, value)}
-        />
-        {this.renderToolbarSelection()}
+        <div id="teacher-view">
+            <TeacherToolbar
+                handleButtonSelect={value=>loadToolbarSelection(this, value)}
+            />
+            {this.renderToolbarSelection()}
+        </div>
       </React.Fragment>
     )
   }

@@ -1,4 +1,6 @@
 import React from "react";
+import axios from "axios";
+
 import { setState, action, subscribe } from 'statezero';
 import { Link } from 'react-router-dom';
 import NavbarGeneric from '../../Util/NavbarGeneric';
@@ -10,22 +12,20 @@ import MenuItem from '@material-ui/core/MenuItem';
 import {submitFeedback} from "../Actions/FeedbackForm"
 import './FeedbackForm.css';
 
+/* For local debugging */
+const DEBUG = 1;
+
+/* Debug variables.*/
+const PREFIX = DEBUG ? "http://localhost:80" : "";
+
 class FeedbackForm extends React.Component {
 
-    // Temporary data
     state = {
-        students:[
-            {firstName:"Kyle",
-            lastName: "Tran",
-            },
-            {firstName:"Jennifer",
-            lastName:"Tu",
-            },
-            {firstName:"Michelle",
-            lastName:"Qualley",
-            }
-        ],
-        inputs:{conditions:'0', variables:'0', loops:'0', functions:'0', recommended:{}, feedback:""},
+        studentEmail: "",
+        courseId: "",
+        studentInfo: {},
+        courseInfo: {},
+        inputs: {conditions:'0', variables:'0', loops:'0', functions:'0', recommended:{}, feedback:""},
 
     }
 
@@ -46,8 +46,32 @@ class FeedbackForm extends React.Component {
     componentDidMount() {
         // TODO: Connect to database
         const {sid, cid} = this.props.match.params
+        this.state.studentEmail = sid
+        this.state.courseId = cid
         console.log("Opening feedback form for student "+sid + " in course " + cid)
+        this.getInfo()
 
+    }
+
+    // Updates state with course and student info
+    getInfo(){
+        const currentComponent = this;
+        axios.post(PREFIX + '/api/admin/getuser', {email : this.state.studentEmail})
+            .then(function(response){
+                currentComponent.state.studentInfo = response.data.result
+        })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+        })
+        axios.post(PREFIX + '/api/getclass', {_id : this.state.courseId})
+            .then(function(response){
+                currentComponent.state.courseInfo = response.data.result
+        })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+        })
     }
 
     render() {
@@ -59,7 +83,7 @@ class FeedbackForm extends React.Component {
 
                 <NavbarGeneric/>
                 <div id="feedback-form">
-                    <h2>{students[sid].firstName} {students[sid].lastName}</h2>
+                    <h2>{this.state.studentInfo.firstName} {this.state.studentInfo.lastName}</h2>
                     <Grid>
 
                         {/* Grades*/}
@@ -83,7 +107,7 @@ class FeedbackForm extends React.Component {
 
                         {/* Written Feedback*/}
                         <div className="form-field" id="feedback">
-                           <h5>Provide Feedback for {students[sid].firstName} {students[sid].lastName}</h5>
+                           <h5>Provide Feedback for {this.state.studentInfo.firstName} {this.state.studentInfo.lastName}</h5>
                            <TextField
                            className="input"
                            multiline

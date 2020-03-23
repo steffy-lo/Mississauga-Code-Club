@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from "axios";
-
 /* For local debugging */
 const DEBUG = 1;
 
@@ -19,4 +18,5 @@ export const loadToolbarSelection = (teacherDash, value) => {
 
 export const displayWorkHours = (hoursForm, hours, email) =>{
     hoursForm.state = hours;
+
 };

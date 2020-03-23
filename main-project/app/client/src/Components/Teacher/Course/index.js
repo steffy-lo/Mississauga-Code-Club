@@ -7,31 +7,20 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EnrolledStudent from '../EnrolledStudent'
 class Course extends React.Component {
 
-    // Contains sample data
     state={
-        enrolledStudents:[
-            {firstName:"Kyle",
-            lastName: "Tran",
-            id:0},
-            {firstName:"Jennifer",
-            lastName:"Tu",
-            id:1},
-            {firstName:"Michelle",
-            lastName:"Qualley",
-            id:2}
-        ],
-
+        enrolledStudents:[],
+        name: "",
 
     }
 
-    // Displays the students in the state variable in the right format
-    renderStudents = function(courseId){
+    // Displays the students in the course as a list
+    renderStudents = function(){
         return (this.state.enrolledStudents).map(student =>(
              <li> <EnrolledStudent
                     firstName={student.firstName}
                     lastName = {student.lastName}
-                    id={student.id}
-                    courseId={courseId}
+                    email={student.email}
+                    courseId={this.state.id}
                   />
              </li> )
         );
@@ -40,7 +29,10 @@ class Course extends React.Component {
     }
 
     render() {
-        const { course, id } = this.props;
+        const { name, id, enrolledStudents} = this.props;
+        this.state.enrolledStudents = enrolledStudents;
+        this.state.name = name;
+        this.state.id = id
         return (
             <ExpansionPanel>
                       <ExpansionPanelSummary
@@ -50,16 +42,14 @@ class Course extends React.Component {
                       >
                       <dl className="course">
                           <dt>
-                              <label>{course.courseName}</label>
+                              <label>{name}</label>
                           </dt>
-                          <dd>
-                              {course.courseDesc}
-                          </dd>
+
                       </dl>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                       <ul>
-                        {this.renderStudents(id)}
+                        {this.renderStudents()}
                       </ul>
                       </ExpansionPanelDetails>
             </ExpansionPanel>

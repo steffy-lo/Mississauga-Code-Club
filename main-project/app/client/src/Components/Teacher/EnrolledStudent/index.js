@@ -5,14 +5,14 @@ import { Link } from 'react-router-dom';
 
 class EnrolledStudent extends React.Component {
 
-    // Contains sample data
+    
 
     render() {
-        const {firstName, lastName, id, courseId} = this.props;
+        const {firstName, lastName, email, courseId} = this.props;
 
         return (
 
-            <Link to={`/t/course=${courseId}/student=${id}`}>
+            <Link to={`/t/course=${courseId}/student=${email}`}>
 
                 <h4>{firstName} {lastName} </h4>
             </Link>
