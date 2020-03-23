@@ -470,8 +470,12 @@ def logHours():
     if not dbworker.validateAccessList(valid_access):
         abort(403)
 
-    if request.json is None or 'hours' not in request.json:
+    if request.json is None:
         abort(400)
+
+    for x in ['email', 'purpose', 'paid', 'hours']:
+        if x not in request.json:
+            abort(400)
 
     if request.json['hours'] <= 0:
         abort(400)
