@@ -470,6 +470,12 @@ def logHours():
     if not dbworker.validateAccessList(valid_access):
         abort(403)
 
+    if request.json is None or 'hours' not in request.json:
+        abort(400)
+
+    if request.json['hours'] <= 0:
+        abort(400)
+
     date = datetime.datetime.now()
 
     dbworker.addHoursLog(request.json['email'], request.json['purpose'], request.json['paid'], date, request.json['hours'])
