@@ -382,6 +382,11 @@ def removeStudent(courseId, email):
     """
     matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
 
+    # TODO: Take a backup of matchingClass in case the cascade fails
+    # THIS CANNOT BE DONE THROUGH backup = matchingClass,
+    # as this will basically set a pointer in backup to point to the address of matchingClass
+    # ie. changes to matchingClass will affect <==> backup
+
     if matchingClass is None:
         return False
 
@@ -398,6 +403,8 @@ def removeStudent(courseId, email):
     studentList.remove(email)
 
     mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}}) # TODO: Check if this update worked
+
+    # TODO: If the update did not work, then it needs to be reverted
 
     mclient[database]['reports'].remove({'email' : email}) # TODO: Check if this update worked
 
