@@ -206,6 +206,57 @@ def removeInstructor(courseId, email):
 
     return True
 
+def addVolunteer(courseId, email):
+    """
+    Add a volunteer to the class with _id == courseId
+
+    Returns True if successful, False otherwise
+    """
+    # TODO: Maybe merge this with addStudent?
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    lookup = getUser(email)
+    if lookup is None or lookup['userType'] == userTypeMap['student']:
+        # User is not a valid user to add as an instructor of some sort
+        return False
+
+    staffList = matchingClass['volunteers'][:]
+
+    if email in staffList:
+        return False
+
+    staffList.append(email)
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'volunteers' : staffList}})
+
+    return True
+
+def removeVolunteer(courseId, email):
+    """
+    Removes an volunteer from the class with _id == courseId
+
+    Returns True if successful, False otherwise
+    """
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    found = False
+    staffList = [x for x in matchingClass['volunteers'] if x != email]
+
+    if len(matchingClass['volunteers']) == len(staffList):
+        # Instructor was not found in the list
+        return False
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'volunteers' : staffList}}) # TODO: Check if this update was successful
+
+    return True
+
+
 
 def getClasses(email, filt={}):
     """
