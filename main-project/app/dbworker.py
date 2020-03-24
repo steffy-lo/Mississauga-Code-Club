@@ -421,6 +421,20 @@ def editHour(hourLogId, changes):
     """
     mclient[database]['hours'].update_one({'_id' : hourLogId}, {'$set' : changes})
 
+def deleteHour(hourLogId):
+    """
+    Deletes <hourLogId>'s hour log
+
+    Returns whether or not this worked
+    """
+    res = mclient[database]['hours'].delete_one({'_id' : hourLogId})
+
+    if res.deleted_count != 1:
+        # Check if the delete worked
+        return False
+
+    return True
+
 
 # Routes to fix issues with the database
 def addMissingEmptyReports():
