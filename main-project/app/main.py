@@ -595,11 +595,14 @@ def getReport():
     if paid_hrs:
         proj['paid'] = 1
 
+    # Convert date ranges into datetime objects and insert into filter
     if 'startRange' in request.json and 'endRange' in request.json:
-        # Convert date ranges into datetime objects and insert into filter
         start_time_stamp = datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d')
         end_time_stamp = datetime.datetime.strptime(request.json['endRange'], '%Y-%m-%d')
         filt["dateTime"] = {'$gte': start_time_stamp, '$lte': end_time_stamp}
+    elif 'startRange' in request.json:
+        start_time_stamp = datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d')
+        filt["dateTime"] = {'$gte': start_time_stamp}
 
     hours = dbworker.getHours(filt={"email": str(email)}, projection=proj)
 
