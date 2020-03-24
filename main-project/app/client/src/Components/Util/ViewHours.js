@@ -6,7 +6,7 @@ import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
 import LoadingModal from '../Util/LoadingModal';
 
-import { getUserTypeExplicit, getCurrentUserHours } from '../../Actions/utility.js';
+import { getUserTypeExplicit, getUserHours } from '../../Actions/utility.js';
 
 import "../CSS/Util/ViewHours.css";
 import "../CSS/Common.css";
@@ -27,7 +27,6 @@ class ViewHours extends React.Component {
       filterBoxState: 'hidden',
       totalHours: 0
     };
-    this.idTicker = 0;
   }
 
   componentDidMount() {
@@ -36,7 +35,7 @@ class ViewHours extends React.Component {
   }
 
   getOwnHours() {
-    getCurrentUserHours()
+    getUserHours()
     .then(hours => {
       const deployment = this.generateHoursRows(hours)
       this.setState({
@@ -91,7 +90,7 @@ class ViewHours extends React.Component {
                   (
                     <Link
                       className={`${this.uTE}VH`}
-                      to="/" >
+                      to="a/hours/@" >
                       Edit Hours
                     </Link>
                   )
@@ -212,7 +211,7 @@ class ViewHours extends React.Component {
                         onChange={_ => this.setState({isPaid: true})} />
                       <label htmlFor={1}>
                         Only Teaching
-                      </label>purposeQuery
+                      </label>
                       <br />
                       <input
                         type="radio"
@@ -253,7 +252,13 @@ class ViewHours extends React.Component {
                       disabled={this.state.fullList.length === 0}
                       onClick={e => {
                         e.preventDefault();
-
+                        this.setState({
+                          fromDate: "",
+                          toDate: "",
+                          purposeQuery: "",
+                          isPaid: this.uTE === "volunteer" ? false : null,
+                          deployedList: this.generateHoursRows(this.state.fullList)
+                        })
                       }}/>
                     </div>
                   </form>
@@ -296,13 +301,13 @@ class ViewHours extends React.Component {
             if (filter(record)) {
               compiledList.push(
                 <HoursRow
-                  key={uid(this.idTicker++)}
+                  key={record._id}
                   date={new Date(record.dateTime).toLocaleString()}
                   event={record.purpose}
                   hours={record.hours}
                   paid={record.paid} />
               )
-              hoursSum += record.hours
+              hoursSum += parseFloat(record.hours)
             }
           }
           this.setState({totalHours: hoursSum})
@@ -314,9 +319,6 @@ class ViewHours extends React.Component {
       class HoursRow extends React.Component {
         constructor(props) {
           super(props);
-          this.state = {
-            isVisible: "shown"
-          }
           this.paid = props.paid === undefined || props.paid === null ? 0 : props.paid;
           this.date = props.date;
           this.hours = props.hours;

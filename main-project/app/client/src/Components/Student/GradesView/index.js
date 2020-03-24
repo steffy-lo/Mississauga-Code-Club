@@ -51,7 +51,6 @@ class GradesView extends React.Component {
                 const marks = res.data.marks;
                 for (let i = 0; i < classIds.length; i++) {
                     const courseDetails = marks[classIds[i]];
-                    console.log(courseDetails);
                     if (courseDetails !== undefined) {
                         const grades = courseDetails.marks;
                         if (grades !== undefined) {
@@ -83,11 +82,10 @@ class GradesView extends React.Component {
                                 comments: courseDetails.comments,
                                 recommendations: courseDetails.nextCourse.split(",")});
                             currentComponent.setState({data: new_data});
-                            currentComponent.setInitialState();
                         }
                     }
                 }
-                console.log(this.state.data)
+                currentComponent.setInitialState();
             })
             .catch(error => {
                 // handle error

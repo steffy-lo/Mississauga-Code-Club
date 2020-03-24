@@ -251,7 +251,7 @@ export const editUser = (email, details) => {
   return new Promise((resolve, reject) => {
     if (details.firstName === "" || details.lastName === "" ||
     details.email === "" || details.telephone === "" ||
-    (details.userType === 4 && (details.age <= 0 ||
+    (details.userType === 4 && (details.birthday === "" ||
       details.parentEmail === "")) || details.password === "" )  {
       return reject({state: 400, msg: "Request was poorly formatted"});
     }
@@ -259,10 +259,11 @@ export const editUser = (email, details) => {
       firstName: details.firstName,
       lastName: details.lastName,
       phoneNumber: details.telephone,
-      birthday: details.birthday
+      birthday: new Date(details.birthday +" 0:0").toISOString()
     }
     if (details.userType === 4) {
       compiledReq['parentEmail'] = details.parentEmail;
+      compiledReq['parentName'] = details.parentName;
     }
     axios.patch(PREFIX + "/api/admin/edituser",
     JSON.stringify({currentEmail: String(email) , newAttributes: compiledReq}),
@@ -286,6 +287,29 @@ export const editUser = (email, details) => {
       }
     })
   });
+}
+
+export const editHours = (currentId, newAttributes) => {
+  return new Promise((resolve, reject) => {
+    axios.patch(PREFIX + "/api/admin/edithours",
+    { currentId, newAttributes },
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.status === 493) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.statis === 400) {
+        reject({stat: 400, msg: "Changes could not be applied due to " +
+          "request missing data or containing illegal (id) changes"})
+      } else {
+        reject({
+          stat: err.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  })
 }
 
 const standardReject = (err, reject) => {

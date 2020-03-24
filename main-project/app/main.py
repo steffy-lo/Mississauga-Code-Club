@@ -113,8 +113,8 @@ def getAllClasses():
     """
     Returns a list of class ids from the database
     """
-    if 'email' not in session or session['email'] is None:
-        abort(403)
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(401)
 
     return jsonify({'classList' : dbworker.getAllClasses()})
 
@@ -504,6 +504,37 @@ def logHours():
 
     return jsonify({'dateTime': date})
 
+@app.route('/api/admin/edithours', methods=['PATCH'])
+def editHours():
+    """
+    Takes in a json of the form
+    {'currentId' : id of hour log as string, 'newAttributes' : {...}}
+
+    It can change any attribute that is not the _id
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'currentId' not in request.json or 'newAttributes' not in request.json:
+        abort(400)
+
+    convClassId = ObjectId(request.json['currentId'])
+
+
+    if request.json['newAttributes'] == {} or '_id' in request.json['newAttributes']:
+        # No changes requested or an attempt was made to change the email or _id or the password
+        abort(400)
+
+    # TODO: Validate that all the changes made are valid
+    # ie. ban changes to any invalid attributes
+
+    # TODO: Validate types of all the changes requested
+
+    dbworker.editHour(convClassId, request.json['newAttributes'])
+
+    return jsonify({'success' : True})
+
+
 @app.route('/api/gethours/', methods=['GET'])
 @app.route('/api/hours/', methods=['GET'])
 def getHours():
@@ -564,8 +595,8 @@ def getUser():
 
     Returns {'result' : {user information, no id or password}, 'success' : True}
     """
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-        abort(403)
+#    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+#        abort(403)
 
     if request.json is None or 'email' not in request.json:
         abort(400)
@@ -587,10 +618,10 @@ def getUser():
     if 'birthday' in u:
         bday = u['birthday']
 
-    delta = now - bday
-    age = int(delta.total_seconds / (31536000))
-
-    u['age'] = age
+#    delta = now - bday
+#    age = int(delta.total_seconds / (31536000))
+#
+#    u['age'] = age
     return jsonify({'result' : u, 'success' : True})
 
 @app.route('/api/admin/edituser', methods=['PATCH'])
@@ -601,8 +632,8 @@ def editUser():
 
     It can change any attribute that is not the email
     """
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-        abort(403)
+#    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+#        abort(403)
 
     if request.json is None or 'currentEmail' not in request.json or 'newAttributes' not in request.json:
         abort(400)
@@ -644,7 +675,7 @@ def createCourse():
     if 'semester' in request.json:
         semester = request.json['semester']
 
-    val = dbworker.createClass(request.json['courseTitle'], [], [], semester)
+    val = dbworker.createClass(request.json['courseTitle'], [], [], [], semester)
 
     return jsonify({'success' : True})
 

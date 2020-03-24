@@ -13,6 +13,7 @@ import AdminDash from './Components/Admin/AdminDash';
 import CheckIn from './Components/Admin/CheckIn';
 import SelectUser from './Components/Admin/SelectUser';
 import EditUser from './Components/Admin/EditUser';
+import EditHours from './Components/Admin/EditHours';
 import CreateUser from './Components/Admin/CreateUser';
 import SelectClass from './Components/Admin/SelectClass';
 import EditClass from './Components/Admin/EditClass';
@@ -35,6 +36,8 @@ function App() {
         <SRoute exact path="/s/grades" component={StudentGrades}/>
         <ARoute exact path="/a" component={AdminDash}/>
         <ARoute exact path="/a/hours" component={ViewHours}/>
+        <ARoute exact path="/a/hours/@" component={EditHours}/>
+        <ARoute exact path="/a/hours/:email" component={EditHours}/>
         <ARoute exact path="/a/checkin" component={CheckIn}/>
         <ARoute exact path="/a/user" component={SelectUser}/>
         <ARoute exact path="/a/c/user" component={CreateUser}/>

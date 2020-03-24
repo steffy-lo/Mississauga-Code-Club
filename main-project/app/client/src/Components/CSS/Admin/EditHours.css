@@ -1,11 +1,10 @@
-#wrapper {
+#EHwrapper {
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
     flex-wrap: wrap;
 }
 
-#wrapper div {
+/* #wrapper div {
     display: flex;
     flex-direction: column;
     text-align: right;
@@ -13,10 +12,52 @@
 
 #wrapper div span {
     margin: 10px;
+} */
+
+#EHModalWindow {
+  display: flex;
+  flex-direction: row;
+}
+
+#EHwrapperLeft {
+  text-align: left;
+  margin: 2px;
+}
+
+#EHwrapperRight {
+  margin: 2px;
+}
+
+#EHwrapperLeft div, #EHwrapperRight div {
+  margin: 10px 0px;
+}
+
+#EHSpacer {
+  visibility: hidden;
+  margin: 10px 0 20px 0;
+}
+
+#EHWrapperRadioB span {
+  flex-wrap: wrap;
+  flex-grow: 0;
+  margin: 5px 10px;
+  text-align: left;
+}
+
+#EHwrapperLeft div input {
+  padding: 0px 0px;
+}
+
+#EHModalID {
+  margin: 10px 0 20px 0;
+  text-align: left;
+  justify-content: flex-end;
+  flex-grow: 1;
 }
 
 .buttonSectionWrapper {
     margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
-
-
