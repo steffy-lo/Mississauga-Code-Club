@@ -24,7 +24,6 @@ class StudentDash extends React.Component {
 
     getClasses() {
         const currentComponent = this;
-        console.log(this.props);
         axios.get(currentComponent.state.prefix + '/getClasses/'+ this.state.email)
             .then(function (response) {
                 // handle success
