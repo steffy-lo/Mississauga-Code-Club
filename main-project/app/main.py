@@ -11,10 +11,12 @@ import dbworker
 import mailsane
 from schemaprovider import SchemaFactory
 
+import config
+
 # Start the app and setup the static directory for the html, css, and js files.
 
 # TODO: Get this working, maybe
-STATIC_FOLDER = 'client/build'
+STATIC_FOLDER = config.STATIC_FOLDER
 # STATIC_FOLDER = 'static' # Default static folder to display warnings
 # if os.path.exists('client/build'):
 #     # React app was built
@@ -28,11 +30,11 @@ CORS(app)
 # DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
 # IS MADE PUBLIC
 # THIS IS USED FOR THE SESSION COOKIE ENCRYPTION
-app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
+app.secret_key = config.SECRET_KEY
 
 # Turn this to False when properly deploying to make sure that all
 # debugging routes are shut off.
-ENABLE_DEBUG_ROUTES = True
+ENABLE_DEBUG_ROUTES = config.ENABLE_DEBUG_ROUTES
 
 @app.route('/favicon.ico')
 def favicon():
