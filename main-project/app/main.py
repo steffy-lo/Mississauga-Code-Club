@@ -838,6 +838,41 @@ def removeStudent():
 
     return jsonify({'success' : dbworker.removeStudent(convClassId, str(email))})
 
+@app.route('/api/admin/addvolunteer', methods=['POST'])
+def addVolunteer():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Adds <email> to <classId> as a volunteer
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
+        # Allow non volunteers to volunteer
+        # TODO: VALID?
+        abort(400)
+
+    return jsonify({'success' : dbworker.addVolunteer(convClassId, str(email))})
+
+
 @app.route('/api/admin/removevolunteer', methods=['POST', 'DELETE'])
 def removeVolunteer():
     """
@@ -867,6 +902,7 @@ def removeVolunteer():
 
     if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
         # Allow non volunteers to be volunteers
+        # TODO: VALID?
         abort(400)
 
 
