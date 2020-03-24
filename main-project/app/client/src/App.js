@@ -20,12 +20,11 @@ import EditClass from './Components/Admin/EditClass';
 
 import VolunteerDash from './Components/Volunteer/VolunteerDash';
 
-
 import TeacherDash from './Components/Teacher/TeacherDash';
 import ViewHours from './Components/Util/ViewHours';
 import TeacherFeedback from './Components/Teacher/FeedbackForm';
 
-
+import BulkImport from './Components/Admin/BulkImport'
 
 function App() {
   return (
@@ -49,6 +48,9 @@ function App() {
         <TRoute exact path="/t" component={TeacherDash}/>
         <TRoute exact path="/t/hours" component={ViewHours}/>
         <TRoute exact path="/t/course=:cid/student=:sid" component={TeacherFeedback}/>
+
+        <Route exact path="/t/import" component={BulkImport} />
+
         <Redirect from="/" to="/" />
       </Switch>
     </BrowserRouter>
