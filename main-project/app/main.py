@@ -331,6 +331,8 @@ def updateCourseInfo():
     Returns {success : Boolean}
 
     Sets the <ongoing> of classId to <status>, and <courseTitle> to <newTitle>
+
+    If <semesterInfo> is in request.json, it will update <semester> to <semesterInfo>
     """
     # Validate credentials here
     if 'email' not in session or session['email'] is None:
@@ -350,6 +352,9 @@ def updateCourseInfo():
     # TODO: Validate types
 
     json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
+
+    if 'semesterInfo' in request.json:
+        json['semester'] = request.json['semesterInfo']
 
     dbworker.updateClassInfo(convClassId, json)
 
@@ -499,6 +504,37 @@ def logHours():
 
     return jsonify({'dateTime': date})
 
+@app.route('/api/admin/edithours', methods=['PATCH'])
+def editHours():
+    """
+    Takes in a json of the form
+    {'currentId' : id of hour log as string, 'newAttributes' : {...}}
+
+    It can change any attribute that is not the _id
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'currentId' not in request.json or 'newAttributes' not in request.json:
+        abort(400)
+
+    convClassId = ObjectId(request.json['currentId'])
+
+
+    if request.json['newAttributes'] == {} or '_id' in request.json['newAttributes']:
+        # No changes requested or an attempt was made to change the email or _id or the password
+        abort(400)
+
+    # TODO: Validate that all the changes made are valid
+    # ie. ban changes to any invalid attributes
+
+    # TODO: Validate types of all the changes requested
+
+    dbworker.editHours(convClassId, request.json['newAttributes'])
+
+    return jsonify({'success' : True})
+
+
 @app.route('/api/gethours/', methods=['GET'])
 @app.route('/api/hours/', methods=['GET'])
 def getHours():
@@ -576,6 +612,16 @@ def getUser():
     u.pop('password')
     u.pop('_id')
 
+    now = datetime.datetime.now()
+
+    bday = now
+    if 'birthday' in u:
+        bday = u['birthday']
+
+    delta = now - bday
+    age = int(delta.total_seconds / (31536000))
+
+    u['age'] = age
     return jsonify({'result' : u, 'success' : True})
 
 @app.route('/api/admin/edituser', methods=['PATCH'])
@@ -625,7 +671,7 @@ def createCourse():
     if request.json is None or 'courseTitle' not in request.json:
         abort(400)
 
-    semester = None
+    semester = ""
     if 'semester' in request.json:
         semester = request.json['semester']
 
@@ -697,7 +743,7 @@ def addInstructor():
 
     return jsonify({'success' : dbworker.addInstructor(convClassId, str(email))})
 
-@app.route('/api/admin/removeinstructor', methods=['POST'])
+@app.route('/api/admin/removeinstructor', methods=['POST', 'DELETE'])
 def removeInstructor():
     """
     Takes in a JSON of the structure {'email', 'classId'}
@@ -730,6 +776,40 @@ def removeInstructor():
 
 
     return jsonify({'success' : dbworker.removeInstructor(convClassId, str(email))})
+
+@app.route('/api/admin/removestudent', methods=['POST', 'DELETE'])
+def removeStudent():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Removes <email> from <classId> as a student
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] not in [dbworker.userTypeMap['student']]:
+        abort(400)
+
+
+
+    return jsonify({'success' : dbworker.removeStudent(convClassId, str(email))})
 
 
 @app.route('/api/admin/createuser', methods=['POST'])

@@ -202,7 +202,7 @@ def removeInstructor(courseId, email):
         # Instructor was not found in the list
         return False
 
-    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}})
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}}) # TODO: Check if this update was successful
 
     return True
 
@@ -372,6 +372,53 @@ def isClassInstructor(email, classId):
     cl = mclient[database]['classes'].find_one({'_id' : classId})
 
     return email in cl['instructors']
+
+
+def removeStudent(courseId, email):
+    """
+    Removes a student from the class with _id == courseId
+
+    Returns whether or not the removal was successful
+    """
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    lookup = getUser(email)
+    if lookup is None or lookup['userType'] != userTypeMap['student']:
+        # User is not a valid user to add as a student
+        return False
+
+    studentList = matchingClass['students'][:]
+
+    if email not in studentList:
+        return False
+
+    studentList.remove(email)
+
+    backupReport = mclient[database]['reports'].find_one({'email' : email}) # Backup in case the second delete fails
+
+    res = mclient[database]['reports'].delete_one({'email' : email})
+
+    if res.deleted_count != 1:
+        # Check if the delete worked
+        return False
+
+    res = mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}}) # TODO: Check if this update worked
+
+    if res.modified_count != 1:
+        # Second update failed, revert the first one
+        mclient[database]['reports'].insert_one(backupReport) # TODO: Does this work?
+        return False
+
+    return True
+
+def editHour(hourLogId, changes):
+    """
+    Takes in a json of changes and forces them in
+    """
+    mclient[database]['hours'].update_one({'_id' : hourLogId}, {'$set' : changes})
 
 
 # Routes to fix issues with the database
