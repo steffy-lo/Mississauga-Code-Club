@@ -11,10 +11,12 @@ import dbworker
 import mailsane
 from schemaprovider import SchemaFactory
 
+import config
+
 # Start the app and setup the static directory for the html, css, and js files.
 
 # TODO: Get this working, maybe
-STATIC_FOLDER = 'client/build'
+STATIC_FOLDER = config.STATIC_FOLDER
 # STATIC_FOLDER = 'static' # Default static folder to display warnings
 # if os.path.exists('client/build'):
 #     # React app was built
@@ -28,11 +30,11 @@ CORS(app)
 # DO NOT SHOW THIS PUBLICLY. THIS SHOULD BE HIDDEN IF CODE
 # IS MADE PUBLIC
 # THIS IS USED FOR THE SESSION COOKIE ENCRYPTION
-app.secret_key = b'834914j1sdfsdf93jsdlghgsagasd'
+app.secret_key = config.SECRET_KEY
 
 # Turn this to False when properly deploying to make sure that all
 # debugging routes are shut off.
-ENABLE_DEBUG_ROUTES = True
+ENABLE_DEBUG_ROUTES = config.ENABLE_DEBUG_ROUTES
 
 @app.route('/favicon.ico')
 def favicon():
@@ -534,6 +536,33 @@ def editHours():
 
     return jsonify({'success' : True})
 
+@app.route('/api/admin/deletehour', methods=['POST, DELETE'])
+def deleteHour():
+    """
+    Takes in a json of the form
+    {'id' : id of hour log as string}
+
+    Deletes the hour associated with id
+
+    Aborts with a 409 in the event that it failed to work in the database
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'id' not in request.json:
+        abort(400)
+
+    convClassId = ObjectId(request.json['id'])
+
+
+    res = dbworker.deleteHour(convClassId)
+
+    if not res:
+        # Failure
+        abort(409)
+
+    return jsonify({'success' : True})
+
 
 @app.route('/api/gethours/', methods=['GET'])
 @app.route('/api/hours/', methods=['GET'])
@@ -595,8 +624,8 @@ def getUser():
 
     Returns {'result' : {user information, no id or password}, 'success' : True}
     """
-#    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-#        abort(403)
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
 
     if request.json is None or 'email' not in request.json:
         abort(400)
@@ -618,10 +647,10 @@ def getUser():
     if 'birthday' in u:
         bday = u['birthday']
 
-#    delta = now - bday
-#    age = int(delta.total_seconds / (31536000))
-#
-#    u['age'] = age
+    delta = now - bday
+    age = int(delta.total_seconds() / (31536000))
+
+    u['age'] = age
     return jsonify({'result' : u, 'success' : True})
 
 @app.route('/api/admin/edituser', methods=['PATCH'])
@@ -632,8 +661,8 @@ def editUser():
 
     It can change any attribute that is not the email
     """
-#    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-#        abort(403)
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
 
     if request.json is None or 'currentEmail' not in request.json or 'newAttributes' not in request.json:
         abort(400)
@@ -810,6 +839,78 @@ def removeStudent():
 
 
     return jsonify({'success' : dbworker.removeStudent(convClassId, str(email))})
+
+@app.route('/api/admin/addvolunteer', methods=['POST'])
+def addVolunteer():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Adds <email> to <classId> as a volunteer
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
+        # Allow non volunteers to volunteer
+        # TODO: VALID?
+        abort(400)
+
+    return jsonify({'success' : dbworker.addVolunteer(convClassId, str(email))})
+
+
+@app.route('/api/admin/removevolunteer', methods=['POST', 'DELETE'])
+def removeVolunteer():
+    """
+    Takes in a JSON of the structure {'email', 'classId'}
+
+    Removes <email> from <classId> as a volunteer
+
+    Returns {'success' : Boolean}
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'email' not in request.json or 'classId' not in request.json:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+    if email.error:
+        abort(400)
+
+    convClassId = ObjectId(request.json['classId'])
+
+    # TODO: Validate types
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
+        # Allow non volunteers to be volunteers
+        # TODO: VALID?
+        abort(400)
+
+
+
+
+    return jsonify({'success' : dbworker.removeVolunteer(convClassId, str(email))})
 
 
 @app.route('/api/admin/createuser', methods=['POST'])
