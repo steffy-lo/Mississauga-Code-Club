@@ -323,3 +323,24 @@ const standardReject = (err, reject) => {
     });
   }
 }
+
+export const uploadFileTest = (file) => {
+  //return new Promise((resolve, reject) => {
+    if (file === null) {
+      //return reject({state: 400, msg: "Request was poorly formatted"});
+      console.log("Bad");
+    }
+    const formData = new FormData();
+    formData.append("file", file)
+    axios.post(PREFIX + "/testFile",
+    formData,
+    {headers: {"Content-Type": "multipart/form-data"}})
+    .then(res => {
+      console.log(res);
+      console.log(res.data);
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  //})
+}
