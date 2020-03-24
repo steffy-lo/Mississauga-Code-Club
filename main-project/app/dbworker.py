@@ -117,7 +117,7 @@ def setPassword(email, newPassword):
     saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
     mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
-def createClass(courseTitle, students, instructors, semester):
+def createClass(courseTitle, students, instructors, volunteers, semester):
     """
     Adds a class to the database
 
@@ -125,7 +125,7 @@ def createClass(courseTitle, students, instructors, semester):
     """
 
     # Returns with 'A field insertedId with the _id value of the inserted document.'
-    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteeers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """

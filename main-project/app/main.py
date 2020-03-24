@@ -675,7 +675,7 @@ def createCourse():
     if 'semester' in request.json:
         semester = request.json['semester']
 
-    val = dbworker.createClass(request.json['courseTitle'], [], [], semester)
+    val = dbworker.createClass(request.json['courseTitle'], [], [], [], semester)
 
     return jsonify({'success' : True})
 
