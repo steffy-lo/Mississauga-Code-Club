@@ -534,6 +534,33 @@ def editHours():
 
     return jsonify({'success' : True})
 
+@app.route('/api/admin/deletehour', methods=['POST, DELETE'])
+def deleteHour():
+    """
+    Takes in a json of the form
+    {'id' : id of hour log as string}
+
+    Deletes the hour associated with id
+
+    Aborts with a 409 in the event that it failed to work in the database
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'id' not in request.json:
+        abort(400)
+
+    convClassId = ObjectId(request.json['id'])
+
+
+    res = dbworker.deleteHour(convClassId)
+
+    if not res:
+        # Failure
+        abort(409)
+
+    return jsonify({'success' : True})
+
 
 @app.route('/api/gethours/', methods=['GET'])
 @app.route('/api/hours/', methods=['GET'])
