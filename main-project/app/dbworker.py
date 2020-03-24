@@ -5,13 +5,15 @@ from flask import session
 
 import mailsane
 
+import config
+
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
-DBUSER = "mccgamma"
-DBPASSWORD = "alfdasdf83423j4lsdf8"
-MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md?retryWrites=false"
+DBUSER = config.DBUSER
+DBPASSWORD = config.DBPASSWORD
+MONGOURI = config.MONGOURI
 
 mclient = MongoClient(MONGOURI)
-database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
+database = config.DATABASE # This is a database within a MongoDB instance
 
 
 def getUsers(filt={}, projection={}):

@@ -11,6 +11,13 @@ STATIC_FOLDER = 'client/build'
 # debugging routes are shut off.
 ENABLE_DEBUG_ROUTES = True
 
+# Database related configuration
+# DO NOT SHOW THESE CREDENTIALS PUBLICLY
+DBUSER = "mccgamma"
+DBPASSWORD = "alfdasdf83423j4lsdf8"
+MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md?retryWrites=false"
+
+DATABASE = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
 
 
 
