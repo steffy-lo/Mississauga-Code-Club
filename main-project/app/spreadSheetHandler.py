@@ -3,6 +3,11 @@ import datetime
 import dbworker
 from flask import Flask, jsonify
 
+
+# request.form, form['file']
+
+# /testfile
+
 # Dictionary to store the different tables in the spreadsheet
 tableDict = {}
 
@@ -53,12 +58,12 @@ def assignSpreadSheetUsers():
         # Check if there is a username column
         if 'MCC Account' in user:
             email = tableDict['Students'][user]['MCC Account']
-            studentList.append(email)
 
             #Check if Account already exists
             if dbworker.mclient[dbworker.database]['users'].find_one({'userType' : dbworker.userTypeMap['student'],
                                                                               'email' : email}) is not None:
                 newUser = False
+                studentList.append(email)
 
             # If account doesn't exist, extract the student info from the table
             else:
@@ -81,8 +86,9 @@ def assignSpreadSheetUsers():
             dbworker.createUser(email, thisStudentInfo[0], thisStudentInfo[1], thisStudentInfo[2], thisStudentInfo[3],
                                 4, thisStudentInfo[4], thisStudentInfo[5], thisStudentInfo[6])
 
-    # Construct list of instructors and helpers
+    # Construct lists of instructors and helpers
     instructorList = []
+    volunteerList = []
     failures['Instructors'] = []
     failures['Helpers'] = []
     for i in tableDict['Instructors']['Instructor Account(s)']:
@@ -96,11 +102,12 @@ def assignSpreadSheetUsers():
     for h in tableDict['Instructors']['Helper Account(s)']:
         if dbworker.mclient[dbworker.database]['users'].find_one({'userType': dbworker.userTypeMap['volunteer'],
                                                                   'email': h}) is not None:
-            instructorList.append(h)
+            volunteerList.append(h)
         else:
             failures['Helpers'].append(h)
 
-    dbworker.createClass(tableDict['Course']['Course Title'], studentList, instructorList, tableDict['Course']['Schedule'][1])
+    dbworker.createClass(tableDict['Course']['Course Title'], studentList, instructorList, volunteerList,
+                         tableDict['Course']['Schedule'][1])
 
     return jsonify(failures)
 
