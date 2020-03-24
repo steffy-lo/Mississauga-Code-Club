@@ -622,8 +622,8 @@ def getUser():
 
     Returns {'result' : {user information, no id or password}, 'success' : True}
     """
-#    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-#        abort(403)
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
 
     if request.json is None or 'email' not in request.json:
         abort(400)
@@ -645,10 +645,10 @@ def getUser():
     if 'birthday' in u:
         bday = u['birthday']
 
-#    delta = now - bday
-#    age = int(delta.total_seconds / (31536000))
-#
-#    u['age'] = age
+    delta = now - bday
+    age = int(delta.total_seconds / (31536000))
+
+    u['age'] = age
     return jsonify({'result' : u, 'success' : True})
 
 @app.route('/api/admin/edituser', methods=['PATCH'])
