@@ -34,9 +34,10 @@ export function getUserTypeExplicit() {
     return type;
 }
 
-export const getCurrentUserHours = () => {
+export const getUserHours = (other=null) => {
   return new Promise((resolve, reject) => {
-    axios.get(PREFIX + "/api/hours/")
+    const urlQuery = other === null ? "" : "?user=" + other
+    axios.get(PREFIX + "/api/hours/" + urlQuery)
     .then(res => {
       if (!res || !res.data || !res.data.hours) throw {stat: 500, statusText: "Something went wrong"};
       resolve(res.data.hours)

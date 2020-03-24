@@ -26,7 +26,8 @@ class EditUser extends React.Component {
       parentEmail: "",
       birthday: "",
       changePassword: 0,
-      isStudent: 0
+      isStudent: 0,
+      parentName: ""
     };
   }
 
@@ -50,7 +51,8 @@ class EditUser extends React.Component {
         telephone: user.phoneNumber,
         isStudent: ( user.userType == 4 ? 1 : 0 ),
         birthday: new Date(user.birthday).toLocaleDateString(),
-        parentEmail: ( user.userType == 4 ? user.parentEmail : "")
+        parentEmail: ( user.userType == 4 ? user.parentEmail : ""),
+        parentName: ( user.userType == 4 ? user.parentName : "")
       });
     })
     .catch(err => {
@@ -169,10 +171,6 @@ class EditUser extends React.Component {
                     </span>
                   </div>
                   <div id="ssfwRight">
-                    {/*<span>Email:&nbsp;
-                      <input type="text" value={this.state.firstName}
-                      onChange={e => this.setState({firstName: e.target.value})}/>
-                    </span>*/}
                     <span>
                       <input style={{visibility: "hidden"}} type="text"/>
                     </span>
@@ -184,6 +182,11 @@ class EditUser extends React.Component {
                       <input disabled={!this.state.isStudent}
                       type="text" value={this.state.parentEmail}
                       onChange={e => this.setState({parentEmail: e.target.value})}/>
+                    </span>
+                    <span>Parent Name:&nbsp;
+                      <input disabled={!this.state.isStudent}
+                      type="text" value={this.state.parentName}
+                      onChange={e => this.setState({parentName: e.target.value})}/>
                     </span>
                   </div>
                 </div>
@@ -210,6 +213,11 @@ class EditUser extends React.Component {
                       e.preventDefault();
                       this.getUserDetails();
                     }}/>
+                    <Link
+                      to={`/a/hours/${this.email}`}
+                      style={{display: this.state.isStudent ? "none" : "inherit" }}>
+                      Edit Hours
+                    </Link>
                 </div>
               </form>
             </div>

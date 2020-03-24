@@ -24,6 +24,8 @@ class EditClass extends React.Component {
       teacherList: [],
       //Students
       studentList: [],
+      //Volunteers
+      volunteerList: [],
       //Criteria
       criteriaList: [],
       courseTitle: "",
@@ -302,6 +304,50 @@ class EditClass extends React.Component {
                       />
                     </form>
                   </div>
+
+                  {/*<div id="editClassMainR">
+                    <h2>
+                      Volunteers:
+                    </h2>
+                    <div id="stdLstW" className="flexCol">
+                      <div id="stdLst" className="vScrollable fill">
+                        {this.generateStudentList()}
+                      </div>
+                    </div>
+                    <form className="ecBarAdd">
+                      <input type="email"
+                      placeholder="student email"
+                      value={this.state.studentEmail}
+                      onChange={e => this.setState({studentEmail: e.target.value})}
+                      />
+                      <input type="submit"
+                      value="Add Student"
+                      onClick={e => {
+                        e.preventDefault();
+                        addStudent(this.state.studentEmail, this.id)
+                        .then(() => {
+                          const stdEm = this.state.studentEmail;
+                          const stList = this.state.studentList;
+                          stList.push(stdEm)
+                          this.setState({
+                            modalWindow: "",
+                            studentList: stList
+                          })
+                        })
+                        .catch(err => {
+                          this.setState({
+                            modalWindow:
+                              <StatusModal title="Could Not Add Student"
+                                text={err.msg}
+                                onClose={e => this.setState({modalWindow: ""})}
+                                />
+                          })
+                        })
+                      }}
+                      />
+                    </form>
+                  </div>*/}
+                  
                 </div>
               </div>
             </div>
