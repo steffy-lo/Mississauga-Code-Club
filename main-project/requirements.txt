@@ -9,3 +9,4 @@ bcrypt
 pymongo
 email-validator
 jsonschema
+reportlab
