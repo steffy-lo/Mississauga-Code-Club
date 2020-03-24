@@ -504,6 +504,37 @@ def logHours():
 
     return jsonify({'dateTime': date})
 
+@app.route('/api/admin/edithours', methods=['PATCH'])
+def editHours():
+    """
+    Takes in a json of the form
+    {'currentId' : id of hour log as string, 'newAttributes' : {...}}
+
+    It can change any attribute that is not the _id
+    """
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.json is None or 'currentId' not in request.json or 'newAttributes' not in request.json:
+        abort(400)
+
+    convClassId = ObjectId(request.json['currentId'])
+
+
+    if request.json['newAttributes'] == {} or '_id' in request.json['newAttributes']:
+        # No changes requested or an attempt was made to change the email or _id or the password
+        abort(400)
+
+    # TODO: Validate that all the changes made are valid
+    # ie. ban changes to any invalid attributes
+
+    # TODO: Validate types of all the changes requested
+
+    dbworker.editHours(convClassId, request.json['newAttributes'])
+
+    return jsonify({'success' : True})
+
+
 @app.route('/api/gethours/', methods=['GET'])
 @app.route('/api/hours/', methods=['GET'])
 def getHours():

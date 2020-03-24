@@ -414,6 +414,13 @@ def removeStudent(courseId, email):
 
     return True
 
+def editHour(hourLogId, changes):
+    """
+    Takes in a json of changes and forces them in
+    """
+    mclient[database]['hours'].update_one({'_id' : hourLogId}, {'$set' : changes})
+
+
 # Routes to fix issues with the database
 def addMissingEmptyReports():
     """
