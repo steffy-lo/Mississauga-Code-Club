@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort, session, redirect, url_for, escape
+from flask import Flask, jsonify, request, abort, session, redirect, url_for, escape, send_file
 from flask_cors import CORS
 import os
 import bcrypt
@@ -10,6 +10,7 @@ import datetime
 import dbworker
 import mailsane
 from schemaprovider import SchemaFactory
+import reportgen
 
 # Start the app and setup the static directory for the html, css, and js files.
 
@@ -570,6 +571,47 @@ def getHours():
         hours_list.append(doc)
 
     return jsonify({"hours": hours_list})
+
+
+@app.route('/api/admin/report/hours', methods=['GET'])
+def getReport():
+    """
+    Return a PDF containing all worked/volunteer hours
+    """
+
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]):
+        abort(403)
+
+    email = mailsane.normalize(session['email'])
+
+    if email.error:
+        abort(400)
+
+    paid_hrs = 0 if 'paid' not in request.json else request.json['paid']
+
+    filt = {"email": str(email)}
+    proj = {'_id': 0, 'hours': 1}
+
+    if paid_hrs:
+        proj['paid'] = 1
+
+    if 'startRange' in request.json and 'endRange' in request.json:
+        # Convert date ranges into datetime objects and insert into filter
+        start_time_stamp = datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d')
+        end_time_stamp = datetime.datetime.strptime(request.json['endRange'], '%Y-%m-%d')
+        filt["dateTime"] = {'$gte': start_time_stamp, '$lte': end_time_stamp}
+
+    hours = dbworker.getHours(filt={"email": str(email)}, projection=proj)
+
+    hours_list = []
+    for doc in hours:
+        hours_list.append(float(doc["hours"]))
+
+    file_name = reportgen.hours(email, hours_list, paid_hrs)
+
+    # Once generated, report PDFs are currently stored in the 'app' folder of docker container
+    return send_file(file_name, attachment_filename=file_name)
+
 
 @app.route('/api/admin/getusers')
 def getUsers():
