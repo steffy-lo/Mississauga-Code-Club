@@ -632,6 +632,7 @@ def getReport():
         os.remove("app/" + file_name)
         return resp_file
 
+    abort(500)
 
 @app.route('/api/admin/getusers')
 def getUsers():
