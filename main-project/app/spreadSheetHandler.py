@@ -6,110 +6,135 @@ from flask import Flask, jsonify
 
 # request.form, form['file']
 
-# /testfile
-
-# Dictionary to store the different tables in the spreadsheet
-tableDict = {}
+# /testFile
 
 # Ordered list of the names of attribute needed to construct a student user
 studentAttributes = ['MCC Account', 'Parent\'s Email', 'First Name', 'Last Name', 'Password', 'Phone Number',
                      'Birthdate', 'Parent\'s Name']
 
 
-def readSpreadSheetTable(fileObject, sheetIndex):
+class SheetHandler:
+    """An object that takes an MCC excel file and extracts the necessary info from it"""
 
-    global tableDict
+    def __init__(self, fileObject, sheetIndex):
+        # Dictionary to store the different tables in the spreadsheet
+        self.tableDict = {}
+        self.failures = {}
 
-    # Costructs a Dataframe of the course info from the given excel file
-    courseTable = pd.read_excel(fileObject, sheet_name=sheetIndex, index_col=0, nrows=2)
+        # Costructs a Dataframe of the course info from the given excel file
+        courseTable = pd.read_excel(fileObject, sheet_name=sheetIndex, index_col=0, nrows=2)
 
-    # Constructs a Dataframe of the student info from the given excel file
-    studentTable = pd.read_excel(fileObject, sheet_name=sheetIndex, header=5, parse_date=[2], usecols="A:H")
+        # Constructs a Dataframe of the student info from the given excel file
+        studentTable = pd.read_excel(fileObject, sheet_name=sheetIndex, header=5, parse_date=[2], usecols="A:H")
 
-    # Constructs a Dataframe of the instructor info from the given excel file
-    instructorTable = pd.read_excel(fileObject, sheet_name=sheetIndex, header=5, usecols="J,K")
+        # Constructs a Dataframe of the instructor info from the given excel file
+        instructorTable = pd.read_excel(fileObject, sheet_name=sheetIndex, header=5, usecols="J,K")
 
-    # Constructs a dictionary out of the Dataframe studentTable and adds it to the table dictionary
-    tableDict['Students'] = studentTable.to_dict('index')
+        # Constructs a dictionary out of the Dataframe studentTable and adds it to the table dictionary
+        self.tableDict['Students'] = studentTable.to_dict('index')
 
-    # Constructs a dictionary out of the Dataframe courseTable and adds it to the table dictionary
-    tableDict['Course'] = courseTable.to_dict('index')
+        # Constructs a dictionary out of the Dataframe courseTable and adds it to the table dictionary
+        self.tableDict['Course'] = courseTable.to_dict('index')
 
-    # Constructs a dictionary out of the Dataframe instructorTable and adds it to the table dictionary
-    tableDict['Instructors'] = instructorTable.to_dict('list')
-
-
-
-def assignSpreadSheetUsers():
-    global tableDict
-    global studentAttributes
-
-    failures = {}
-    studentList = []
-
-    # For each row in the dict
-    for user in tableDict['Students']:
-        fail = False
-        newUser = True
-        thisStudentInfo = []
-        email = ''
+        # Constructs a dictionary out of the Dataframe instructorTable and adds it to the table dictionary
+        self.tableDict['Instructors'] = instructorTable.to_dict('list')
 
 
-        # Check if there is a username column
-        if 'MCC Account' in user:
-            email = tableDict['Students'][user]['MCC Account']
 
-            #Check if Account already exists
-            if dbworker.mclient[dbworker.database]['users'].find_one({'userType' : dbworker.userTypeMap['student'],
-                                                                              'email' : email}) is not None:
-                newUser = False
-                studentList.append(email)
 
-            # If account doesn't exist, extract the student info from the table
+    def getStudentList(self):
+        global studentAttributes
+
+        studentList = []
+
+        # For each row in the dict
+        for user in self.tableDict['Students']:
+            fail = False
+            newUser = True
+            thisStudentInfo = []
+            email = ''
+
+            # Check if there is a username column
+            if 'MCC Account' in user:
+                email = self.tableDict['Students'][user]['MCC Account']
+
+                # Check if Account already exists
+                if dbworker.mclient[dbworker.database]['users'].find_one({'userType': dbworker.userTypeMap['student'],
+                                                                          'email': email}) is not None:
+                    newUser = False
+                    studentList.append(email)
+
+                # If account doesn't exist, extract the student info from the table
+                else:
+                    attributeIndex = 1
+                    while attributeIndex < studentAttributes.size() and not fail:
+                        if studentAttributes[attributeIndex] in user:
+                            thisStudentInfo.append(self.tableDict['Students'][user][studentAttributes[attributeIndex]])
+                        else:
+                            self.failures[user] = self.tableDict['Students'][user]
+                            fail = True
+
+                        attributeIndex += 1
+
             else:
-                attributeIndex = 1
-                while attributeIndex < studentAttributes.size() and not fail:
-                    if studentAttributes[attributeIndex] in user:
-                        thisStudentInfo.append(tableDict['Students'][user][studentAttributes[attributeIndex]])
-                    else:
-                        failures[user] = tableDict['Students'][user]
-                        fail = True
+                self.failures[user] = self.tableDict['Students'][user]
+                fail = True
 
-                    attributeIndex += 1
+            # If all the parameters are met, add user info to the database
+            if (not fail) and newUser:
+                dbworker.createUser(email, thisStudentInfo[0], thisStudentInfo[1], thisStudentInfo[2],
+                                    thisStudentInfo[3],
+                                    4, thisStudentInfo[4], thisStudentInfo[5], thisStudentInfo[6])
 
-        else:
-            failures[user] = tableDict['Students'][user]
-            fail = True
+        return studentList
 
-        # If all the parameters are met, add user info to the database
-        if (not fail) and newUser:
-            dbworker.createUser(email, thisStudentInfo[0], thisStudentInfo[1], thisStudentInfo[2], thisStudentInfo[3],
-                                4, thisStudentInfo[4], thisStudentInfo[5], thisStudentInfo[6])
 
-    # Construct lists of instructors and helpers
-    instructorList = []
-    volunteerList = []
-    failures['Instructors'] = []
-    failures['Helpers'] = []
-    for i in tableDict['Instructors']['Instructor Account(s)']:
-        if dbworker.mclient[dbworker.database]['users'].find_one({'userType': dbworker.userTypeMap['instructor'],
-                                                                  'email': i}) is not None:
-            instructorList.append(i)
 
-        else:
-            failures['Instructors'].append(i)
+    def getInstructorList(self):
+        # Construct lists of instructors and helpers
+        instructorList = []
+        self.failures['Instructors'] = []
+        for i in self.tableDict['Instructors']['Instructor Account(s)']:
+            if dbworker.mclient[dbworker.database]['users'].find_one({'userType': dbworker.userTypeMap['instructor'],
+                                                                      'email': i}) is not None:
+                instructorList.append(i)
 
-    for h in tableDict['Instructors']['Helper Account(s)']:
-        if dbworker.mclient[dbworker.database]['users'].find_one({'userType': dbworker.userTypeMap['volunteer'],
-                                                                  'email': h}) is not None:
-            volunteerList.append(h)
-        else:
-            failures['Helpers'].append(h)
+            else:
+                self.failures['Instructors'].append(i)
 
-    dbworker.createClass(tableDict['Course']['Course Title'], studentList, instructorList, volunteerList,
-                         tableDict['Course']['Schedule'][1])
+        return instructorList
 
-    return jsonify(failures)
+
+
+    def getVolunteerList(self):
+
+        # Construct lists of instructors and helpers
+        volunteerList = []
+        self.failures['Helpers'] = []
+
+        for h in self.tableDict['Instructors']['Helper Account(s)']:
+            if dbworker.mclient[dbworker.database]['users'].find_one({'userType': dbworker.userTypeMap['volunteer'],
+                                                                      'email': h}) is not None:
+                volunteerList.append(h)
+            else:
+                self.failures['Helpers'].append(h)
+
+        return volunteerList
+
+
+
+    def assignSpreadSheetUsers(self):
+
+        studentList = self.getStudentList()
+
+        instructorList = self.getInstructorList()
+
+        volunteerList = self.getVolunteerList()
+
+        dbworker.createClass(self.tableDict['Course']['Course Title'], studentList, instructorList, volunteerList,
+                             self.tableDict['Course']['Schedule'][1])
+
+        return jsonify(self.failures)
 
 # # Check if there is an age column
 # if 'Age' in user and (not fail) and newUser:
