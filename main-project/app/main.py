@@ -532,7 +532,21 @@ def editHours():
 
     # TODO: Validate types of all the changes requested
 
-    dbworker.editHour(convClassId, request.json['newAttributes'])
+    if 'dateTime' in request.json['newAttributes']:
+        # Convert dateTime from string to datetime object
+        # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
+        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['dateTime'], "%Y-%m-%dT%H:%M:%SZ")
+
+        correctedDict = {}
+        for x in request.json['newAttributes']:
+            if x == 'dateTime':
+                correctedDict['dateTime'] = correctedTime
+            else:
+                correctedDict[x] = request.json['newAttributes'][x]
+
+        dbworker.editHour(convClassId, correctedDict)
+    else:
+        dbworker.editHour(convClassId, request.json['newAttributes'])
 
     return jsonify({'success' : True})
 
