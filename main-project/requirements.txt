@@ -10,3 +10,4 @@ pymongo
 email-validator
 jsonschema
 reportlab
+python-dateutil

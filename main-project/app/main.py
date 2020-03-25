@@ -6,11 +6,13 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from jsonschema import validate
 import datetime
+import sys
 
 import dbworker
 import mailsane
 from schemaprovider import SchemaFactory
 import reportgen
+from dateutil.parser import parse
 
 # Start the app and setup the static directory for the html, css, and js files.
 
@@ -573,7 +575,7 @@ def getHours():
     return jsonify({"hours": hours_list})
 
 
-@app.route('/api/admin/report/hours', methods=['GET'])
+@app.route('/api/admin/report/hours', methods=['POST'])
 def getReport():
     """
     Return a PDF containing all worked/volunteer hours
@@ -582,29 +584,41 @@ def getReport():
     if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]):
         abort(403)
 
-    email = mailsane.normalize(session['email'])
+    if request.json is None:
+        abort(400)
+
+    for x in ['email', 'paid']:
+        if x not in request.json:
+            abort(400)
+
+    email = mailsane.normalize(request.json['email'])
 
     if email.error:
         abort(400)
 
-    paid_hrs = 0 if 'paid' not in request.json else request.json['paid']
+    paid_hrs = request.json['paid']
 
     filt = {"email": str(email)}
     proj = {'_id': 0, 'hours': 1}
 
     if paid_hrs:
-        proj['paid'] = 1
+        filt['paid'] = True
 
     # Convert date ranges into datetime objects and insert into filter
+    # Note: to enforce a specific date/time pattern you can also use strptime method:
+    # datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d') (complete pattern: "%Y-%m-%dT%H:%M:%S.%fZ")
     if 'startRange' in request.json and 'endRange' in request.json:
-        start_time_stamp = datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d')
-        end_time_stamp = datetime.datetime.strptime(request.json['endRange'], '%Y-%m-%d')
+        start_time_stamp = parse(request.json['startRange'])
+        end_time_stamp = parse(request.json['endRange'])
         filt["dateTime"] = {'$gte': start_time_stamp, '$lte': end_time_stamp}
     elif 'startRange' in request.json:
-        start_time_stamp = datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d')
+        start_time_stamp = parse(request.json['startRange'])
         filt["dateTime"] = {'$gte': start_time_stamp}
+    elif 'endRange' in request.json:
+        end_time_stamp = parse(request.json['endRange'])
+        filt["dateTime"] = {'$lte': end_time_stamp}
 
-    hours = dbworker.getHours(filt={"email": str(email)}, projection=proj)
+    hours = dbworker.getHours(filt=filt, projection=proj)
 
     hours_list = []
     for doc in hours:
@@ -613,7 +627,11 @@ def getReport():
     file_name = reportgen.hours(email, hours_list, paid_hrs)
 
     # Once generated, report PDFs are currently stored in the 'app' folder of docker container
-    return send_file(file_name, attachment_filename=file_name)
+    resp_file = send_file(file_name, attachment_filename=file_name)
+
+    if os.path.exists("app/" + file_name):
+        os.remove("app/" + file_name)
+        return resp_file
 
 
 @app.route('/api/admin/getusers')
@@ -1038,4 +1056,4 @@ def index(path='/'):
 
 if __name__ == "__main__":
     # Only for debugging while developing
-    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
+    app.run(host='0.0.0.0', debug=True, port=os.environ.get('PORT', 80))

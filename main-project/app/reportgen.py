@@ -17,13 +17,16 @@ def hours(user_id, hrs, paid_hrs):
     for h in hrs:
         total_hrs += h
 
-    #TODO: Consider better folder structure for reports. At the moment they're stored in app/ folder of container.
-    c = canvas.Canvas("app/report_hours_{}.pdf".format(user_id))
+    hrs_type = 'paid' if paid_hrs else 'volunteer'
 
-    c.drawString(100, 750, "{} hours for MCC member: {}".format('Paid' if paid_hrs else 'Volunteer', user_id))
+    file_name = "report_{}_hours_{}.pdf".format(hrs_type, user_id)
+
+    #TODO: Consider better folder structure for reports. At the moment they're stored in app/ folder of container.
+    c = canvas.Canvas("app/" + file_name)
+
+    c.drawString(100, 750, "{} hours for MCC member: {}".format(hrs_type.capitalize(), user_id))
     c.drawString(100, 700, "Total hours: {}".format(total_hrs))
     c.showPage()
     c.save()
 
-    return "report_hours_{}.pdf".format(user_id)
-
+    return file_name
