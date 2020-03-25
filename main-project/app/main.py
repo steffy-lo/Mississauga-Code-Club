@@ -6,7 +6,6 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from jsonschema import validate
 import datetime
-import sys
 
 import dbworker
 import mailsane
