@@ -623,7 +623,13 @@ def getReport():
     Return a PDF containing all worked/volunteer hours
     """
 
-    if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]):
+    email = mailsane.normalize(request.json['email'])
+
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]) and str(email) != session['email']:
+        # Allows admins to see everyones reports, users to see their own
         abort(403)
 
     if request.json is None:
@@ -633,10 +639,6 @@ def getReport():
         if x not in request.json:
             abort(400)
 
-    email = mailsane.normalize(request.json['email'])
-
-    if email.error:
-        abort(400)
 
     paid_hrs = request.json['paid']
 
