@@ -2,7 +2,7 @@ import axios from "axios";
 import { deauthorise } from './auth';
 
 /* For local debugging */
-const DEBUG = 0
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -15,7 +15,7 @@ export const checkIn = (email, purpose, hours, paid) => {
     JSON.stringify({ email, purpose, hours, paid}),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
+      if (!res || !res.data) throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.dateTime)
     })
     .catch(err => {
@@ -38,7 +38,7 @@ export const createClass = (courseTitle) => {
     axios.post(PREFIX + "/api/admin/createcourse", JSON.stringify({ courseTitle }),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      //if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
+      if (!res || !res.data) throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.id);
     })
     .catch(err => {
@@ -51,8 +51,9 @@ export const getClassList = () => {
   return new Promise((resolve, reject) => {
     axios.get(PREFIX + "/api/admin/getclasses", {headers: {"Content-Type": "application/json"}})
     .then(res => {
+      console.log(res)
       if (!res || !res.data || !res.data.classList)
-        throw {stat: 500, statusText: "Something went wrong"};
+        throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.classList);
     })
     .catch(err => standardReject(err.response, reject))
@@ -65,7 +66,7 @@ export const getClass = (id) => {
     JSON.stringify({'_id': id}),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      if (!res || !res.data || !res.data.result) throw {stat: 500, statusText: "Something went wrong"};
+      if (!res || !res.data || !res.data.result) throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.result);
     })
     .catch(err => {
@@ -89,7 +90,7 @@ export const getClass = (id) => {
 export const addStudent = (email, classId) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || email === "")
-      return reject({stat: 500, msg: "Missing class id or email"});
+      return reject({status: 500, msg: "Missing class id or email"});
     axios.post(PREFIX + "/api/admin/addstudent",
     JSON.stringify({ email, classId }),
     {headers: {"Content-Type": "application/json"}})
@@ -115,7 +116,7 @@ export const addStudent = (email, classId) => {
 export const addTeacher = (email, classId) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || email === "")
-      return reject({stat: 500, msg: "Missing class id or email"});
+      return reject({status: 500, msg: "Missing class id or email"});
     axios.post(PREFIX + "/api/admin/addinstructor",
     JSON.stringify({ email, classId }),
     {headers: {"Content-Type": "application/json"}})
@@ -141,7 +142,7 @@ export const addTeacher = (email, classId) => {
 export const updateCourseInfo = ( classId, status, newTitle ) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || newTitle === "")
-      return reject({stat: 500, msg: "Missing class id or title"});
+      return reject({status: 500, msg: "Missing class id or title"});
     axios.post(PREFIX + "/api/admin/updatecourseinfo",
     JSON.stringify({ classId, status, newTitle }),
     {headers: {"Content-Type": "application/json"}})
@@ -209,7 +210,7 @@ export const getUser = (email) => {
     { email: email },
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
+      if (!res || !res.data) throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.result);
     })
     .catch(err => {
@@ -238,7 +239,7 @@ export const getUserList = () => {
     .then(res => {
       console.log(res);
       if (!res || !res.data || !res.data.result)
-        throw {stat: 500, statusText: "Something went wrong"};
+        throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.result);
     })
     .catch(err => {
@@ -318,7 +319,7 @@ const standardReject = (err, reject) => {
     reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
   } else {
     reject({
-      stat: err.status,
+      stat: (!err) ? 500 : err.status,
       msg: "There was an error processing your request. Please, try again later."
     });
   }
