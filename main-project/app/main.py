@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort, session, redirect, url_for, escape
+from flask import Flask, jsonify, request, abort, session, redirect, url_for, escape, send_file
 from flask_cors import CORS
 import os
 import bcrypt
@@ -12,6 +12,8 @@ import dbworker
 import mailsane
 from schemaprovider import SchemaFactory
 import spreadSheetHandler
+import reportgen
+from dateutil.parser import parse
 
 import config
 
@@ -534,7 +536,21 @@ def editHours():
 
     # TODO: Validate types of all the changes requested
 
-    dbworker.editHour(convClassId, request.json['newAttributes'])
+    if 'dateTime' in request.json['newAttributes']:
+        # Convert dateTime from string to datetime object
+        # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
+        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['dateTime'], "%Y-%m-%dT%H:%M:%SZ")
+
+        correctedDict = {}
+        for x in request.json['newAttributes']:
+            if x == 'dateTime':
+                correctedDict['dateTime'] = correctedTime
+            else:
+                correctedDict[x] = request.json['newAttributes'][x]
+
+        dbworker.editHour(convClassId, correctedDict)
+    else:
+        dbworker.editHour(convClassId, request.json['newAttributes'])
 
     return jsonify({'success' : True})
 
@@ -601,6 +617,69 @@ def getHours():
         hours_list.append(doc)
 
     return jsonify({"hours": hours_list})
+
+
+@app.route('/api/report/', methods=['POST'])
+def getReport():
+    """
+    Return a PDF containing all worked/volunteer hours
+    """
+
+    email = mailsane.normalize(request.json['email'])
+
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]) and str(email) != session['email']:
+        # Allows admins to see everyones reports, users to see their own
+        abort(403)
+
+    if request.json is None:
+        abort(400)
+
+    for x in ['email', 'paid']:
+        if x not in request.json:
+            abort(400)
+
+
+    paid_hrs = request.json['paid']
+
+    filt = {"email": str(email)}
+    proj = {'_id': 0, 'hours': 1}
+
+    if paid_hrs:
+        filt['paid'] = True
+
+    # Convert date ranges into datetime objects and insert into filter
+    # Note: to enforce a specific date/time pattern you can also use strptime method:
+    # datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d') (complete pattern: "%Y-%m-%dT%H:%M:%S.%fZ")
+    if 'startRange' in request.json and 'endRange' in request.json:
+        start_time_stamp = parse(request.json['startRange'])
+        end_time_stamp = parse(request.json['endRange'])
+        filt["dateTime"] = {'$gte': start_time_stamp, '$lte': end_time_stamp}
+    elif 'startRange' in request.json:
+        start_time_stamp = parse(request.json['startRange'])
+        filt["dateTime"] = {'$gte': start_time_stamp}
+    elif 'endRange' in request.json:
+        end_time_stamp = parse(request.json['endRange'])
+        filt["dateTime"] = {'$lte': end_time_stamp}
+
+    hours = dbworker.getHours(filt=filt, projection=proj)
+
+    hours_list = []
+    for doc in hours:
+        hours_list.append(float(doc["hours"]))
+
+    file_name = reportgen.hours(email, hours_list, paid_hrs)
+
+    # Once generated, report PDFs are currently stored in the 'app' folder of docker container
+    resp_file = send_file(file_name, attachment_filename=file_name)
+
+    if os.path.exists("app/" + file_name):
+        os.remove("app/" + file_name)
+        return resp_file
+
+    abort(500)
 
 @app.route('/api/admin/getusers')
 def getUsers():

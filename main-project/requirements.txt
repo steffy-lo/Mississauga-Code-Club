@@ -11,3 +11,5 @@ email-validator
 jsonschema
 pandas
 xlrd
+reportlab
+python-dateutil
