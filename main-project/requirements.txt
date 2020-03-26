@@ -9,3 +9,5 @@ bcrypt
 pymongo
 email-validator
 jsonschema
+pandas
+xlrd

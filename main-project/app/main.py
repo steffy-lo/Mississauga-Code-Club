@@ -6,10 +6,12 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from jsonschema import validate
 import datetime
+import pandas as pd
 
 import dbworker
 import mailsane
 from schemaprovider import SchemaFactory
+import spreadSheetHandler
 
 import config
 
@@ -1071,6 +1073,21 @@ def fixReportIssues():
         abort(404)
 
     return jsonify({'result' : dbworker.addMissingEmptyReports()})
+
+@app.route('/testFile', methods=['POST'])
+def handleSPreadSheetDebug():
+    if request.files is None or 'file' not in request.files:
+        abort(400)
+
+    sheetFile = request.files['file']
+
+    sheetHandler = spreadSheetHandler.SheetHandler(sheetFile)
+    failures = sheetHandler.assignSpreadSheetUsers()
+
+    return jsonify(failures)
+
+
+
 
 
 # This blocks off routes like /a/.../.../.........
