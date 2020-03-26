@@ -617,7 +617,7 @@ def getHours():
     return jsonify({"hours": hours_list})
 
 
-@app.route('/api/admin/report/hours', methods=['POST'])
+@app.route('/api/report/', methods=['POST'])
 def getReport():
     """
     Return a PDF containing all worked/volunteer hours
