@@ -2,6 +2,7 @@ import pandas as pd
 import datetime
 import dbworker
 import mailsane
+import math
 
 
 # request.form, form['file']
@@ -60,12 +61,13 @@ class SheetHandler:
             email = ''
 
             # Check if there is a username column
-            if 'MCC Account' in self.tableDict['Students'][index][user]:
+            if 'MCC Account' in self.tableDict['Students'][index][user] and \
+                not pd.isnull(self.tableDict['Students'][index][user]['MCC Account']):
+
                 email = self.tableDict['Students'][index][user]['MCC Account']
                 checkEmail = mailsane.normalize(email)
                 if checkEmail.error:
-                    self.failures['Students'][index].append('Error at email for ' +
-                                                            str(self.tableDict['Students'][index][user]))
+                    self.failures['Students'][index].append('Error at email for student at row ' + str(user+1))
                     fail = True
 
                 # Check if Account already exists
@@ -78,18 +80,18 @@ class SheetHandler:
                 else:
                     attributeIndex = 1
                     while attributeIndex < len(studentAttributes) and not fail:
-                        if studentAttributes[attributeIndex] in self.tableDict['Students'][index][user]:
+                        if studentAttributes[attributeIndex] in self.tableDict['Students'][index][user] and \
+                                not pd.isnull(self.tableDict['Students'][index][user][studentAttributes[attributeIndex]]):
                             thisStudentInfo.append(self.tableDict['Students'][index][user][studentAttributes[attributeIndex]])
                         else:
                             self.failures['Students'][index].append('Error at ' + studentAttributes[attributeIndex] +
-                                                                    ' for ' + str(self.tableDict['Students'][index][user]))
+                                                                    ' for student at row ' + str(user+1))
                             fail = True
 
                         attributeIndex += 1
 
             else:
-                self.failures['Students'][index].append('Error at MCC Account for ' +
-                                                            str(self.tableDict['Students'][index][user]))
+                self.failures['Students'][index].append('Error at MCC Account for student at row ' + str(user+1))
                 fail = True
 
             # If all the parameters are met, add user info to the database
@@ -112,7 +114,8 @@ class SheetHandler:
                 instructorList.append(i)
 
             else:
-                self.failures['Instructors'][index].append(i)
+                if not pd.isnull(i):
+                    self.failures['Instructors'][index].append(i)
 
         return instructorList
 
@@ -127,7 +130,8 @@ class SheetHandler:
                                                                       'email': h}) is not None:
                 volunteerList.append(h)
             else:
-                self.failures['Helpers'][index].append(h)
+                if not pd.isnull(h):
+                    self.failures['Helpers'][index].append(h)
 
         return volunteerList
 
