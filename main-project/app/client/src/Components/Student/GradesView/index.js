@@ -3,7 +3,6 @@ import { uid } from "react-uid";
 import Grades from "../Grades"
 import './styles.css'
 import axios from "axios";
-import {getState} from "statezero";
 import NavBarGeneric from "../../Util/NavbarGeneric";
 
 class GradesView extends React.Component {
@@ -14,8 +13,8 @@ class GradesView extends React.Component {
         this.getCompletedClasses = this.getCompletedClasses.bind(this);
         this.getMarks = this.getMarks.bind(this);
         this.state = {
-            email: getState('email'),
-            prefix: getState('prefix'),
+            email: sessionStorage.getItem('email'),
+            prefix: sessionStorage.getItem('prefix'),
             loading: true,
             data: []
         };
@@ -52,7 +51,6 @@ class GradesView extends React.Component {
                 const marks = res.data.marks;
                 for (let i = 0; i < classIds.length; i++) {
                     const courseDetails = marks[classIds[i]];
-                    console.log(courseDetails);
                     if (courseDetails !== undefined) {
                         const grades = courseDetails.marks;
                         if (grades !== undefined) {
@@ -84,11 +82,10 @@ class GradesView extends React.Component {
                                 comments: courseDetails.comments,
                                 recommendations: courseDetails.nextCourse.split(",")});
                             currentComponent.setState({data: new_data});
-                            currentComponent.setInitialState();
                         }
                     }
                 }
-                console.log(this.state.data)
+                currentComponent.setInitialState();
             })
             .catch(error => {
                 // handle error
@@ -161,7 +158,7 @@ class GradesView extends React.Component {
                         entry={entry}/>
                     ))}
                     <h2>Teacher's Comments</h2>
-                    <p id="comments">{this.state.comments}</p>
+                    <textarea id="comments" readOnly>{this.state.comments}</textarea>
                     <h2>Next Steps</h2>
                     {this.state.recommendations.map(course => (
                         <dl key={uid(course)} className="recommended-courses">
@@ -174,12 +171,16 @@ class GradesView extends React.Component {
             </div>
             );
         } else {
-            return (
-                <div className="unavailable">
-                    <h1>ERROR! Cannot Find Student...</h1>
-                    <p>Please login and try again.</p>
-                </div>
-            );
+            if (this.state.email === undefined) {
+                return (
+                    <div className="unavailable">
+                        <h1>ERROR! Cannot Find Student...</h1>
+                        <p>Please login and try again.</p>
+                    </div>
+                );
+            } else {
+                return null;
+            }
         }
     }
 }

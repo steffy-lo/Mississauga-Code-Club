@@ -5,19 +5,15 @@ from flask import session
 
 import mailsane
 
+import config
+
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
-DBUSER = "mccgamma"
-DBPASSWORD = "alfdasdf83423j4lsdf8"
-MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_9tn7s7md?retryWrites=false"
+DBUSER = config.DBUSER
+DBPASSWORD = config.DBPASSWORD
+MONGOURI = config.MONGOURI
 
 mclient = MongoClient(MONGOURI)
-database = 'heroku_9tn7s7md' # This is a database within a MongoDB instance
-
-# IF DEPLOYING TO DELIVERABLE 2, USE THE FOLLOWING LINES TO SWAP THE DB
-# MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds249035.mlab.com:49035/heroku_nf9149n7?retryWrites=false"
-
-# mclient = MongoClient(MONGOURI)
-# database = 'heroku_nf9149n7' # This is a database within a MongoDB instance
+database = config.DATABASE # This is a database within a MongoDB instance
 
 
 def getUsers(filt={}, projection={}):
@@ -117,7 +113,7 @@ def setPassword(email, newPassword):
     saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
     mclient[database]['users'].update_one({'email' : email}, {'$set' : {'password' : saltedPassword}})
 
-def createClass(courseTitle, students, instructors, semester):
+def createClass(courseTitle, students, instructors, volunteers, semester):
     """
     Adds a class to the database
 
@@ -125,7 +121,7 @@ def createClass(courseTitle, students, instructors, semester):
     """
 
     # Returns with 'A field insertedId with the _id value of the inserted document.'
-    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteeers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -202,9 +198,60 @@ def removeInstructor(courseId, email):
         # Instructor was not found in the list
         return False
 
-    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}})
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}}) # TODO: Check if this update was successful
 
     return True
+
+def addVolunteer(courseId, email):
+    """
+    Add a volunteer to the class with _id == courseId
+
+    Returns True if successful, False otherwise
+    """
+    # TODO: Maybe merge this with addStudent?
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    lookup = getUser(email)
+    if lookup is None or lookup['userType'] == userTypeMap['student']:
+        # User is not a valid user to add as an instructor of some sort
+        return False
+
+    staffList = matchingClass['volunteers'][:]
+
+    if email in staffList:
+        return False
+
+    staffList.append(email)
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'volunteers' : staffList}})
+
+    return True
+
+def removeVolunteer(courseId, email):
+    """
+    Removes an volunteer from the class with _id == courseId
+
+    Returns True if successful, False otherwise
+    """
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    found = False
+    staffList = [x for x in matchingClass['volunteers'] if x != email]
+
+    if len(matchingClass['volunteers']) == len(staffList):
+        # Instructor was not found in the list
+        return False
+
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'volunteers' : staffList}}) # TODO: Check if this update was successful
+
+    return True
+
 
 
 def getClasses(email, filt={}):
@@ -344,6 +391,7 @@ def deleteMarkingSection(classId, sectionTitle):
     mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
 
     for s in classContent['students']:
+        # TODO: This has cascade related issues
         deleteMark(classId, s, sectionTitle)
 
 def updateClassInfo(classId, json):
@@ -372,6 +420,67 @@ def isClassInstructor(email, classId):
     cl = mclient[database]['classes'].find_one({'_id' : classId})
 
     return email in cl['instructors']
+
+
+def removeStudent(courseId, email):
+    """
+    Removes a student from the class with _id == courseId
+
+    Returns whether or not the removal was successful
+    """
+    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+
+    if matchingClass is None:
+        return False
+
+    lookup = getUser(email)
+    if lookup is None or lookup['userType'] != userTypeMap['student']:
+        # User is not a valid user to add as a student
+        return False
+
+    studentList = matchingClass['students'][:]
+
+    if email not in studentList:
+        return False
+
+    studentList.remove(email)
+
+    backupReport = mclient[database]['reports'].find_one({'email' : email}) # Backup in case the second delete fails
+
+    res = mclient[database]['reports'].delete_one({'email' : email})
+
+    if res.deleted_count != 1:
+        # Check if the delete worked
+        return False
+
+    res = mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}}) # TODO: Check if this update worked
+
+    if res.modified_count != 1:
+        # Second update failed, revert the first one
+        mclient[database]['reports'].insert_one(backupReport) # TODO: Does this work?
+        return False
+
+    return True
+
+def editHour(hourLogId, changes):
+    """
+    Takes in a json of changes and forces them in
+    """
+    mclient[database]['hours'].update_one({'_id' : hourLogId}, {'$set' : changes})
+
+def deleteHour(hourLogId):
+    """
+    Deletes <hourLogId>'s hour log
+
+    Returns whether or not this worked
+    """
+    res = mclient[database]['hours'].delete_one({'_id' : hourLogId})
+
+    if res.deleted_count != 1:
+        # Check if the delete worked
+        return False
+
+    return True
 
 
 # Routes to fix issues with the database

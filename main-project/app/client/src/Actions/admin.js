@@ -2,7 +2,7 @@ import axios from "axios";
 import { deauthorise } from './auth';
 
 /* For local debugging */
-const DEBUG = 0
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
@@ -15,7 +15,7 @@ export const checkIn = (email, purpose, hours, paid) => {
     JSON.stringify({ email, purpose, hours, paid}),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
+      if (!res || !res.data) throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.dateTime)
     })
     .catch(err => {
@@ -38,7 +38,7 @@ export const createClass = (courseTitle) => {
     axios.post(PREFIX + "/api/admin/createcourse", JSON.stringify({ courseTitle }),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      //if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
+      if (!res || !res.data) throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.id);
     })
     .catch(err => {
@@ -51,8 +51,9 @@ export const getClassList = () => {
   return new Promise((resolve, reject) => {
     axios.get(PREFIX + "/api/admin/getclasses", {headers: {"Content-Type": "application/json"}})
     .then(res => {
+      console.log(res)
       if (!res || !res.data || !res.data.classList)
-        throw {stat: 500, statusText: "Something went wrong"};
+        throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.classList);
     })
     .catch(err => standardReject(err.response, reject))
@@ -65,7 +66,7 @@ export const getClass = (id) => {
     JSON.stringify({'_id': id}),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      if (!res || !res.data || !res.data.result) throw {stat: 500, statusText: "Something went wrong"};
+      if (!res || !res.data || !res.data.result) throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.result);
     })
     .catch(err => {
@@ -89,7 +90,7 @@ export const getClass = (id) => {
 export const addStudent = (email, classId) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || email === "")
-      return reject({stat: 500, msg: "Missing class id or email"});
+      return reject({status: 500, msg: "Missing class id or email"});
     axios.post(PREFIX + "/api/admin/addstudent",
     JSON.stringify({ email, classId }),
     {headers: {"Content-Type": "application/json"}})
@@ -115,7 +116,7 @@ export const addStudent = (email, classId) => {
 export const addTeacher = (email, classId) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || email === "")
-      return reject({stat: 500, msg: "Missing class id or email"});
+      return reject({status: 500, msg: "Missing class id or email"});
     axios.post(PREFIX + "/api/admin/addinstructor",
     JSON.stringify({ email, classId }),
     {headers: {"Content-Type": "application/json"}})
@@ -141,7 +142,7 @@ export const addTeacher = (email, classId) => {
 export const updateCourseInfo = ( classId, status, newTitle ) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || newTitle === "")
-      return reject({stat: 500, msg: "Missing class id or title"});
+      return reject({status: 500, msg: "Missing class id or title"});
     axios.post(PREFIX + "/api/admin/updatecourseinfo",
     JSON.stringify({ classId, status, newTitle }),
     {headers: {"Content-Type": "application/json"}})
@@ -209,7 +210,7 @@ export const getUser = (email) => {
     { email: email },
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      if (!res || !res.data) throw {stat: 500, statusText: "Something went wrong"};
+      if (!res || !res.data) throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.result);
     })
     .catch(err => {
@@ -238,7 +239,7 @@ export const getUserList = () => {
     .then(res => {
       console.log(res);
       if (!res || !res.data || !res.data.result)
-        throw {stat: 500, statusText: "Something went wrong"};
+        throw {status: 500, statusText: "Something went wrong"};
       resolve(res.data.result);
     })
     .catch(err => {
@@ -251,7 +252,7 @@ export const editUser = (email, details) => {
   return new Promise((resolve, reject) => {
     if (details.firstName === "" || details.lastName === "" ||
     details.email === "" || details.telephone === "" ||
-    (details.userType === 4 && (details.age <= 0 ||
+    (details.userType === 4 && (details.birthday === "" ||
       details.parentEmail === "")) || details.password === "" )  {
       return reject({state: 400, msg: "Request was poorly formatted"});
     }
@@ -259,10 +260,11 @@ export const editUser = (email, details) => {
       firstName: details.firstName,
       lastName: details.lastName,
       phoneNumber: details.telephone,
-      birthday: details.birthday
+      birthday: new Date(details.birthday +" 0:0").toISOString()
     }
     if (details.userType === 4) {
       compiledReq['parentEmail'] = details.parentEmail;
+      compiledReq['parentName'] = details.parentName;
     }
     axios.patch(PREFIX + "/api/admin/edituser",
     JSON.stringify({currentEmail: String(email) , newAttributes: compiledReq}),
@@ -288,14 +290,58 @@ export const editUser = (email, details) => {
   });
 }
 
+export const editHours = (currentId, newAttributes) => {
+  return new Promise((resolve, reject) => {
+    axios.patch(PREFIX + "/api/admin/edithours",
+    { currentId, newAttributes },
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.status === 493) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.statis === 400) {
+        reject({stat: 400, msg: "Changes could not be applied due to " +
+          "request missing data or containing illegal (id) changes"})
+      } else {
+        reject({
+          stat: err.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  })
+}
+
 const standardReject = (err, reject) => {
   if (err !== undefined && (err.status === 403 || err.status === 401)) {
     deauthorise();
     reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
   } else {
     reject({
-      stat: err.status,
+      stat: (!err) ? 500 : err.status,
       msg: "There was an error processing your request. Please, try again later."
     });
   }
+}
+
+export const uploadFileTest = (file) => {
+  //return new Promise((resolve, reject) => {
+    if (file === null) {
+      //return reject({state: 400, msg: "Request was poorly formatted"});
+      console.log("Bad");
+    }
+    const formData = new FormData();
+    formData.append("file", file)
+    axios.post(PREFIX + "/testFile",
+    formData,
+    {headers: {"Content-Type": "multipart/form-data"}})
+    .then(res => {
+      console.log(res);
+      console.log(res.data);
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  //})
 }
