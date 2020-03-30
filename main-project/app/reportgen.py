@@ -1,5 +1,7 @@
-from reportlab.pdfgen import canvas
-
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+import datetime
 
 def hours(user_id, hrs, paid_hrs):
     '''
@@ -12,6 +14,7 @@ def hours(user_id, hrs, paid_hrs):
     :return: File name of created report as a string
     '''
 
+    date = datetime.date.today().strftime('%d/%m/%y')
     total_hrs = 0
 
     for h in hrs:
@@ -21,12 +24,45 @@ def hours(user_id, hrs, paid_hrs):
 
     file_name = "report_{}_hours_{}.pdf".format(hrs_type, user_id)
 
-    #TODO: Consider better folder structure for reports. At the moment they're stored in app/ folder of container.
-    c = canvas.Canvas("app/" + file_name)
+    #dev/production path: "app/" + file_name
+    #test path: file_name
+    doc = SimpleDocTemplate(file_name,
+                            pagesize=letter,
+                            rightMargin=72,
+                            leftMargin=72,
+                            topMargin=124,
+                            bottomMargin=18
+                            )
 
-    c.drawString(100, 750, "{} hours for MCC member: {}".format(hrs_type.capitalize(), user_id))
-    c.drawString(100, 700, "Total hours: {}".format(total_hrs))
-    c.showPage()
-    c.save()
+    #TODO: Consider better folder structure for reports. At the moment they're stored in app/ folder of container.
+
+    styles = getSampleStyleSheet()
+
+    flowables = [
+        Paragraph("<img src='static/mcc-logo.png' width='2.40in' height='1.15in' />", style=styles["Normal"]),
+        Paragraph("3195 Erindale Station Rd unit 204, Mississauga, ON L5C 1Y5", style=styles["BodyText"]),
+        Paragraph("(416) 992-3281", style=styles["Normal"]),
+        Paragraph("info@mcode.club", style=styles["Normal"]),
+        Paragraph("{}".format(date), style=styles["BodyText"]),
+        Paragraph("", style=styles["BodyText"]),
+        Paragraph("", style=styles["BodyText"]),
+        Paragraph("This serves as notice that MCC member <b>{}</b> \
+                    has accumulated <u>{}</u> hours of {} time.".format(user_id, total_hrs, hrs_type),
+                  style=styles["BodyText"]),
+        Paragraph("", style=styles["BodyText"]),
+        Paragraph("", style=styles["BodyText"]),
+        Paragraph("If you have any questions or concerns regarding the information in this document, please \
+                    contact info@mcode.club.", style=styles["BodyText"])
+    ]
+
+    doc.build(flowables)
 
     return file_name
+
+
+if __name__ == "__main__":
+    # For testing purposes
+    user_id = "test@volunteer.com"
+    hrs = [1, 2, 3, 4, 5]
+    paid_hrs = False
+    hours(user_id, hrs, paid_hrs)
