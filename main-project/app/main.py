@@ -4,7 +4,7 @@ import os
 import bcrypt
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from jsonschema import validate
+from jsonschema import validate, exceptions
 import datetime
 import pandas as pd
 
@@ -627,6 +627,14 @@ def getReport():
     Return a PDF containing all worked/volunteer hours
     """
 
+    if request.json is None:
+        abort(400)
+
+    try:
+        validate(instance=request.json, schema=SchemaFactory.report_hours)
+    except exceptions.ValidationError:
+        abort(400)
+
     email = mailsane.normalize(request.json['email'])
 
     if email.error:
@@ -635,9 +643,6 @@ def getReport():
     if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]) and str(email) != session['email']:
         # Allows admins to see everyones reports, users to see their own
         abort(403)
-
-    if request.json is None:
-        abort(400)
 
     for x in ['email', 'paid']:
         if x not in request.json:
@@ -766,7 +771,22 @@ def editUser():
 
     # TODO: Validate types of all the changes requested
 
-    dbworker.editUser(str(email), request.json['newAttributes'])
+    if 'birthday' in request.json['newAttributes']:
+        # Convert birthday from string to datetime object
+        # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
+        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%SZ")
+
+        correctedDict = {}
+        for x in request.json['newAttributes']:
+            if x == 'birthday':
+                correctedDict['birthday'] = correctedTime
+            else:
+                correctedDict[x] = request.json['newAttributes'][x]
+
+        dbworker.editUser(str(email), correctedDict)
+    else:
+        dbworker.editUser(str(email), request.json['newAttributes'])
+
 
     return jsonify({'success' : True})
 
