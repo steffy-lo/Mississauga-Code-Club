@@ -3,9 +3,10 @@ import datetime
 import dbworker
 import mailsane
 import math
+import sys
 
 
-# request.form, form['file']
+# request.files, files['file']
 
 # /testFile
 
@@ -22,29 +23,47 @@ class SheetHandler:
         # Dictionary to store the different tables in the spreadsheet
         self.tableDict = {'Students': {}, 'Course': {}, 'Instructors': {}}
         # Dictionary to store the failed entries
-        self.failures = {'Students': {}, 'Instructors': {}, 'Helpers': {}}
+        self.failures = {'Students': {}, 'Instructors': {}, 'Helpers': {}, 'Invalid File Formats': {}}
         # The fullsheet expressed as a dictionary of Dataframes with the sheet names as keys
         self.fullSheet = pd.read_excel(fileObject, sheet_name=None)
 
         for sheetIndex in self.fullSheet:
 
             # Costructs a Dataframe of the course info from the given excel file
-            courseTable = pd.read_excel(fileObject, sheet_name=sheetIndex, index_col=0, nrows=2)
+            courseTable = pd.read_excel(fileObject, sheet_name=sheetIndex, index_col=0, nrows=2, usecols="A,B",
+                                        skiprows=[0], header=None)
+            if list(courseTable.index) == ['Course Title', 'Schedule']:
+
+                # Constructs a dictionary out of the Dataframe courseTable and adds it to the table dictionary
+                self.tableDict['Course'][sheetIndex] = courseTable.to_dict('index')
+
+            else:
+                self.tableDict['Course'][sheetIndex] = {}
+
+
 
             # Constructs a Dataframe of the student info from the given excel file
             studentTable = pd.read_excel(fileObject, sheet_name=sheetIndex, header=5, parse_date=[2], usecols="A:H")
 
+            if list(studentTable.columns) == [ 'First Name', 'Last Name', 'Birthdate', 'Parent\'s Email', 'Phone Number',
+                                               'Parent\'s Name', 'MCC Account', 'Password']:
+                # Constructs a dictionary out of the Dataframe studentTable and adds it to the table dictionary
+                self.tableDict['Students'][sheetIndex] = studentTable.to_dict('index')
+
+            else:
+                self.tableDict['Students'][sheetIndex] = {}
+
+
             # Constructs a Dataframe of the instructor info from the given excel file
             instructorTable = pd.read_excel(fileObject, sheet_name=sheetIndex, header=5, usecols="J,K")
 
-            # Constructs a dictionary out of the Dataframe studentTable and adds it to the table dictionary
-            self.tableDict['Students'][sheetIndex] = studentTable.to_dict('index')
+            if list(instructorTable.columns) == ['Instructor Account(s)', 'Helper Account(s)']:
 
-            # Constructs a dictionary out of the Dataframe courseTable and adds it to the table dictionary
-            self.tableDict['Course'][sheetIndex] = courseTable.to_dict('index')
+                # Constructs a dictionary out of the Dataframe instructorTable and adds it to the table dictionary
+                self.tableDict['Instructors'][sheetIndex] = instructorTable.to_dict('list')
 
-            # Constructs a dictionary out of the Dataframe instructorTable and adds it to the table dictionary
-            self.tableDict['Instructors'][sheetIndex] = instructorTable.to_dict('list')
+            else:
+                self.tableDict['Instructors'][sheetIndex] = {}
 
 
     def getStudentList(self, index):
@@ -82,7 +101,9 @@ class SheetHandler:
                     while attributeIndex < len(studentAttributes) and not fail:
                         if studentAttributes[attributeIndex] in self.tableDict['Students'][index][user] and \
                                 not pd.isnull(self.tableDict['Students'][index][user][studentAttributes[attributeIndex]]):
+
                             thisStudentInfo.append(self.tableDict['Students'][index][user][studentAttributes[attributeIndex]])
+
                         else:
                             self.failures['Students'][index].append('Error at ' + studentAttributes[attributeIndex] +
                                                                     ' for student at row ' + str(user+1))
@@ -139,22 +160,37 @@ class SheetHandler:
 
     def assignSpreadSheetUsers(self):
         for sheetIndex in self.fullSheet:
-            studentList = self.getStudentList(sheetIndex)
+            if 'Course Title' in self.tableDict['Course'][sheetIndex] and 'Schedule' in self.tableDict['Course'][sheetIndex]:
+                if not pd.isnull(self.tableDict['Course'][sheetIndex]['Course Title'][1]) and \
+                    not pd.isnull(self.tableDict['Course'][sheetIndex]['Schedule'][1]):
+                    studentList = self.getStudentList(sheetIndex)
 
-            instructorList = self.getInstructorList(sheetIndex)
+                    instructorList = self.getInstructorList(sheetIndex)
 
-            volunteerList = self.getVolunteerList(sheetIndex)
+                    volunteerList = self.getVolunteerList(sheetIndex)
 
-            dbworker.createClass(self.tableDict['Course'][sheetIndex]['Course Title']['Unnamed: 1'], studentList, instructorList, volunteerList,
-                                 self.tableDict['Course'][sheetIndex]['Schedule']['Unnamed: 1'])
+                    dbworker.createClass(self.tableDict['Course'][sheetIndex]['Course Title'][1], studentList, instructorList, volunteerList,
+                                         self.tableDict['Course'][sheetIndex]['Schedule'][1])
+
+                else:
+                    self.failures['Invalid File Formats'][sheetIndex] = 'Error null values in class info table'
+            else:
+                self.failures['Invalid File Formats'][sheetIndex] = 'Error in class info table format'
+                # self.failures['Invalid File Formats'][sheetIndex] = self.tableDict['Course'][sheetIndex]
+
 
         return self.failures
 
-# # Check if there is an age column
-# if 'Age' in user and (not fail) and newUser:
-#     age = tableDict['Students'][user]['Age']
-#     birthYear = datetime.date.today().timetuple()[0] - age
-#     birthDate = datetime.datetime(birthYear, 1, 1)
-# elif fail is False:
-#     failures[user] = tableDict['Students'][user]
-#     fail = True
+# sys.stderr.write(str(list(courseTable.index)) + '\n')
+# sys.stderr.write(str(self.tableDict['Course'][sheetIndex]) + '\n')
+
+# sys.stderr.write(str(list(courseTable.columns)) + '\n')
+# sys.stderr.write(str(courseTable) + '\n')
+# courseTable.index = courseTable.index.drop_duplicates(keep='first')
+# sys.stderr.write(str(courseTable) + '\n')
+
+# sys.stderr.write(str(list(studentTable.columns)) + '\n')
+# sys.stderr.write(str(self.tableDict['Students'][sheetIndex]) + '\n')
+
+# sys.stderr.write(str(list(instructorTable.columns)) + '\n')
+# sys.stderr.write(str(self.tableDict['Instructors'][sheetIndex]) + '\n')

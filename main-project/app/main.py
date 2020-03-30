@@ -12,8 +12,10 @@ import dbworker
 import mailsane
 from schemaprovider import SchemaFactory
 import spreadSheetHandler
+from xlrd import open_workbook, XLRDError
 import reportgen
 from dateutil.parser import parse
+import sys
 
 import config
 
@@ -1039,6 +1041,23 @@ def createUser():
 
     return jsonify({'success' : True})
 
+@app.route('api/admin/uploadSpreadSheet', methods=['POST'])
+def handleSpreadSheet():
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+        abort(403)
+
+    if request.files is None or 'file' not in request.files:
+        abort(400)
+
+    sheetFile = request.files['file']
+    try:
+        sheetHandler = spreadSheetHandler.SheetHandler(sheetFile)
+        failures = sheetHandler.assignSpreadSheetUsers()
+        return jsonify(failures)
+
+    except XLRDError as e:
+        abort(400)
+
 
 # This may be a debug route, not sure, made by Steffy
 @app.route('/api/getClasses/<email>', methods=['GET'])
@@ -1159,11 +1178,13 @@ def handleSPreadSheetDebug():
         abort(400)
 
     sheetFile = request.files['file']
+    try:
+        sheetHandler = spreadSheetHandler.SheetHandler(sheetFile)
+        failures = sheetHandler.assignSpreadSheetUsers()
+        return jsonify(failures)
 
-    sheetHandler = spreadSheetHandler.SheetHandler(sheetFile)
-    failures = sheetHandler.assignSpreadSheetUsers()
-
-    return jsonify(failures)
+    except XLRDError as e:
+        abort(400)
 
 
 
