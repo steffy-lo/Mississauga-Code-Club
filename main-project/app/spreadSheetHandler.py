@@ -10,7 +10,7 @@ import sys
 
 # /testFile
 
-# Ordered list of the names of attribute needed to construct a student user
+# List of the names of attribute needed to construct a student user
 studentAttributes = ['MCC Account', 'Parent\'s Email', 'First Name', 'Last Name', 'Password', 'Phone Number',
                      'Birthdate', 'Parent\'s Name']
 
@@ -39,8 +39,6 @@ class SheetHandler:
 
             else:
                 self.tableDict['Course'][sheetIndex] = {}
-
-
 
             # Constructs a Dataframe of the student info from the given excel file
             studentTable = pd.read_excel(fileObject, sheet_name=sheetIndex, header=5, parse_date=[2], usecols="A:H")
@@ -141,7 +139,6 @@ class SheetHandler:
         return instructorList
 
 
-
     def getVolunteerList(self, index):
         # Construct lists of helpers
         volunteerList = []
@@ -155,7 +152,6 @@ class SheetHandler:
                     self.failures['Helpers'][index].append(h)
 
         return volunteerList
-
 
 
     def assignSpreadSheetUsers(self):
