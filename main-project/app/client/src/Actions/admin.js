@@ -32,6 +32,54 @@ export const checkIn = (email, purpose, hours, paid) => {
   });
 }
 
+export const deleteHoursEntry = (id) => {
+  return new Promise((resolve, reject) => {
+    axios.post(PREFIX + "/api/admin/deletehour",
+    JSON.stringify({ id }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: "Request missing ID of hours entry."})
+      } else if (err.response.status === 409) {
+        reject({stat: 400, msg: "Either ID is invalid or does not correspond to a currently existing hours record"})
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  });
+}
+
+export const genHours = (email, purpose, hours, paid, dateTime) => {
+  return new Promise((resolve, reject) => {
+    if (email === "" || purpose === "" || hours === "" || dateTime === "")
+      return reject({stat: 400, msg: "Request was poorly formatted. No attributes can be empty"});
+    axios.post(PREFIX + "/api/admin/genhours",
+    JSON.stringify({ email, purpose, hours, paid, dateTime }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403 || err.response.status === 401) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: "Information is missing and/or email/hours is misformatted"})
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  });
+}
+
 export const createClass = (courseTitle) => {
   return new Promise((resolve, reject) => {
     if (courseTitle === "") reject({stat: 400, msg: "Classnames should not be empty"});
@@ -129,6 +177,110 @@ export const addTeacher = (email, classId) => {
         reject({stat: 404, msg: "Class or teacher does not exist."});
       } else if (err.response.status === 400) {
         reject({stat: 401, msg: `No teacher exists with the given email address`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const addVolunteer = (email, classId) => {
+  return new Promise((resolve, reject) => {
+    console.log(email);
+    console.log(classId)
+    if (classId === "" || email === "")
+      return reject({status: 500, msg: "Missing class id or email"});
+    axios.post(PREFIX + "/api/admin/addvolunteer",
+    JSON.stringify({ email, classId }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 404) {
+        reject({stat: 404, msg: "Class or volunteer does not exist."});
+      } else if (err.response.status === 400) {
+        reject({stat: 401, msg: `No volunteer exists with the given email address`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const removeUserFromClass = (email, classId, type) => {
+  return new Promise((resolve, reject) => {
+    console.log(email);
+    console.log(classId)
+    if (classId === "" || email === "")
+      return reject({status: 500, msg: "Missing class id or email"});
+    axios.post(PREFIX + "/api/admin/remove" + type,
+    JSON.stringify({ email, classId }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 404) {
+        reject({stat: 404, msg: `Class or ${type} does not exist.`});
+      } else if (err.response.status === 400) {
+        reject({stat: 401, msg: `No ${type} exists with the given email address`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const setCriterion = (classId, sectionTitle, weight, index) => {
+  return new Promise((resolve, reject) => {
+    if (classId === "" || sectionTitle === "" || weight < 1 || index < 1)
+      return reject({status: 500, msg: "Missing or invalid class ID and/or criterion information"});
+    axios.patch(PREFIX + "/api/setmarkingsection",
+    JSON.stringify({ classId, sectionTitle, weightInfo: { weight, index }}),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 401) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: `Missing or invalid class ID and/or criterion information.`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const removeCriterion = (classId, sectionTitle) => {
+  return new Promise((resolve, reject) => {
+    if (classId === "" || sectionTitle === "")
+      return reject({status: 500, msg: "Missing class id or criterion"});
+    axios.patch(PREFIX + "/api/deletemarkingsection",
+    JSON.stringify({ classId, sectionTitle }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 401) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: `Missing or invalid class ID and/or criterion.`});
       } else {
         reject({
           stat: err.response.status,

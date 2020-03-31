@@ -28,7 +28,7 @@ class CheckIn extends React.Component {
     this.clearParams = () => {
       this.setState({
         email: "",
-        paid: 1,
+        paid: true,
         reason: "",
         numHours: "",
         userName: "",
@@ -50,11 +50,15 @@ class CheckIn extends React.Component {
   }
 
   render() {
+    const navList = [
+      {tag: "Dashboard", link: "/a/"},
+      {tag: 'Check-In'}
+    ];
     return(
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric/>
-        <div className="absolute fillContainer flex verticalCentre">
+        <NavbarGeneric crumbs={navList}/>
+        <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="checkInMainWindow">
               <h1>Check-In</h1>
@@ -182,13 +186,15 @@ class CheckIn extends React.Component {
                       checkIn(this.state.email, this.state.reason,
                         this.state.numHours, this.state.paid)
                       .then(time => {
+                        const timeObj = new Date(time);
                         this.setState({
                           modalWindow:
                             <StatusModal
                               title="Check-in Successful"
                               text={<span>{`User: ${this.state.email}`}<br/>
                               {`checked in for ${this.state.reason}`}<br/>
-                              {`at ${time}`}<br/>
+                              {`on ${timeObj.toDateString()}`}<br/>
+                              {`at ${timeObj.toTimeString()}`}<br/>
                               {`for ${this.state.numHours} hours`}</span>}
                               onClose={() => {
                                 this.clearParams();

@@ -6,7 +6,7 @@ import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
 import LoadingModal from '../Util/LoadingModal';
 
-import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { getUserTypeExplicit, genUniversalDate } from '../../Actions/utility.js';
 import { getUser, editUser } from '../../Actions/admin';
 
 import "../CSS/Admin/EditUser.css";
@@ -43,6 +43,7 @@ class EditUser extends React.Component {
     getUser(this.email)
     .then(user => {
       console.log(user)
+      const birthdate = genUniversalDate(new Date(user.birthday));
       this.setState({
         modalWindow: "",
         userType: user.userType,
@@ -50,7 +51,7 @@ class EditUser extends React.Component {
         lastName: user.lastName,
         telephone: user.phoneNumber,
         isStudent: ( user.userType == 4 ? 1 : 0 ),
-        birthday: new Date(user.birthday).toLocaleDateString(),
+        birthday: birthdate,
         parentEmail: ( user.userType == 4 ? user.parentEmail : ""),
         parentName: ( user.userType == 4 ? user.parentName : "")
       });
@@ -127,11 +128,16 @@ class EditUser extends React.Component {
   }
 
   render() {
+    const navList = [
+      {tag: "Dashboard", link: "/a/"},
+      {tag: 'Select a User', link: '/a/user'},
+      {tag: `Edit User: ${this.email}`}
+    ];
     return(
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric/>
-          <div className="absolute fillContainer flex verticalCentre">
+        <NavbarGeneric crumbs={navList}/>
+          <div className="flexContentContainerGeneric">
             <div className="flex horizontalCentre">
               <form id="singleUserEditMainWindow">
                 <h1>Edit User</h1>

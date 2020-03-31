@@ -6,7 +6,7 @@ import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
 import LoadingModal from '../Util/LoadingModal';
 
-import { getUserTypeExplicit, getUserHours } from '../../Actions/utility.js';
+import { getUserTypeExplicit, getUserHours, getHoursReport } from '../../Actions/utility.js';
 
 import "../CSS/Util/ViewHours.css";
 import "../CSS/Common.css";
@@ -24,7 +24,7 @@ class ViewHours extends React.Component {
       toDate: "",
       purposeQuery: "",
       isPaid: this.uTE === "volunteer" ? false : null,
-      filterBoxState: 'hidden',
+      filterBoxState: 'none',
       totalHours: 0
     };
   }
@@ -35,6 +35,9 @@ class ViewHours extends React.Component {
   }
 
   getOwnHours() {
+    this.setState({
+      modalWindow: <LoadingModal text="Getting Hours ..."/>
+    })
     getUserHours()
     .then(hours => {
       const deployment = this.generateHoursRows(hours)
@@ -78,8 +81,11 @@ class ViewHours extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric />
-        <div className="absolute fillContainer flex verticalCentre">
+        <NavbarGeneric crumbs={[
+            {tag: 'Dashboard', link: '/'},
+            {tag: 'View Your Hours'}
+          ]}/>
+        <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="mainVHoursWindow">
               <div id="mVHWindowHeader">
@@ -90,7 +96,7 @@ class ViewHours extends React.Component {
                   (
                     <Link
                       className={`${this.uTE}VH`}
-                      to="a/hours/@" >
+                      to="/a/hours/@" >
                       Edit Hours
                     </Link>
                   )
@@ -143,8 +149,8 @@ class ViewHours extends React.Component {
                     className={`${this.uTE}VH`}
                     id="vhsettingsExpand"
                     onClick={e => {
-                      const newStatus = this.state.filterBoxState === 'hidden' ?
-                      'visible' : 'hidden';
+                      const newStatus = this.state.filterBoxState === 'none' ?
+                      'flex' : 'none';
                       this.setState({filterBoxState: newStatus});
                     }}>
                     <span>
@@ -153,13 +159,14 @@ class ViewHours extends React.Component {
                     <span>+</span>
                   </div>
                   <div
-                    className={this.state.filterBoxState}
+                    style={{display: this.state.filterBoxState}}
                     id="vhSettingsExpanded">
                     <div id="dateFieldSet">
                       <p>Date:</p>
                       <label>From: </label>
                       <input
                         type="date"
+                        value={this.state.fromDate}
                         onChange={e => {
                           this.setState({fromDate: e.target.value})
                         }}/>
@@ -167,6 +174,7 @@ class ViewHours extends React.Component {
                       <label>To: </label>
                       <input
                         type="date"
+                        value={this.state.toDate}
                         onChange={e => {
                           this.setState({toDate: e.target.value})
                         }}>
@@ -231,8 +239,24 @@ class ViewHours extends React.Component {
                     className={`${this.uTE}VH`}
                     disabled={this.state.deployedList === ""}
                     onClick={e => {
-                      //requestReport(this.state.fromDate, this.state.toDate,
-                      //    this.state.isPaid)
+                      e.preventDefault();
+                      this.setState({
+                        modalWindow: <LoadingModal text="Getting Report ..."/>
+                      })
+                      getHoursReport(
+                        this.state.fromDate,
+                        this.state.toDate,
+                        this.state.isPaid)
+                        .then(s => this.setState({modalWindow: ""}))
+                        .catch(err => {
+                          this.setState({
+                            modalWindow:
+                              <StatusModal title="Could Not Get Report"
+                                text={err.msg}
+                                onClose={e => this.setState({modalWindow: ""})}
+                                />
+                          })
+                        })
                     }}>
                     Get Report
                   </button>
@@ -282,12 +306,13 @@ class ViewHours extends React.Component {
             payCheck(hours_record.paid) &&
             queryCheck(hours_record.purpose) &&
             fromCheck(hours_record.dateTime) &&
-            toCheck(hours_record.date));
+            toCheck(hours_record.dateTime));
           };
         return compiledFunc;
         }
 
         repopulateDeployedList() {
+          console.log(this.state)
           const toDeploy =
           this.generateHoursRows(this.state.fullList, this.constructFilterFunction());
           this.setState({deployedList: toDeploy});

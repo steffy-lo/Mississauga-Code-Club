@@ -32,11 +32,12 @@ class CreateUser extends React.Component {
   }
 
   render() {
+    const navList = [{tag: "Dashboard", link: "/a/"}, {tag: "Create New User"}];
     return(
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric/>
-          <div className="absolute fillContainer flex verticalCentre">
+        <NavbarGeneric crumbs={navList}/>
+          <div className="flexContentContainerGeneric">
             <div className="flex horizontalCentre">
               <form id="singleUserEditMainWindow">
                 <h1>Create New User</h1>

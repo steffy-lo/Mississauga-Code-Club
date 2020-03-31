@@ -21,9 +21,10 @@ class AdminDash extends React.Component {
       <React.Fragment>
       {this.state.modalWindow}
       <NavbarGeneric/>
-        <div className="absolute fillContainer flex verticalCentre">
+      <div className="flexContentContainerGeneric">
+        <div className="absolute flex verticalCentre">
           <div id="aDashWelcomeTag">Welcome to the Admin Dashboard </div>
-          <div id="ADashMainWrapper" className="flex horizontalCentre">
+          <div id="ADashMainWrapper" className="flex horizontalCentre reverseWrap">
             <div id="mADwSLeft" className="mainADashWindowS">
               <h2>Your Information</h2>
               <Link to="/a/hours">View &amp; Manage Your Hours</Link>
@@ -49,6 +50,7 @@ class AdminDash extends React.Component {
             </div>
           </div>
         </div>
+      </div>
       </React.Fragment>
     )
   }

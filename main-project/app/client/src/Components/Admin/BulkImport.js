@@ -33,7 +33,7 @@ class BulkImport extends React.Component {
       <React.Fragment>
         {this.state.modalWindow}
         <NavbarGeneric/>
-        <div className="absolute fillContainer flex verticalCentre">
+        <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="checkInMainWindow">
               <h1>Upload File</h1>
