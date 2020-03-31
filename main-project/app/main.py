@@ -447,6 +447,40 @@ def getMyMarks():
 
     return jsonify({'marks' : marksDict, 'success' : True})
 
+
+@app.route('/api/updatereport', methods=['PUT'])
+def updateReport():
+    """
+    Takes in a json of the form {'classId' : '123', 'email' : student_email, 'mark' : 90.00, 'comment' : "Great!"}
+
+    Returns a "success" json
+    """
+
+    if request.json is None:
+        abort(400)
+
+    try:
+        validate(instance=request.json, schema=SchemaFactory.report_update)
+    except exceptions.ValidationError:
+        abort(400)
+
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
+        abort(403)
+
+    studentEmail = mailsane.normalize(request.json['email'])
+
+    if studentEmail.error:
+        abort(400)
+
+    dbworker.updateReport(str(studentEmail),
+                          request.json['classId'],
+                          request.json['email'],
+                          mark={} if request.json['mark'] is None else request.json['mark'],
+                          comments='' if request.json['comments'] is None else request.json['comments'],
+                          nextCourse='' if request.json['nextCourse'] is None else request.json['nextCourse'])
+
+    return jsonify({'success': True})
+
 @app.route('/api/checkemail')
 def checkEmail():
     """
@@ -1061,7 +1095,7 @@ def createUser():
 
     return jsonify({'success' : True})
 
-@app.route('api/admin/uploadSpreadSheet', methods=['POST'])
+@app.route('/api/admin/uploadSpreadSheet', methods=['POST'])
 def handleSpreadSheet():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
