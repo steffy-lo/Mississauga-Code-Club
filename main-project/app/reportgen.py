@@ -39,7 +39,7 @@ def hours(user_id, hrs, paid_hrs):
     styles = getSampleStyleSheet()
 
     flowables = [
-        Paragraph("<img src='static/mcc-logo.png' width='2.40in' height='1.15in' />", style=styles["Normal"]),
+        #Paragraph("<img src='static/mcc-logo.png' width='2.40in' height='1.15in' />", style=styles["Normal"]),
         Paragraph("3195 Erindale Station Rd unit 204, Mississauga, ON L5C 1Y5", style=styles["BodyText"]),
         Paragraph("(416) 992-3281", style=styles["Normal"]),
         Paragraph("info@mcode.club", style=styles["Normal"]),
