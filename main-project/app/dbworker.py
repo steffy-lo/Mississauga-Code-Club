@@ -121,7 +121,7 @@ def createClass(courseTitle, students, instructors, volunteers, semester):
     """
 
     # Returns with 'A field insertedId with the _id value of the inserted document.'
-    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteeers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -365,7 +365,7 @@ def setMark(classId, studentEmail, sectionTitle, mark):
     Set's a student's marking info for <sectionTitle> in
     classId
     """
-    reportData = getClassReports(classId, filt={'studentEmail' : studentEmail})
+    reportData = mclient[database]['reports'].find_one({'studentEmail' : studentEmail, 'classId' : classId})
 
     reportData['marks'][sectionTitle] = mark
     mclient[database]['reports'].update_one({'classId' : classId, 'studentEmail' : studentEmail}, {'$set' : {'marks' : reportData['marks']}})
@@ -375,7 +375,7 @@ def deleteMark(classId, studentEmail, sectionTitle):
     Deletes a student's marking info for <sectionTitle> in
     classId
     """
-    reportData = getClassReports(classId, filt={'studentEmail' : studentEmail})
+    reportData = mclient[database]['reports'].find_one({'studentEmail' : studentEmail, 'classId' : classId})
 
     reportData['marks'].pop(sectionTitle, None)
     mclient[database]['reports'].update_one({'classId' : classId, 'studentEmail' : studentEmail}, {'$set' : {'marks' : reportData['marks']}})
