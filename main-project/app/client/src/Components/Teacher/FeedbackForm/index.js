@@ -26,7 +26,7 @@ class FeedbackForm extends React.Component {
         studentInfo: {},
         courseInfo: {},
         inputs: {conditions:'0', variables:'0', loops:'0', functions:'0', recommended:{}, feedback:""},
-
+        submitted: false
     }
 
     // Updates state.inputs
@@ -48,7 +48,6 @@ class FeedbackForm extends React.Component {
         const {sid, cid} = this.props.match.params
         this.state.studentEmail = sid
         this.state.courseId = cid
-        console.log("Opening feedback form for student "+sid + " in course " + cid)
         this.getInfo()
 
     }
@@ -58,7 +57,7 @@ class FeedbackForm extends React.Component {
         const currentComponent = this;
         axios.post(PREFIX + '/api/admin/getuser', {email : this.state.studentEmail})
             .then(function(response){
-                currentComponent.state.studentInfo = response.data.result
+                currentComponent.setState({studentInfo:response.data.result})
         })
             .catch(function (error) {
                 // handle error
@@ -77,7 +76,7 @@ class FeedbackForm extends React.Component {
     render() {
         const {students} = this.state
         const {cid, sid} = this.props.match.params
-        console.log(sid)
+
         return (
             <div>
 
@@ -121,6 +120,13 @@ class FeedbackForm extends React.Component {
                     <Button onClick={()=>submitFeedback(this)}>
                         Submit
                     </Button>
+                    {
+                        (() => {
+                                if(this.state.submitted){
+                                    return <p>Report submitted successfully</p>
+                                }
+                        })()
+                    }
 
 
                 </div>
