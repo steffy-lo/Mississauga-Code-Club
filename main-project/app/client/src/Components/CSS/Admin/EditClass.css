@@ -18,7 +18,7 @@
   flex-wrap: wrap;
 }
 
-#editClassMainL, #editClassMainC, #editClassMainR  {
+#editClassMainL, #editClassMainC, #editClassMainR, #editClassMainR2  {
   background-color: white;
   margin: 10px;
   box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
@@ -41,6 +41,10 @@
   border-bottom: 2px solid green;
 }
 
+#editClassMainR2 h2 {
+  border-bottom: 2px solid goldenrod;
+}
+
 #editClassMainL:hover h2 {
   border-bottom: 2px solid red;
   box-shadow: 0 3px 3px -3px red;
@@ -54,6 +58,11 @@
 #editClassMainR:hover h2 {
   border-bottom: 2px solid lightgreen;
   box-shadow: 0 3px 3px -3px lightgreen;
+}
+
+#editClassMainR2:hover h2 {
+  border-bottom: 2px solid gold;
+  box-shadow: 0 3px 3px -3px gold;
 }
 
 .singleEntry2Spaced {
@@ -91,6 +100,7 @@
   color: white;
   padding: 10px 40px;
   margin: 0px 10px;
+  transition: background-color 0.15s linear;
 }
 
 #ecCourseTitle button:hover  {
@@ -123,6 +133,13 @@
   border-bottom: 1px solid crimson;
 }
 
+#ECMhFormatWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .ecDeleteButton {
   color: white;
   background-color: crimson;
@@ -139,6 +156,8 @@
 .ecBarAdd {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .ecBarAdd * {
@@ -160,9 +179,23 @@
     margin: 3px 0;
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+/*
+.ecEmailEntryB {
+  margin: 3px 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.ecEmailEntry p {
+.ecEmailEntryB p {
+  text-align: center;
+  padding: 0 0px 0 10px;
+  margin: 0;
+}
+ */
+.ecEmailEntry p{
   flex-grow: 1;
   text-align: left;
   padding: 0 0px 0 10px;
@@ -170,6 +203,7 @@
 }
 
 .ecEmailEntry button {
+  margin-bottom: 2px;
   margin-left: 5px;
   padding: 5px 20px;
   border: none;
@@ -181,10 +215,10 @@
   background-color: darkred;
 }
 
-#tchLst, #stdLst {
+#tchLst, #stdLst, #vltLst {
   height: 460px;
 }
 
-#tchLst, #stdLst {
+#tchLst, #stdLst, #vltLst {
   align-content: space-between;
 }

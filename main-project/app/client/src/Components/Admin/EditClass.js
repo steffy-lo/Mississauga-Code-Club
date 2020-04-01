@@ -8,7 +8,8 @@ import LoadingModal from '../Util/LoadingModal';
 import ActiveNotification from '../Util/ActiveNotification';
 
 import { getUserTypeExplicit } from '../../Actions/utility.js';
-import { getClass, updateCourseInfo, addStudent, addTeacher } from '../../Actions/admin';
+import { getClass, updateCourseInfo, addStudent, addTeacher, addVolunteer,
+  removeUserFromClass, setCriterion, removeCriterion } from '../../Actions/admin';
 
 import "../CSS/Admin/EditClass.css";
 import "../CSS/Common.css";
@@ -17,6 +18,7 @@ class EditClass extends React.Component {
   constructor(props) {
     super(props);
     this.id = props.match.params.class_id;
+    this.critObj = {};
     this.state = {
       modalWindow: "",
       actionDisplay: "",
@@ -33,7 +35,15 @@ class EditClass extends React.Component {
 
       studentEmail: "",
 
-      teacherEmail: ""
+      teacherEmail: "",
+
+      volunteerEmail: "",
+
+      criterionTitle: "",
+
+      criterionWeight: "",
+
+      criterionIndex: ""
     };
     this.resetChanges = () => null;
   }
@@ -47,6 +57,7 @@ class EditClass extends React.Component {
     getClass(this.id)
     .then(classData => {
       console.log(classData);
+      this.critObj = classData.markingSections;
       const critList = [];
       Object.keys(classData.markingSections).forEach((key) => critList.push(
         {
@@ -60,6 +71,7 @@ class EditClass extends React.Component {
         activeCourse: classData.ongoing,
         teacherList: classData.instructors,
         studentList: classData.students,
+        volunteerList: classData.volunteers,
         criteriaList: critList
       })
     })
@@ -95,8 +107,12 @@ class EditClass extends React.Component {
       <React.Fragment>
         {this.state.actionDisplay}
         {this.state.modalWindow}
-        <NavbarGeneric/>
-          <div className="absolute fillContainer flex verticalCentre">
+        <NavbarGeneric crumbs={[
+            {tag: "Dashboard", link: "/a/"},
+            {tag: "Select a Class", link: "/a/class"},
+            {tag: `Class ${this.id}`}
+          ]}/>
+          <div className="flexContentContainerGeneric">
             <div className="flex horizontalCentre">
               <div className="flex verticalCentre" id="editClassPreWrapper">
                 <h1>
@@ -199,25 +215,70 @@ class EditClass extends React.Component {
                       </div>
 
                       <form className="ecBarAdd">
-                        {/*}<input type="text"
+                        <input type="text"
                         placeholder="criterion title"
+                        value={this.state.criterionTitle}
+                        onChange={e => this.setState({criterionTitle: e.target.value})}
                         />
                         <input type="number"
+                        size="4"
                         placeholder="weight"
+                        value={this.state.criterionWeight}
+                        onChange={e => this.setState({criterionWeight: e.target.value})}
                         />
                         <input type="number"
+                        size="4"
                         placeholder="index"
+                        value={this.state.criterionIndex}
+                        onChange={e => this.setState({criterionIndex: e.target.value})}
                         />
                         <input type="submit"
-                        value="Add Criterion"
+                        value="Set Criterion"
                         onClick={e => {
                           e.preventDefault();
+                          setCriterion(this.id,
+                            this.state.criterionTitle,
+                            this.state.criterionWeight,
+                            this.state.criterionIndex
+                          )
+                          .then(s => {
+                            this.critObj[this.state.criterionTitle] = {
+                              weight: this.state.criterionWeight,
+                              index: this.state.criterionIndex
+                            }
+                            const critList = [];
+                            Object.keys(this.critObj).forEach((key) => critList.push(
+                              {
+                                criterion: key,
+                                details: this.critObj[key]
+                              }
+                            ));
+                            this.setState({
+                              criterionTitle: "",
+                              criterionWeight: "",
+                              criterionTitle: "",
+                              criteriaList: critList
+                            })
+                          })
+                          .catch(err => {
+                            this.setState({
+                              criterionTitle: "",
+                              criterionWeight: "",
+                              criterionTitle: "",
+                              modalWindow:
+                                <StatusModal title="Could Not Add Criterion"
+                                  text={err.msg}
+                                  onClose={e => this.setState({modalWindow: ""})}
+                                  />
+                            })
+                          })
                         }}
-                        />*/}
+                        />
                       </form>
                     </div>
                   </div>
 
+                  <div id="ECMhFormatWrapper">
                   <div id="editClassMainC">
                     <h2>
                       Teachers:
@@ -305,39 +366,39 @@ class EditClass extends React.Component {
                     </form>
                   </div>
 
-                  {/*<div id="editClassMainR">
+                  <div id="editClassMainR2">
                     <h2>
                       Volunteers:
                     </h2>
-                    <div id="stdLstW" className="flexCol">
-                      <div id="stdLst" className="vScrollable fill">
-                        {this.generateStudentList()}
+                    <div id="vltLstW" className="flexCol">
+                      <div id="vltLst" className="vScrollable fill">
+                        {this.generateVolunteerList()}
                       </div>
                     </div>
                     <form className="ecBarAdd">
                       <input type="email"
-                      placeholder="student email"
-                      value={this.state.studentEmail}
-                      onChange={e => this.setState({studentEmail: e.target.value})}
+                      placeholder="volunteer email"
+                      value={this.state.volunteerEmail}
+                      onChange={e => this.setState({volunteerEmail: e.target.value})}
                       />
                       <input type="submit"
-                      value="Add Student"
+                      value="Add Volunteer"
                       onClick={e => {
                         e.preventDefault();
-                        addStudent(this.state.studentEmail, this.id)
+                        addVolunteer(this.state.volunteerEmail, this.id)
                         .then(() => {
-                          const stdEm = this.state.studentEmail;
-                          const stList = this.state.studentList;
+                          const stdEm = this.state.volunteerEmail;
+                          const stList = this.state.volunteerList;
                           stList.push(stdEm)
                           this.setState({
                             modalWindow: "",
-                            studentList: stList
+                            volunteerList: stList
                           })
                         })
                         .catch(err => {
                           this.setState({
                             modalWindow:
-                              <StatusModal title="Could Not Add Student"
+                              <StatusModal title="Could Not Add Volunteer"
                                 text={err.msg}
                                 onClose={e => this.setState({modalWindow: ""})}
                                 />
@@ -346,8 +407,9 @@ class EditClass extends React.Component {
                       }}
                       />
                     </form>
-                  </div>*/}
-                  
+                  </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -362,17 +424,33 @@ class EditClass extends React.Component {
       compiledList.push(
         <div className="ecEmailEntry" key={email}>
           <p>{email}</p>
-          {/*}<button
-          onClick={e => {
-            const changed = this.state.studentList;
-            changed.forEach((ei, i) => {
-              if (ei === email) changed.splice(i, 1);
-            });
-            this.setState({studentList: changed});
-            }}>
-            Delete
-          </button>*/}
-        </div>
+            {/*<button>
+              Edit Report
+            </button>*/}
+            <button
+            onClick={e => {
+              e.preventDefault();
+              removeUserFromClass(email, this.id, "student")
+              .then(() => {
+                const changed = this.state.studentList;
+                changed.forEach((ei, i) => {
+                  if (ei === email) changed.splice(i, 1);
+                });
+                this.setState({studentList: changed});
+              })
+              .catch(err => {
+                this.setState({
+                  modalWindow:
+                    <StatusModal title="Could Not Remove Student"
+                      text={err.msg}
+                      onClose={e => this.setState({modalWindow: ""})}
+                      />
+                })
+              })
+              }}>
+              Remove
+            </button>
+          </div>
       );
     }
     return compiledList;
@@ -384,16 +462,64 @@ class EditClass extends React.Component {
       compiledList.push(
         <div className="ecEmailEntry" key={email}>
           <p>{email}</p>
-          {/*}<button
+          <button
           onClick={e => {
-            const changed = this.state.teacherList;
-            changed.forEach((ei, i) => {
-              if (ei === email) changed.splice(i, 1);
-            });
-            this.setState({teacherList: changed});
+            e.preventDefault();
+            removeUserFromClass(email, this.id, "instructor")
+            .then(() => {
+              const changed = this.state.teacherList;
+              changed.forEach((ei, i) => {
+                if (ei === email) changed.splice(i, 1);
+              });
+              this.setState({teacherList: changed});
+            })
+            .catch(err => {
+              this.setState({
+                modalWindow:
+                  <StatusModal title="Could Not Remove Instructor"
+                    text={err.msg}
+                    onClose={e => this.setState({modalWindow: ""})}
+                    />
+              })
+            })
           }}>
-            Delete
-          </button>*/}
+            Remove
+          </button>
+        </div>
+      );
+    }
+    return compiledList;
+  }
+
+  generateVolunteerList() {
+    const compiledList = [];
+    for(let email of this.state.volunteerList) {
+      compiledList.push(
+        <div className="ecEmailEntry" key={email}>
+          <p>{email}</p>
+          <button
+          onClick={e => {
+            e.preventDefault();
+            removeUserFromClass(email, this.id, "volunteer")
+            .then(() => {
+              const changed = this.state.volunteerList;
+              changed.forEach((ei, i) => {
+                if (ei === email) changed.splice(i, 1);
+              });
+              this.setState({volunteerList: changed});
+            })
+            .catch(err => {
+              this.setState({
+                modalWindow:
+                  <StatusModal title="Could Not Remove Volunteer"
+                    text={err.msg}
+                    onClose={e => this.setState({modalWindow: ""})}
+                    />
+              })
+            })
+          }}>
+            Remove
+          </button>
         </div>
       );
     }
@@ -410,17 +536,37 @@ class EditClass extends React.Component {
           <td>{entry.details.weight}</td>
           <td>
             {entry.details.index}
-            {/*}<button className="ecDeleteButton"
+          </td>
+          <td>
+            <button className="ecDeleteButton"
             onClick={e => {
-              const changed = this.state.criteriaList;
-              delete changed[entry];
-              this.setState({
-                criteriaList: changed
-              });
+              removeCriterion(this.id, entry.criterion)
+              .then(s => {
+                delete this.critObj[entry.criterion];
+                const critList = [];
+                Object.keys(this.critObj).forEach((key) => critList.push(
+                  {
+                    criterion: key,
+                    details: this.critObj[key]
+                  }
+                ));
+                this.setState({
+                  criteriaList: critList
+                })
+              })
+              .catch(err => {
+                this.setState({
+                  modalWindow:
+                    <StatusModal title="Could Not Remove Criterion"
+                      text={err.msg}
+                      onClose={e => this.setState({modalWindow: ""})}
+                      />
+                })
+              })
             }}
             >
-              Delete
-            </button>*/}
+              Remove
+            </button>
           </td>
         </tr>
       );

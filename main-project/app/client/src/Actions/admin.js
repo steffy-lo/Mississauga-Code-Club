@@ -32,6 +32,56 @@ export const checkIn = (email, purpose, hours, paid) => {
   });
 }
 
+export const deleteHoursEntry = (id) => {
+  return new Promise((resolve, reject) => {
+    axios.post(PREFIX + "/api/admin/deletehour",
+    JSON.stringify({ id }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: "Request missing ID of hours entry."})
+      } else if (err.response.status === 409) {
+        reject({stat: 400, msg: "Either ID is invalid or does not correspond to a currently existing hours record"})
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  });
+}
+
+export const genHours = (email, purpose, hours, paid, dateTime) => {
+  return new Promise((resolve, reject) => {
+    if (purpose === "" || hours === "" || dateTime === "")
+      return reject({stat: 400, msg: "Request was poorly formatted. No attributes can be empty"});
+    const compileObj = { purpose, hours, paid, dateTime };
+    if (email !== null) compileObj.email = email;
+    axios.post(PREFIX + "/api/admin/genhours",
+    JSON.stringify(compileObj),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403 || err.response.status === 401) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: "Information is missing and/or email/hours is misformatted"})
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  });
+}
+
 export const createClass = (courseTitle) => {
   return new Promise((resolve, reject) => {
     if (courseTitle === "") reject({stat: 400, msg: "Classnames should not be empty"});
@@ -129,6 +179,110 @@ export const addTeacher = (email, classId) => {
         reject({stat: 404, msg: "Class or teacher does not exist."});
       } else if (err.response.status === 400) {
         reject({stat: 401, msg: `No teacher exists with the given email address`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const addVolunteer = (email, classId) => {
+  return new Promise((resolve, reject) => {
+    console.log(email);
+    console.log(classId)
+    if (classId === "" || email === "")
+      return reject({status: 500, msg: "Missing class id or email"});
+    axios.post(PREFIX + "/api/admin/addvolunteer",
+    JSON.stringify({ email, classId }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 404) {
+        reject({stat: 404, msg: "Class or volunteer does not exist."});
+      } else if (err.response.status === 400) {
+        reject({stat: 401, msg: `No volunteer exists with the given email address`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const removeUserFromClass = (email, classId, type) => {
+  return new Promise((resolve, reject) => {
+    console.log(email);
+    console.log(classId)
+    if (classId === "" || email === "")
+      return reject({status: 500, msg: "Missing class id or email"});
+    axios.post(PREFIX + "/api/admin/remove" + type,
+    JSON.stringify({ email, classId }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 403) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 404) {
+        reject({stat: 404, msg: `Class or ${type} does not exist.`});
+      } else if (err.response.status === 400) {
+        reject({stat: 401, msg: `No ${type} exists with the given email address`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const setCriterion = (classId, sectionTitle, weight, index) => {
+  return new Promise((resolve, reject) => {
+    if (classId === "" || sectionTitle === "" || weight < 1 || index < 1)
+      return reject({status: 500, msg: "Missing or invalid class ID and/or criterion information"});
+    axios.patch(PREFIX + "/api/setmarkingsection",
+    JSON.stringify({ classId, sectionTitle, weightInfo: { weight, index }}),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 401) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: `Missing or invalid class ID and/or criterion information.`});
+      } else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        })
+      }
+    })
+  })
+}
+
+export const removeCriterion = (classId, sectionTitle) => {
+  return new Promise((resolve, reject) => {
+    if (classId === "" || sectionTitle === "")
+      return reject({status: 500, msg: "Missing class id or criterion"});
+    axios.patch(PREFIX + "/api/deletemarkingsection",
+    JSON.stringify({ classId, sectionTitle }),
+    {headers: {"Content-Type": "application/json"}})
+    .then(res => resolve())
+    .catch(err => {
+      if (err.response.status === 401) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: `Missing or invalid class ID and/or criterion.`});
       } else {
         reject({
           stat: err.response.status,
@@ -300,12 +454,12 @@ export const editHours = (currentId, newAttributes) => {
       if (err.status === 493) {
         deauthorise();
         reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
-      } else if (err.statis === 400) {
+      } else if (err.response.status === 400) {
         reject({stat: 400, msg: "Changes could not be applied due to " +
           "request missing data or containing illegal (id) changes"})
       } else {
         reject({
-          stat: err.status,
+          stat: err.response.status,
           msg: "There was an error processing your request. Please, try again later."
         });
       }
@@ -325,8 +479,41 @@ const standardReject = (err, reject) => {
   }
 }
 
+export const importFromFile = (file) => {
+  return new Promise((resolve, reject) => {
+    if (file === null) {
+      //return reject({state: 400, msg: "Request was poorly formatted"});
+      return reject({stat: 500, msg: "No File Given"})
+    }
+    const formData = new FormData();
+    formData.append("file", file)
+    axios.post(PREFIX + "/testFile",
+    formData,
+    {headers: {"Content-Type": "multipart/form-data"}})
+    .then(res => {
+      if (!res || !res.data) return reject({stat: 500, msg: "Something went wrong."})
+      else if (!('Students', 'Instructors', 'Helpers', 'Invalid File Formats' in res.data))
+        return reject({stat: 500, msg: "Received response was poorly formatted. Changes may still have gone through."});
+      else resolve(res.data);
+    })
+    .catch(err => {
+      if (err.response !== undefined && (err.response.status === 403 || err.response.status === 401)) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: "File was missing or was not of the correct format."})
+      } else {
+        reject({
+          stat: (!err) ? 500 : err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  })
+}
+
 export const uploadFileTest = (file) => {
-  //return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (file === null) {
       //return reject({state: 400, msg: "Request was poorly formatted"});
       console.log("Bad");
@@ -337,11 +524,11 @@ export const uploadFileTest = (file) => {
     formData,
     {headers: {"Content-Type": "multipart/form-data"}})
     .then(res => {
-      console.log(res);
-      console.log(res.data);
+      if (!res || !res.data) return reject({stat: 500, msg: "Something went wrong."})
+      else resolve(res.data);
     })
     .catch(err => {
-      console.log(err)
+      standardReject(err, reject);
     })
-  //})
+  })
 }

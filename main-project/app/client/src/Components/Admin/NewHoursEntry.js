@@ -4,8 +4,8 @@ import StatusModal from '../Util/StatusModal';
 import TwoOptionModal from '../Util/TwoOptionModal';
 import LoadingModal from '../Util/LoadingModal';
 
-import { editHours, deleteHoursEntry } from '../../Actions/admin';
-import { genUniversalDate } from '../../Actions/utility';
+import { genHours } from '../../Actions/admin';
+// import { genUniversalDate } from '../../Actions/utility';
 
 import "../CSS/Common.css";
 import "../CSS/Util/StatusModal.css";
@@ -14,37 +14,37 @@ import DatePicker from 'react-datepicker';
 
 import "react-datepicker/dist/react-datepicker.css";
 
-class EditHourEntry extends React.Component {
+class NewHoursEntry extends React.Component {
 
     constructor(props) {
         super(props);
         console.log(props)
+        this.email = props.email;
         this.modal = props.modalInteract === null || props.modalInteract === undefined ?
           (e) => true : props.modalInteract
-        this.id = props.id;
+        this.id = "NEW_ENTRY";
         this.reload = props.reload === null || props.reload === undefined ?
           (e) => true : props.reload
         const full_date = props.date === null || props.date === undefined ?
           new Date() : props.date
         this.state = {
-            paid: props.paid === null || props.paid === undefined ? null : props.paid,
-            numHours: props.numHours === null || props.numHours === undefined ? 0 : props.numHours,
-            purpose: props.purpose === null || props.purpose === undefined ? "" : props.purpose,
-            date: genUniversalDate(full_date),
-            time: full_date.getHours() + ":" + full_date.getMinutes(),
-            submittable: 1
+            paid: true,
+            numHours: "",
+            purpose: "",
+            date: "",
+            time: ""
         }
     }
 
-    saveChanges() {
-    const composeObj = {
-      paid: this.state.paid,
-      hours: this.state.numHours,
-      purpose: this.state.purpose,
-      dateTime: new Date(this.state.date + " " + this.state.time).toISOString()
-    }
-    this.modal(<LoadingModal text="Applying changes ..." />)
-      editHours(this.id, composeObj)
+    newEntry() {
+    const compDT = new Date(this.state.date + " " + this.state.time).toISOString()
+    this.modal(<LoadingModal text="Creating New Entry ..." />)
+      genHours(
+        this.email,
+        this.state.purpose,
+        this.state.numHours,
+        this.state.paid,
+        compDT)
       .then(success => {
         this.modal("");
         this.reload();
@@ -68,52 +68,10 @@ class EditHourEntry extends React.Component {
         } else {
           this.modal(
             <StatusModal
-              title="Changes Could Not Be Saved"
+              title="Could Not Create New Entry"
               text={err.msg}
               onClose={() => {
                 this.modal("");
-              }}
-            />
-          )
-        }
-      })
-    }
-
-    deleteRecord() {
-      deleteHoursEntry(this.id)
-      .then(s => {
-        this.modal(
-          <StatusModal
-            title="Record Successfully Deleted"
-            text={`Succesfully deleted record with id ${this.id}`}
-            onClose={() => {
-              this.modal("");
-              this.reload();
-            }}
-          />
-        )
-      })
-      .catch(err => {
-        if (err.stat === 403) {
-          this.modal(
-              <LoadingModal text={
-                  <span>
-                    Your login has expired
-                    <br />
-                    Please reauthenticate
-                    <br />
-                    Singing you out ...
-                  </span>
-              }/>
-          )
-          setTimeout(() => window.location.reload(0), 1000);
-        } else {
-          this.modal(
-            <StatusModal
-              title="Record Could Not Be Deleted"
-              text={err.msg}
-              onClose={() => {
-                this.modal(this);
               }}
             />
           )
@@ -126,7 +84,7 @@ class EditHourEntry extends React.Component {
                 <div id="statusModalBlackout" className="fillContainer flex verticalCentre">
                     <div id="statusModalSubBlackout" className="flex horizontalCentre">
                         <div id="statusModalWindow">
-                            <h1>Edit Hours Record</h1>
+                            <h1>Create New Hours Entry</h1>
                               <div id="EHwrapper">
                               <div id="EHwrapperLeft">
                                 <div id="EHModalID">ID:&nbsp;
@@ -157,7 +115,6 @@ class EditHourEntry extends React.Component {
                                            size="9"
                                            step="0.25" value={this.state.numHours}
                                            onChange={e=> {this.setState({numHours: e.target.value})}}
-                                           disabled={!this.state.submittable}
                                     />
                                 </div>
                                 <div id="EHwrapperRight">
@@ -168,7 +125,6 @@ class EditHourEntry extends React.Component {
                                         <input type="text"
                                                value={this.state.purpose}
                                                onChange={e=> this.setState({purpose: e.target.value})}
-                                               disabled={!this.state.submittable}
                                         />
                                     </div>
                                     <div id="EHWrapperRadioB">
@@ -188,8 +144,7 @@ class EditHourEntry extends React.Component {
                                 </div>
                             </div>
                             <div className="buttonSectionWrapper">
-                                <button className="adminStyle" onClick={e => {this.saveChanges()}}> Save Changes </button>
-                                <button className="adminStyle" onClick={e => {this.deleteRecord()}}> Delete Record </button>
+                                <button className="adminStyle" onClick={e => {this.newEntry()}}> Create New Entry </button>
                                 <button className="adminStyle"
                                         onClick={e => this.modal("")}>
                                     Cancel
@@ -202,4 +157,4 @@ class EditHourEntry extends React.Component {
     }
 }
 
-export default EditHourEntry;
+export default NewHoursEntry;

@@ -21,13 +21,14 @@ class AdminDash extends React.Component {
       <React.Fragment>
       {this.state.modalWindow}
       <NavbarGeneric/>
-        <div className="absolute fillContainer flex verticalCentre">
+      <div className="flexContentContainerGeneric">
+        <div className="absolute flex verticalCentre">
           <div id="aDashWelcomeTag">Welcome to the Admin Dashboard </div>
-          <div id="ADashMainWrapper" className="flex horizontalCentre">
+          <div id="ADashMainWrapper" className="flex horizontalCentre reverseWrap">
             <div id="mADwSLeft" className="mainADashWindowS">
               <h2>Your Information</h2>
               <Link to="/a/hours">View &amp; Manage Your Hours</Link>
-              <Link to="/a/classes">View &amp; Manage Your Classes</Link>
+              {/*<Link to="/a/classes">View &amp; Manage Your Classes</Link>*/}
             </div>
             <div className="mainADashWindowS">
               <h2>Administration</h2>
@@ -35,6 +36,7 @@ class AdminDash extends React.Component {
               <Link to="/a/user">Manage Users &amp; Data</Link>
               <Link to="/a/class">Manage Classes</Link>
               <Link to="/a/c/user">Create New Users</Link>
+              <Link to="/a/import">Import Classes from Files</Link>
               <span onClick={e => {
                   this.setState({
                     modalWindow:
@@ -49,6 +51,7 @@ class AdminDash extends React.Component {
             </div>
           </div>
         </div>
+      </div>
       </React.Fragment>
     )
   }

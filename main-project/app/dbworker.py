@@ -1,7 +1,7 @@
 import bcrypt
 import datetime
 from pymongo import MongoClient
-from flask import session
+from flask import session, jsonify
 
 import mailsane
 
@@ -121,7 +121,7 @@ def createClass(courseTitle, students, instructors, volunteers, semester):
     """
 
     # Returns with 'A field insertedId with the _id value of the inserted document.'
-    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteeers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
 def addStudent(courseId, email):
     """
@@ -309,6 +309,20 @@ def addEmptyReport(classId, studentEmail):
     """
     mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : {}, 'comments' : ""})
 
+def updateReport(classId, studentEmail, mark={}, comments='', nextCourse=''):
+    """
+    A general call to update a DB record.
+    """
+    # Set/update only those fields that required in this call
+    set_fields = {}
+
+    for f_key, f_val in {"studentEmail": studentEmail, "nextCourse": nextCourse, "mark": mark, "comments": comments}.items():
+        if f_val:
+            set_fields[f_key] = f_val
+
+    mclient[database]['reports'].find_one_and_update({'classId': classId, 'studentEmail': studentEmail},
+                                                     {'$set': set_fields})
+
 def getMarkingSectionInformation(filt={}):
     """
     Gets marking section information according to filt
@@ -365,7 +379,7 @@ def setMark(classId, studentEmail, sectionTitle, mark):
     Set's a student's marking info for <sectionTitle> in
     classId
     """
-    reportData = getClassReports(classId, filt={'studentEmail' : studentEmail})
+    reportData = mclient[database]['reports'].find_one({'studentEmail' : studentEmail, 'classId' : classId})
 
     reportData['marks'][sectionTitle] = mark
     mclient[database]['reports'].update_one({'classId' : classId, 'studentEmail' : studentEmail}, {'$set' : {'marks' : reportData['marks']}})
@@ -375,7 +389,7 @@ def deleteMark(classId, studentEmail, sectionTitle):
     Deletes a student's marking info for <sectionTitle> in
     classId
     """
-    reportData = getClassReports(classId, filt={'studentEmail' : studentEmail})
+    reportData = mclient[database]['reports'].find_one({'studentEmail' : studentEmail, 'classId' : classId})
 
     reportData['marks'].pop(sectionTitle, None)
     mclient[database]['reports'].update_one({'classId' : classId, 'studentEmail' : studentEmail}, {'$set' : {'marks' : reportData['marks']}})
