@@ -27,9 +27,13 @@ class SchemaFactory:
         "type": "object",
         "properties": {
             "classId": {"type": "string"},
-            "email": {"type": "string"}
+            "email": {"type": "string"},
+            "mark": {"type": "number"},
+            "comments": {"type": "string"},
+            "nextCourse": {"type": "string"}
         },
-        "required": ["classId", "email"]
+        "required": ["classId", "email"],
+        "optional": ["mark", "comments", "nextCourse"]
     }
 
 
