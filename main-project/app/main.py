@@ -727,8 +727,7 @@ def getReport():
     filt = {"email": str(email)}
     proj = {'_id': 0, 'hours': 1}
 
-    if paid_hrs:
-        filt['paid'] = True
+    filt['paid'] = True if paid_hrs else False
 
     # Convert date ranges into datetime objects and insert into filter
     # Note: to enforce a specific date/time pattern you can also use strptime method:
