@@ -20,7 +20,7 @@ class SchemaFactory:
             "startRange": {"type": "string"},
             "endRange": {"type": "string"}
         },
-        "required": ["email", "paid"]
+        "required": ["email"]
     }
 
     report_update = {

@@ -718,16 +718,13 @@ def getReport():
         # Allows admins to see everyones reports, users to see their own
         abort(403)
 
-    if 'paid' not in report_params:
-        abort(400)
-
-
-    paid_hrs = report_params['paid']
+    paid_hrs = None
 
     filt = {"email": str(email)}
     proj = {'_id': 0, 'hours': 1}
 
-    filt['paid'] = True if paid_hrs else False
+    if 'paid' in request.json:
+        filt['paid'] = True if request.json['paid'] else False
 
     # Convert date ranges into datetime objects and insert into filter
     # Note: to enforce a specific date/time pattern you can also use strptime method:
