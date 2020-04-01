@@ -49,11 +49,15 @@ class SelectClass extends React.Component {
   }
 
   render() {
+    const navList = [
+      {tag: "Dashboard", link: "/a/"},
+      {tag: 'Select a Class'}
+    ];
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric />
-        <div className="absolute fillContainer flex verticalCentre">
+        <NavbarGeneric crumbs={navList}/>
+        <div className="flexContentContainerGeneric">
           <div className={"flex horizontalCentre"}>
             <div id="selectUserMainWindowPW">
 

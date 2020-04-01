@@ -318,7 +318,7 @@ def setMark():
 @app.route('/api/admin/updatecourseinfo', methods=['POST'])
 def changeCourseInfo():
     if 'email' not in session or session['email'] is None:
-        abort(403)    
+        abort(403)
 
     if request.json is None or 'classId' not in request.json or 'status' not in request.json or 'newTitle' not in request.json:
         abort(400)
@@ -328,7 +328,7 @@ def changeCourseInfo():
     dbworker.updateClassInfo(convClassId, json)
 
     return jsonify({'success' : True})
-    
+
 
 @app.route('/api/updatecourseinfo', methods=['POST', 'PATCH'])
 def updateCourseInfo():
@@ -469,7 +469,7 @@ def checkEmail():
     if address.error:
         return jsonify({'message' : str(address), 'valid' : False})
 
-    
+
     if dbworker.getUser(str(address)) is None:
         return jsonify({'message' : 'Email address not found', 'valid' : False})
 
@@ -512,6 +512,43 @@ def logHours():
 
     return jsonify({'dateTime': date})
 
+@app.route('/api/admin/genhours', methods=['POST', 'PUT'])
+def genHours():
+    # request.json['hours'] is currently a string that gets converted server side
+
+    valid_access = [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]
+
+    if not dbworker.validateAccessList(valid_access):
+        abort(403)
+
+    if request.json is None:
+        abort(400)
+
+    for x in ['email', 'purpose', 'paid', 'hours', 'dateTime']:
+        if x not in request.json:
+            abort(400)
+
+    correctedTime = datetime.datetime.strptime(request.json['dateTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    email = mailsane.normalize(request.json['email'])
+
+    if email.error:
+        abort(400)
+
+    hours = 0
+    try:
+        # Handle conversion from a string to a float
+        hours = float(request.json['hours'])
+    except:
+        abort(400)
+
+    if hours <= 0:
+        abort(400)
+
+    dbworker.addHoursLog(str(email), request.json['purpose'], request.json['paid'], correctedTime, hours)
+
+    return jsonify({'success' : True})
+
 @app.route('/api/admin/edithours', methods=['PATCH'])
 def editHours():
     """
@@ -541,7 +578,7 @@ def editHours():
     if 'dateTime' in request.json['newAttributes']:
         # Convert dateTime from string to datetime object
         # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
-        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['dateTime'], "%Y-%m-%dT%H:%M:%SZ")
+        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['dateTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
         correctedDict = {}
         for x in request.json['newAttributes']:
@@ -556,7 +593,7 @@ def editHours():
 
     return jsonify({'success' : True})
 
-@app.route('/api/admin/deletehour', methods=['POST, DELETE'])
+@app.route('/api/admin/deletehour', methods=['POST', 'DELETE'])
 def deleteHour():
     """
     Takes in a json of the form
@@ -605,14 +642,14 @@ def getHours():
     else:
         if not dbworker.validateAccessList([dbworker.userTypeMap['admin']]):
             abort(403)
-        
+
         email = mailsane.normalize(pre_email)
 
         if email.error:
             abort(400)
-    
+
     hours = dbworker.getHours(filt={"email": str(email)}, projection={'_id' : 1, 'dateTime' : 1, 'purpose': 1, 'hours' : 1, 'paid' : 1})
-    
+
     hours_list = []
     for doc in hours:
         doc['_id'] = str(doc['_id'])
@@ -626,16 +663,20 @@ def getReport():
     """
     Return a PDF containing all worked/volunteer hours
     """
+    report_params = request.json;
 
-    if request.json is None:
+    if report_params is None:
         abort(400)
 
+    if 'email' not in report_params:
+        report_params['email'] = session['email']
+
     try:
-        validate(instance=request.json, schema=SchemaFactory.report_hours)
+        validate(instance=report_params, schema=SchemaFactory.report_hours)
     except exceptions.ValidationError:
         abort(400)
 
-    email = mailsane.normalize(request.json['email'])
+    email = mailsane.normalize(report_params['email'])
 
     if email.error:
         abort(400)
@@ -644,12 +685,11 @@ def getReport():
         # Allows admins to see everyones reports, users to see their own
         abort(403)
 
-    for x in ['email', 'paid']:
-        if x not in request.json:
-            abort(400)
+    if 'paid' not in report_params:
+        abort(400)
 
 
-    paid_hrs = request.json['paid']
+    paid_hrs = report_params['paid']
 
     filt = {"email": str(email)}
     proj = {'_id': 0, 'hours': 1}
@@ -660,15 +700,15 @@ def getReport():
     # Convert date ranges into datetime objects and insert into filter
     # Note: to enforce a specific date/time pattern you can also use strptime method:
     # datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d') (complete pattern: "%Y-%m-%dT%H:%M:%S.%fZ")
-    if 'startRange' in request.json and 'endRange' in request.json:
-        start_time_stamp = parse(request.json['startRange'])
-        end_time_stamp = parse(request.json['endRange'])
+    if 'startRange' in report_params and 'endRange' in report_params:
+        start_time_stamp = parse(report_params['startRange'])
+        end_time_stamp = parse(report_params['endRange'])
         filt["dateTime"] = {'$gte': start_time_stamp, '$lte': end_time_stamp}
-    elif 'startRange' in request.json:
-        start_time_stamp = parse(request.json['startRange'])
+    elif 'startRange' in report_params:
+        start_time_stamp = parse(report_params['startRange'])
         filt["dateTime"] = {'$gte': start_time_stamp}
-    elif 'endRange' in request.json:
-        end_time_stamp = parse(request.json['endRange'])
+    elif 'endRange' in report_params:
+        end_time_stamp = parse(report_params['endRange'])
         filt["dateTime"] = {'$lte': end_time_stamp}
 
     hours = dbworker.getHours(filt=filt, projection=proj)
@@ -712,8 +752,8 @@ def getUser():
 
     Returns {'result' : {user information, no id or password}, 'success' : True}
     """
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-        abort(403)
+    # if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+    #     abort(403)
 
     if request.json is None or 'email' not in request.json:
         abort(400)
@@ -989,6 +1029,7 @@ def removeVolunteer():
     """
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
+
 
     if request.json is None or 'email' not in request.json or 'classId' not in request.json:
         abort(400)
