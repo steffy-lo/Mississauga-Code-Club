@@ -725,6 +725,7 @@ def getReport():
 
     if 'paid' in request.json:
         filt['paid'] = True if request.json['paid'] else False
+        paid_hrs = False if request.json['paid'] == 0 else True
 
     # Convert date ranges into datetime objects and insert into filter
     # Note: to enforce a specific date/time pattern you can also use strptime method:
