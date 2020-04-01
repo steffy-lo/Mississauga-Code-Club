@@ -58,10 +58,12 @@ export const deleteHoursEntry = (id) => {
 
 export const genHours = (email, purpose, hours, paid, dateTime) => {
   return new Promise((resolve, reject) => {
-    if (email === "" || purpose === "" || hours === "" || dateTime === "")
+    if (purpose === "" || hours === "" || dateTime === "")
       return reject({stat: 400, msg: "Request was poorly formatted. No attributes can be empty"});
+    const compileObj = { purpose, hours, paid, dateTime };
+    if (email !== null) compileObj.email = email;
     axios.post(PREFIX + "/api/admin/genhours",
-    JSON.stringify({ email, purpose, hours, paid, dateTime }),
+    JSON.stringify(compileObj),
     {headers: {"Content-Type": "application/json"}})
     .then(res => resolve())
     .catch(err => {

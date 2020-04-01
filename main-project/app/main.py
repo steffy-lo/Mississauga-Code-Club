@@ -557,16 +557,18 @@ def genHours():
     if request.json is None:
         abort(400)
 
-    for x in ['email', 'purpose', 'paid', 'hours', 'dateTime']:
+    for x in ['purpose', 'paid', 'hours', 'dateTime']:
         if x not in request.json:
             abort(400)
 
     correctedTime = datetime.datetime.strptime(request.json['dateTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
-    email = mailsane.normalize(request.json['email'])
+    email = session['email']
 
-    if email.error:
-        abort(400)
+    if 'email' in request.json:
+        email = mailsane.normalize(request.json['email'])
+        if email.error:
+            abort(400)
 
     hours = 0
     try:

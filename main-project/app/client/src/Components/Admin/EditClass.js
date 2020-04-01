@@ -424,9 +424,9 @@ class EditClass extends React.Component {
       compiledList.push(
         <div className="ecEmailEntry" key={email}>
           <p>{email}</p>
-            <button>
+            {/*<button>
               Edit Report
-            </button>
+            </button>*/}
             <button
             onClick={e => {
               e.preventDefault();
