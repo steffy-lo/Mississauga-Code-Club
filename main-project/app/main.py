@@ -471,9 +471,9 @@ def updateReport():
 
     if studentEmail.error:
         abort(400)
-
-    dbworker.updateReport(str(studentEmail),
-                          request.json['classId'],
+    convClassId = ObjectId(request.json['classId'])
+    dbworker.updateReport(convClassId,
+                          str(studentEmail),
                           request.json['email'],
                           mark={} if request.json['mark'] is None else request.json['mark'],
                           comments='' if request.json['comments'] is None else request.json['comments'],
