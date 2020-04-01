@@ -309,7 +309,7 @@ def addEmptyReport(classId, studentEmail):
     """
     mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : {}, 'comments' : ""})
 
-def updateReport(classId, studentEmail, mark={}, comments='', nextCourse=''):
+def updateReport(classId, studentEmail, mark=None, comments=None, nextCourse=None):
     """
     A general call to update a DB record.
     """
@@ -317,7 +317,7 @@ def updateReport(classId, studentEmail, mark={}, comments='', nextCourse=''):
     set_fields = {}
 
     for f_key, f_val in {"studentEmail": studentEmail, "nextCourse": nextCourse, "mark": mark, "comments": comments}.items():
-        if f_val:
+        if f_val is not None:
             set_fields[f_key] = f_val
 
     mclient[database]['reports'].find_one_and_update({'classId': classId, 'studentEmail': studentEmail},
