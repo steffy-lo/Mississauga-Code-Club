@@ -20,7 +20,7 @@ def hours(user_id, hrs, paid_hrs):
     for h in hrs:
         total_hrs += h
 
-    hrs_type = 'paid' if paid_hrs else 'volunteer'
+    hrs_type = 'volunteer and paid' if paid_hrs is None else 'paid' if paid_hrs else 'volunteer'
 
     file_name = "report_{}_hours_{}.pdf".format(hrs_type, user_id)
 
