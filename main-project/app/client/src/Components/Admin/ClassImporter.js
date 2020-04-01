@@ -138,13 +138,20 @@ class CIModal extends React.Component {
       slList.push(
         <option key={ticker} value={sheet}>{sheet}</option>
       );
+      const iffNum = !this.baseData['Invalid File Formats'][sheet] ? 0 : 1;
+      const stuNum = (!this.baseData.Students[sheet] ? [] : this.baseData.Students[sheet]).length;
+      const instNum = (!this.baseData.Instructors[sheet] ? [] : this.baseData.Instructors[sheet]).length;
+      const volNum = (!this.baseData.Helpers[sheet] ? [] : this.baseData.Helpers[sheet]).length
+
       shList.push(
-        <tr key={ticker}>
+        <tr
+        className={iffNum + stuNum + instNum + volNum === 0 ? "errorless" : "errored"}
+        key={ticker}>
           <th>{sheet}</th>
-          <td>{!this.baseData['Invalid File Formats'][sheet] ? 0 : 1}</td>
-          <td>{(!this.baseData.Students[sheet] ? [] : this.baseData.Students[sheet]).length}</td>
-          <td>{(!this.baseData.Instructors[sheet] ? [] : this.baseData.Instructors[sheet]).length}</td>
-          <td>{(!this.baseData.Helpers[sheet] ? [] : this.baseData.Helpers[sheet]).length}</td>
+          <td>{iffNum}</td>
+          <td>{stuNum}</td>
+          <td>{instNum}</td>
+          <td>{volNum}</td>
         </tr>
       );
     }
