@@ -321,7 +321,7 @@ def updateReport(classId, studentEmail, mark={}, comments='', nextCourse=''):
             set_fields[f_key] = f_val
 
     mclient[database]['reports'].find_one_and_update({'classId': classId, 'studentEmail': studentEmail},
-                                                     {'$set': jsonify(set_fields)})
+                                                     {'$set': set_fields})
 
 def getMarkingSectionInformation(filt={}):
     """

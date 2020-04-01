@@ -32,8 +32,7 @@ class SchemaFactory:
             "comments": {"type": "string"},
             "nextCourse": {"type": "string"}
         },
-        "required": ["classId", "email"],
-        "optional": ["mark", "comments", "nextCourse"]
+        "required": ["classId", "email"]
     }
 
 

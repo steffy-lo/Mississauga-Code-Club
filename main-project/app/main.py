@@ -448,7 +448,7 @@ def getMyMarks():
     return jsonify({'marks' : marksDict, 'success' : True})
 
 
-@app.route('/api/updatereport', methods=['PUT'])
+@app.route('/api/updatereport', methods=['PUT', 'POST'])
 def updateReport():
     """
     Takes in a json of the form {'classId' : '123', 'email' : student_email, 'mark' : 90.00, 'comment' : "Great!"}
@@ -474,9 +474,9 @@ def updateReport():
     convClassId = ObjectId(request.json['classId'])
     dbworker.updateReport(convClassId,
                           str(studentEmail),
-                          mark={} if request.json['mark'] is None else request.json['mark'],
-                          comments='' if request.json['comments'] is None else request.json['comments'],
-                          nextCourse='' if request.json['nextCourse'] is None else request.json['nextCourse'])
+                          mark={} if 'mark' not in request.json else request.json['mark'],
+                          comments='' if 'comments' not in request.json else request.json['comments'],
+                          nextCourse='' if 'nextCourse' not in request.json else request.json['nextCourse'])
 
     return jsonify({'success': True})
 
