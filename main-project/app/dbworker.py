@@ -1,7 +1,7 @@
 import bcrypt
 import datetime
 from pymongo import MongoClient
-from flask import session
+from flask import session, jsonify
 
 import mailsane
 
@@ -308,6 +308,20 @@ def addEmptyReport(classId, studentEmail):
     Adds an empty marking report for studentEmail to classId to be filled in later
     """
     mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : {}, 'comments' : ""})
+
+def updateReport(classId, studentEmail, mark={}, comments='', nextCourse=''):
+    """
+    A general call to update a DB record.
+    """
+    # Set/update only those fields that required in this call
+    set_fields = {}
+
+    for f_key, f_val in {"studentEmail": studentEmail, "nextCourse": nextCourse, "mark": mark, "comments": comments}.items():
+        if f_val:
+            set_fields[f_key] = f_val
+
+    mclient[database]['reports'].find_one_and_update({'classId': classId, 'studentEmail': studentEmail},
+                                                     {'$set': jsonify(set_fields)})
 
 def getMarkingSectionInformation(filt={}):
     """

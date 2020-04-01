@@ -23,6 +23,15 @@ class SchemaFactory:
         "required": ["email", "paid"]
     }
 
+    report_update = {
+        "type": "object",
+        "properties": {
+            "classId": {"type": "string"},
+            "email": {"type": "string"}
+        },
+        "required": ["classId", "email"]
+    }
+
 
 if __name__ == "__main__":
     print("This file should not be executed directly.")
