@@ -19,8 +19,7 @@ class SchemaFactory:
             "paid": {"type": "number"},
             "startRange": {"type": "string"},
             "endRange": {"type": "string"}
-        },
-        "required": ["email"]
+        }
     }
 
     report_update = {
