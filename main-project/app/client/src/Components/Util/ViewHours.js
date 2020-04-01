@@ -206,7 +206,7 @@ class ViewHours extends React.Component {
                       <input
                         type="radio"
                         value={-1}
-                        disabled={this.uTE === 'volunteer'}
+                        disabled={/*this.uTE === 'volunteer'*/ false}
                         checked={this.state.isPaid === null}
                         onChange={_ => this.setState({isPaid: null})} />
                       <label htmlFor={null}>All</label>
@@ -214,7 +214,7 @@ class ViewHours extends React.Component {
                       <input
                         type="radio"
                         value={1}
-                        disabled={this.uTE === 'volunteer'}
+                        disabled={/*this.uTE === 'volunteer'*/ false}
                         checked={this.state.isPaid === true}
                         onChange={_ => this.setState({isPaid: true})} />
                       <label htmlFor={1}>
@@ -247,7 +247,13 @@ class ViewHours extends React.Component {
                         this.state.fromDate,
                         this.state.toDate,
                         this.state.isPaid)
-                        .then(s => this.setState({modalWindow: ""}))
+                        .then(url => {
+                          this.setState({modalWindow: ""});
+                          let a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'report.pdf';
+                          a.click();
+                        })
                         .catch(err => {
                           this.setState({
                             modalWindow:

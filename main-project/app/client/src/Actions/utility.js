@@ -36,15 +36,16 @@ export function getUserTypeExplicit() {
 
 export const getHoursReport = (fromDate, toDate, isPaid) => {
   return new Promise((resolve, reject) => {
-    const compileObj = {paid: isPaid};
+    const compileObj = {paid: isPaid ? 1 : 0};
     if (fromDate !== "") compileObj.startRange = new Date(fromDate + ' 0:00:0').toISOString();
     if (toDate !== "") compileObj.endRange = new Date(toDate + ' 23:59:59').toISOString();
     axios.post(PREFIX + "/api/report/",
     JSON.stringify(compileObj),
     {headers: {"Content-Type": "application/json"}})
     .then(res => {
-      if (!res || !res.url) throw {stat: 500, statusText: "Something went wrong"};
-      resolve(res.url)
+      console.log(res)
+      let url = window.URL.createObjectURL(new Blob([res.data]));
+      resolve(url)
     })
     .catch(err => {
       if (err !== undefined && (err.status === 403 || err.status === 401)) {

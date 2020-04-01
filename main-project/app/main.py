@@ -663,16 +663,20 @@ def getReport():
     """
     Return a PDF containing all worked/volunteer hours
     """
+    report_params = request.json;
 
-    if request.json is None:
+    if report_params is None:
         abort(400)
 
+    if 'email' not in report_params:
+        report_params['email'] = session['email']
+
     try:
-        validate(instance=request.json, schema=SchemaFactory.report_hours)
+        validate(instance=report_params, schema=SchemaFactory.report_hours)
     except exceptions.ValidationError:
         abort(400)
 
-    email = mailsane.normalize(request.json['email'])
+    email = mailsane.normalize(report_params['email'])
 
     if email.error:
         abort(400)
@@ -681,12 +685,11 @@ def getReport():
         # Allows admins to see everyones reports, users to see their own
         abort(403)
 
-    for x in ['email', 'paid']:
-        if x not in request.json:
-            abort(400)
+    if 'paid' not in report_params:
+        abort(400)
 
 
-    paid_hrs = request.json['paid']
+    paid_hrs = report_params['paid']
 
     filt = {"email": str(email)}
     proj = {'_id': 0, 'hours': 1}
@@ -697,15 +700,15 @@ def getReport():
     # Convert date ranges into datetime objects and insert into filter
     # Note: to enforce a specific date/time pattern you can also use strptime method:
     # datetime.datetime.strptime(request.json['startRange'], '%Y-%m-%d') (complete pattern: "%Y-%m-%dT%H:%M:%S.%fZ")
-    if 'startRange' in request.json and 'endRange' in request.json:
-        start_time_stamp = parse(request.json['startRange'])
-        end_time_stamp = parse(request.json['endRange'])
+    if 'startRange' in report_params and 'endRange' in report_params:
+        start_time_stamp = parse(report_params['startRange'])
+        end_time_stamp = parse(report_params['endRange'])
         filt["dateTime"] = {'$gte': start_time_stamp, '$lte': end_time_stamp}
-    elif 'startRange' in request.json:
-        start_time_stamp = parse(request.json['startRange'])
+    elif 'startRange' in report_params:
+        start_time_stamp = parse(report_params['startRange'])
         filt["dateTime"] = {'$gte': start_time_stamp}
-    elif 'endRange' in request.json:
-        end_time_stamp = parse(request.json['endRange'])
+    elif 'endRange' in report_params:
+        end_time_stamp = parse(report_params['endRange'])
         filt["dateTime"] = {'$lte': end_time_stamp}
 
     hours = dbworker.getHours(filt=filt, projection=proj)
