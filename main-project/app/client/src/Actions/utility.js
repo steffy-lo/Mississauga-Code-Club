@@ -34,11 +34,12 @@ export function getUserTypeExplicit() {
     return type;
 }
 
-export const getHoursReport = (fromDate, toDate, isPaid) => {
+export const getHoursReport = (fromDate, toDate, isPaid, email=null) => {
   return new Promise((resolve, reject) => {
     const compileObj = {paid: isPaid ? 1 : 0};
     if (fromDate !== "") compileObj.startRange = new Date(fromDate + ' 0:00:0').toISOString();
     if (toDate !== "") compileObj.endRange = new Date(toDate + ' 23:59:59').toISOString();
+    if (email !== null && email !== "") compileObj.email = email;
     axios.post(PREFIX + "/api/report/",
     JSON.stringify(compileObj),
     {headers: {"Content-Type": "application/json"}})

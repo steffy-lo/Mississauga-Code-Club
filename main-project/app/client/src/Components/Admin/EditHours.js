@@ -8,7 +8,7 @@ import LoadingModal from '../Util/LoadingModal';
 import EditHourEntry from './EditHourEntry'
 import NewHoursEntry from './NewHoursEntry'
 
-import { getUserTypeExplicit, getUserHours } from '../../Actions/utility.js';
+import { getUserTypeExplicit, getUserHours, getHoursReport } from '../../Actions/utility.js';
 
 import "../CSS/Util/ViewHours.css";
 import "../CSS/Common.css";
@@ -253,6 +253,40 @@ class EditHours extends React.Component {
                   </div>
                 </div>
                 <div id="vhFuncButtonsWrapper">
+
+                <button
+                  className={`${this.uTE}VH`}
+                  disabled={this.state.deployedList === ""}
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({
+                      modalWindow: <LoadingModal text="Getting Report ..."/>
+                    })
+                    getHoursReport(
+                      this.state.fromDate,
+                      this.state.toDate,
+                      this.state.isPaid,
+                      this.email
+                    )
+                      .then(url => {
+                        this.setState({modalWindow: ""});
+                        let a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'report.pdf';
+                        a.click();
+                      })
+                      .catch(err => {
+                        this.setState({
+                          modalWindow:
+                            <StatusModal title="Could Not Get Report"
+                              text={err.msg}
+                              onClose={e => this.setState({modalWindow: ""})}
+                              />
+                        })
+                      })
+                  }}>
+                  Get Report
+                </button>
 
                   <button
                     className={`${this.uTE}VH`}
