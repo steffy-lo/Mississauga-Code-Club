@@ -1061,7 +1061,7 @@ def createUser():
 
     return jsonify({'success' : True})
 
-@app.route('api/admin/uploadSpreadSheet', methods=['POST'])
+@app.route('/api/admin/uploadSpreadSheet', methods=['POST'])
 def handleSpreadSheet():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
