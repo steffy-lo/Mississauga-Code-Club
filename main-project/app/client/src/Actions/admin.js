@@ -452,12 +452,12 @@ export const editHours = (currentId, newAttributes) => {
       if (err.status === 493) {
         deauthorise();
         reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
-      } else if (err.statis === 400) {
+      } else if (err.response.status === 400) {
         reject({stat: 400, msg: "Changes could not be applied due to " +
           "request missing data or containing illegal (id) changes"})
       } else {
         reject({
-          stat: err.status,
+          stat: err.response.status,
           msg: "There was an error processing your request. Please, try again later."
         });
       }
@@ -477,8 +477,41 @@ const standardReject = (err, reject) => {
   }
 }
 
+export const importFromFile = (file) => {
+  return new Promise((resolve, reject) => {
+    if (file === null) {
+      //return reject({state: 400, msg: "Request was poorly formatted"});
+      return reject({stat: 500, msg: "No File Given"})
+    }
+    const formData = new FormData();
+    formData.append("file", file)
+    axios.post(PREFIX + "/testFile",
+    formData,
+    {headers: {"Content-Type": "multipart/form-data"}})
+    .then(res => {
+      if (!res || !res.data) return reject({stat: 500, msg: "Something went wrong."})
+      else if (!('Students', 'Instructors', 'Helpers', 'Invalid File Formats' in res.data))
+        return reject({stat: 500, msg: "Received response was poorly formatted. Changes may still have gone through."});
+      else resolve(res.data);
+    })
+    .catch(err => {
+      if (err.response !== undefined && (err.response.status === 403 || err.response.status === 401)) {
+        deauthorise();
+        reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
+      } else if (err.response.status === 400) {
+        reject({stat: 400, msg: "File was missing or was not of the correct format."})
+      } else {
+        reject({
+          stat: (!err) ? 500 : err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
+    })
+  })
+}
+
 export const uploadFileTest = (file) => {
-  //return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (file === null) {
       //return reject({state: 400, msg: "Request was poorly formatted"});
       console.log("Bad");
@@ -489,11 +522,11 @@ export const uploadFileTest = (file) => {
     formData,
     {headers: {"Content-Type": "multipart/form-data"}})
     .then(res => {
-      console.log(res);
-      console.log(res.data);
+      if (!res || !res.data) return reject({stat: 500, msg: "Something went wrong."})
+      else resolve(res.data);
     })
     .catch(err => {
-      console.log(err)
+      standardReject(err, reject);
     })
-  //})
+  })
 }

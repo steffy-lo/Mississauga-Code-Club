@@ -24,7 +24,7 @@ import TeacherDash from './Components/Teacher/TeacherDash';
 import ViewHours from './Components/Util/ViewHours';
 import TeacherFeedback from './Components/Teacher/FeedbackForm';
 
-import BulkImport from './Components/Admin/BulkImport'
+import ClassImporter from './Components/Admin/ClassImporter'
 
 function App() {
   return (
@@ -43,13 +43,13 @@ function App() {
         <ARoute exact path="/a/user/:email" component={EditUser}/>
         <ARoute exact path="/a/class" component={SelectClass}/>
         <ARoute exact path="/a/class/:class_id" component={EditClass}/>
+        <ARoute exact path="/a/import" component={ClassImporter} />
         <VRoute exact path="/v" component={ViewHours}/>
         {/*}<Route exact path="/v/hours" component={ViewHours}/>*/}
         <TRoute exact path="/t" component={TeacherDash}/>
         <TRoute exact path="/t/hours" component={ViewHours}/>
         <TRoute exact path="/t/course=:cid/student=:sid" component={TeacherFeedback}/>
 
-        <Route exact path="/t/import" component={BulkImport} />
 
         <Redirect from="/" to="/" />
       </Switch>

@@ -36,6 +36,7 @@ class AdminDash extends React.Component {
               <Link to="/a/user">Manage Users &amp; Data</Link>
               <Link to="/a/class">Manage Classes</Link>
               <Link to="/a/c/user">Create New Users</Link>
+              <Link to="/a/import">Import Classes from Files</Link>
               <span onClick={e => {
                   this.setState({
                     modalWindow:
