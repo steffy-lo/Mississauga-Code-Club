@@ -520,6 +520,23 @@ def addMissingEmptyReports():
 
     return fixCount
 
+def clearOrphanedReports():
+    # Route to remove reports that are associated with no class
+    # DOES NOT HANDLE REPORTS ASSOCIATED WITH NO USER RIGHT NOW
+
+    allClasses = mclient[database]['classes'].find()
+    classIdList = [cl['_id'] for cl in allClasses]
+
+    allReports = mclient[database]['reports'].find()
+
+    orphans = [x for x in allReports if x['classId'] not in classIdList]
+
+    for x in orphans:
+        mclient[database]['reports'].delete_one({'_id' : x['_id']})
+
+
+
+
 # Map of text -> userType (integer)
 userTypeMap = {}
 userTypeMap['default'] = 0

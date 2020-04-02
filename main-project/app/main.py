@@ -1265,6 +1265,16 @@ def fixReportIssues():
 
     return jsonify({'result' : dbworker.addMissingEmptyReports()})
 
+@app.route('/deleteorphans')
+def deleteOrphansDebug():
+    # Delete orphans (orphaned by class, not by user)
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
+    dbworker.clearOrphanedReports()
+
+    return jsonify({'success' : True})
+
 @app.route('/testFile', methods=['POST'])
 def handleSPreadSheetDebug():
     if request.files is None or 'file' not in request.files:
