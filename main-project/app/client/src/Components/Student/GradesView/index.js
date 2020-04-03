@@ -4,6 +4,7 @@ import Grades from "../Grades"
 import './styles.css'
 import axios from "axios";
 import NavBarGeneric from "../../Util/NavbarGeneric";
+import LoadingModal from "../../Util/LoadingModal";
 
 class GradesView extends React.Component {
 
@@ -158,7 +159,7 @@ class GradesView extends React.Component {
                         entry={entry}/>
                     ))}
                     <h2>Teacher's Comments</h2>
-                    <textarea id="comments" readOnly>{this.state.comments}</textarea>
+                    <textarea id="comments" value={this.state.comments} readOnly/>
                     <h2>Next Steps</h2>
                     {this.state.recommendations.map(course => (
                         <dl key={uid(course)} className="recommended-courses">
@@ -179,7 +180,7 @@ class GradesView extends React.Component {
                     </div>
                 );
             } else {
-                return null;
+                return <LoadingModal text="Getting student grades ..."/>;
             }
         }
     }
