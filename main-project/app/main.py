@@ -381,7 +381,7 @@ def getClass():
     if request.json is None or '_id' not in request.json:
         abort(400)
 
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(401)
 
     # TODO: Validate types
