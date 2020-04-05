@@ -613,7 +613,11 @@ def editHours():
     if 'dateTime' in request.json['newAttributes']:
         # Convert dateTime from string to datetime object
         # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
-        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['dateTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
+        correctedTime = None
+        try:
+            correctedTime = datetime.datetime.strptime(request.json['newAttributes']['dateTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
+        except:
+            abort(400)
 
         correctedDict = {}
         for x in request.json['newAttributes']:
@@ -846,7 +850,11 @@ def editUser():
     if 'birthday' in request.json['newAttributes']:
         # Convert birthday from string to datetime object
         # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
-        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%SZ")
+        correctedTime = None
+        try:
+            correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%SZ")
+        except:
+            abort(400)
 
         correctedDict = {}
         for x in request.json['newAttributes']:
