@@ -121,7 +121,12 @@ def createClass(courseTitle, students, instructors, volunteers, semester):
     """
 
     # Returns with 'A field insertedId with the _id value of the inserted document.'
-    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+    # This will be returned outside of the function
+    val = mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+
+    addMissingEmptyReports() # TODO: This is super inefficient, fix this
+
+    return val
 
 def addStudent(courseId, email):
     """
