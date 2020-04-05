@@ -474,9 +474,9 @@ def updateReport():
     convClassId = ObjectId(request.json['classId'])
     dbworker.updateReport(convClassId,
                           str(studentEmail),
-                          mark={} if 'mark' not in request.json else request.json['mark'],
-                          comments='' if 'comments' not in request.json else request.json['comments'],
-                          nextCourse='' if 'nextCourse' not in request.json else request.json['nextCourse'])
+                          mark=None if 'mark' not in request.json else request.json['mark'],
+                          comments=None if 'comments' not in request.json else request.json['comments'],
+                          nextCourse=None if 'nextCourse' not in request.json else request.json['nextCourse'])
 
     return jsonify({'success': True})
 
