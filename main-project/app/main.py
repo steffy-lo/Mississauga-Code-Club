@@ -789,9 +789,9 @@ def getUser():
 
     Returns {'result' : {user information, no id or password}, 'success' : True}
 
-    This method is not just usable by admins, but by all non students
+    This method is not just usable by admins, but by instructors
     """
-    if 'email' not in session or dbworker.validateAccess(dbworker.userTypeMap['student']):
+    if dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(403)
 
     if request.json is None or 'email' not in request.json:
