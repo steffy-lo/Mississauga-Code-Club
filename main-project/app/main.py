@@ -781,15 +781,18 @@ def getUsers():
 
     return jsonify({'result' : fixedList, 'success' : True})
 
+@app.route('/api/getuser', methods=['POST'])
 @app.route('/api/admin/getuser', methods=['POST'])
 def getUser():
     """
     Takes in a JSON of {'email'}
 
     Returns {'result' : {user information, no id or password}, 'success' : True}
+
+    This method is not just usable by admins, but by all non students
     """
-    # if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
-    #     abort(403)
+    if 'email' not in session or dbworker.validateAccess(dbworker.userTypeMap['student']):
+        abort(403)
 
     if request.json is None or 'email' not in request.json:
         abort(400)
