@@ -3,11 +3,80 @@
     top:30px;
 }
 
-#course-list{
-    list-style-type: none;
+#tDashCourseList, #tDashStudentList {
+  background-color: white;
+  padding: 10px;
+  margin: 5px;
 }
 
-#teacher-view{
-    margin-top:50px;
-    display: inline-block;
+#tDashCourseList h1, #tDashStudentList h1 {
+  margin: 10px 5px 5px 5px;
+  border-bottom: 2px solid darkblue;
+  padding: 5px 40px;
+}
+
+#tDashCourseList:hover h1, #tDashStudentList:hover h1{
+  border-color: darkblue;
+  box-shadow: 0 5px 5px -5px blue;
+}
+
+#tDashCourseList p, #tDashStudentList div a {
+  padding: 2px;
+  margin: 0;
+  display: block;
+  text-decoration: none;
+}
+
+#tDashStudentList a {
+  color: royalblue;
+}
+
+#tDashCourseList p:hover, #tDashStudentList div a:hover {
+  background-color: lightgrey;
+  cursor: pointer;
+}
+
+#tDashStudentList {
+  display: flex;
+  flex-direction: column;
+}
+
+#tDashStudentList div {
+  flex-grow: 1;
+}
+
+#tDashStudentList div h3 {
+  text-align: center;
+  margin: 5px 0;
+  border: 1px solid lightgrey;
+}
+
+#tDashCourseLinkList{
+  overflow-y: auto;
+  height: 450px;
+}
+
+#tDashStudentLinkList {
+  height: 400px;
+  overflow-y: auto;
+}
+
+#tDashToReport {
+  color: white;
+  background-color: darkblue;
+  display: block;
+  text-align: center;
+  padding: 20px 40px;
+  margin: 5px 0;
+  text-decoration: none;
+  align-self: center;
+  border:0;
+}
+
+#tDashToReport:hover {
+  background-color: royalblue;
+}
+
+#tDashToReport:disabled {
+  background-color: grey;
 }

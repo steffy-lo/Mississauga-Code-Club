@@ -378,6 +378,8 @@ def getClass():
     {'result' : None/JSON, 'success' : Boolean}
     """
 
+    print(request.json)
+
     if request.json is None or '_id' not in request.json:
         abort(400)
 
@@ -459,10 +461,10 @@ def updateReport():
     if request.json is None:
         abort(400)
 
-    try:
-        validate(instance=request.json, schema=SchemaFactory.report_update)
-    except exceptions.ValidationError:
-        abort(400)
+    # try:
+    #     validate(instance=request.json, schema=SchemaFactory.report_update)
+    # except exceptions.ValidationError:
+    #     abort(400)
 
     if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(403)
@@ -765,7 +767,7 @@ def getUsers():
     """
     Returns a json of the form {'result' : list of users with emails, first and last names, 'success' : True}
     """
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(403)
 
     uList = dbworker.getUsers(projection={'_id' : 0, 'email' : 1, 'firstName': 1, 'lastName' : 1, 'userType': 1})

@@ -13,21 +13,26 @@ import {submitFeedback} from "../Actions/FeedbackForm"
 import './FeedbackForm.css';
 
 /* For local debugging */
-const DEBUG = 1;
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
 class FeedbackForm extends React.Component {
 
-    state = {
+constructor(props) {
+  super(props);
+    this.state = {
         studentEmail: "",
         courseId: "",
         studentInfo: {},
         courseInfo: {},
-        inputs: {conditions:'0', variables:'0', loops:'0', functions:'0', recommended:{}, feedback:""},
+        inputs: {conditions:'0', variables:'0', loops:'0', functions:'0'},
+        recommended:{},
+        feedback:"",
         submitted: false
     }
+  }
 
     // Updates state.inputs
     handleChange(event, name) {
@@ -97,7 +102,7 @@ class FeedbackForm extends React.Component {
                             <TextField
                             className="input"
                             select
-                            onChange={(event)=>this.handleChange(event, "recommended")}
+                            onChange={(event)=> this.setState({recommended: event.target.value})}
                             >
 
                                 {this.renderCourseOptions()}
@@ -110,7 +115,7 @@ class FeedbackForm extends React.Component {
                            <TextField
                            className="input"
                            multiline
-                           onChange={(event)=>this.handleChange(event, "feedback")}
+                           onChange={(event)=> this.setState({feedback: event.target.value})}
                            />
 
                         </div>

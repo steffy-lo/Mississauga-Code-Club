@@ -296,7 +296,7 @@ def getHours(filt={}, projection={}):
 
 def getAllClasses():
     allClasses = mclient[database]['classes'].find({})
-    
+
     compiledList = []
 
     for c in allClasses:
@@ -316,7 +316,7 @@ def updateReport(classId, studentEmail, mark={}, comments='', nextCourse=''):
     # Set/update only those fields that required in this call
     set_fields = {}
 
-    for f_key, f_val in {"studentEmail": studentEmail, "nextCourse": nextCourse, "mark": mark, "comments": comments}.items():
+    for f_key, f_val in {"studentEmail": studentEmail, "nextCourse": nextCourse, "marks": mark, "comments": comments}.items():
         if f_val:
             set_fields[f_key] = f_val
 

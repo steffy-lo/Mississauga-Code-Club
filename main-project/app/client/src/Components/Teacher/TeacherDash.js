@@ -1,176 +1,148 @@
 import React from 'react';
-
-import { setState, action, subscribe, getState } from 'statezero';
-import { uid } from "react-uid";
+import { Link } from 'react-router-dom';
 
 import NavbarGeneric from '../Util/NavbarGeneric';
-import Course from './Course';
-import TeacherToolbar from './TeacherToolbar';
-import HoursForm from './HoursForm';
+import LoadingModal from "../Util/LoadingModal";
+import StatusModal from "../Util/StatusModal";
+
 import {AppBar, Toolbar, Button} from "@material-ui/core";
-import {getActiveClasses, loadToolbarSelection} from "./Actions/TeacherDash";
-import axios from "axios";
+import { getClasses, getEnrollment } from "./Actions/TeacherDash";
+import { getUserTypeExplicit } from "../../Actions/utility";
+
 import "./TeacherDash.css";
-
-/* For local debugging */
-const DEBUG = 0;
-
-/* Debug variables.*/
-const PREFIX = DEBUG ? "http://localhost:80" : "";
+import "../CSS/Common.css"
 
 class TeacherDash extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-       coursesTeaching: [],
-       coursesCompleted:[],
-       email: sessionStorage.getItem('email'),
-       loading: true,
-       toolbarSelection: "hours"
-
+       modalWindow: "",
+       allCourses: [],
+       studentListDisplayed: "",
+       validStudentList: false,
+       showOngoing: true,
+       selectedClass: null
    }
+   this.uType = getUserTypeExplicit()[0];
   }
 
 
   componentDidMount(){
-      this.getClasses();
+      this.getClassesList();
   }
 
-
-  // Converts courseData's student list with the full student info
-  getStudentInfo(courseData, idx){
-
-
-      const currentComponent = this;
-      axios.post(PREFIX + '/api/admin/getuser', {email : courseData.students[idx]})
-          .then(function(response){
-              courseData.students[idx] = response.data.result
+  getClassesList() {
+    this.setState({modalWindow: <LoadingModal text="Getting Classes ..." />})
+    getClasses()
+    .then(classes => {
+      this.setState({
+        allCourses: classes,
+        modalWindow: ""
       })
-          .catch(function (error) {
-              // handle error
-              console.log(error);
-      })
-
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
-  // Adds the course to the appropriate state variable with enrolled students
-  getEnrollment(classId, ongoing){
-
-      const currentComponent = this;
-
-      axios.post(PREFIX + '/api/getclass', {_id : classId})
-          .then(function(response){
-              const courseData = {students:response.data.result.students,
-                            id:classId,
-                            name:response.data.result.courseTitle}
-
-              for(let studentNum in courseData.students){
-                  currentComponent.getStudentInfo(courseData, studentNum)
-              }
-
-              console.log("STUDENTS: ", courseData)
-              if(ongoing){
-                  currentComponent.state.coursesCompleted.push(courseData)
-              } else {
-                  currentComponent.state.coursesTeaching.push(courseData)
-              }
-      })
-          .catch(function (error) {
-              // handle error
-              console.log(error);
-      })
-
-  }
-
-  // Populates state variables for courses
-  getClasses(){
-      const currentComponent = this;
-
-      axios.get(PREFIX + '/getClasses/'+ this.state.email)
-          .then(function (response) {
-              // handle success
-              const courses = response.data.instructor;
-              for(let course of courses){
-                  currentComponent.getEnrollment(course.id, course.ongoing);
-              }
-              console.log(currentComponent.state)
-              currentComponent.setState({'loading': false});
-
-          })
-          .catch(function (error) {
-              // handle error
-              console.log(error);
-          })
-  }
-
-
-  // Return either the list of courses of work hours form, depending on the selection
-  renderToolbarSelection = function(){
-      const selection = this.state.toolbarSelection;
-      if(selection == "courses"){
-          return(
-            <div>
-              <ul id="course-list">
-
-                <h3>Currently Teaching </h3>
-                {this.renderCurrentCourses()}
-
-                <h3>Inactive</h3>
-
-                {this.renderCompletedCourses()}
-
-
-              </ul>
-            </div>
-          )
-      } else if(selection == "hours"){
-          return(
-            <HoursForm
-
-            email={this.state.email}>
-
-            </HoursForm>
-          )
+  generateClassesList() {
+    const displayClassList = [];
+    for (let iClass of this.state.allCourses) {
+      if (iClass.ongoing === this.state.showOngoing) {
+        displayClassList.push(
+          <p key={iClass.id}
+             onClick={e => {
+               this.setState({ selectedClass: iClass })
+               this.generateStudentList(iClass)}
+             }
+          >
+            {iClass.name}
+          </p>
+        )
       }
-
+    }
+    return displayClassList;
   }
 
-  // Return course elements corresponding to current state
-  renderCurrentCourses = function(){
-      return (this.state.coursesTeaching).map((course, idx) =>(
-           <li> <Course
-                  name={course.name}
-                  id={course.id}
-                  enrolledStudents={course.students}
-                />
-           </li> )
-      );
+  generateStudentList(iClass) {
+    const loadingString = `Getting Enrollment for ${iClass.name} ...`
+    this.setState({
+      modalWindow: <LoadingModal text={loadingString} />
+    })
+    getEnrollment(iClass.id)
+    .then(enrollment => {
+      const resultList = []
+      for (let student of enrollment.students) {
+        const linkString = `/${this.uType}/course=${iClass.id}/student=${student}`;
+        resultList.push(<Link to={linkString}>{student}</Link>);
+      }
+      this.setState({
+        studentListDisplayed: resultList,
+        modalWindow: ""
+    })
+    })
+    .catch(err => {
+      this.setState({
+        modalWindow: (
+          <StatusModal
+            title="Could not get class data"
+            text="Failed"
+            onClose={() => this.setState({modalWindow: ""})}/>
+        ),
+        selectedClass: null,
+        studentListDisplayed: ""
+      })
+    })
   }
-
-  // Return course elements corresponding to current state
-  renderCompletedCourses = function(){
-      return (this.state.coursesCompleted).map((course, idx) =>(
-           <li> <Course
-                  name={course.name}
-                  id={course.id}
-                  enrolledStudents={course.students}
-                />
-           </li> )
-      );
-  }
-
 
   render() {
-    console.log("EMAIL: ", this.state.email)
     return(
       <React.Fragment>
+        {this.state.modalWindow}
         <NavbarGeneric/>
-        <div id="teacher-view">
-            <TeacherToolbar
-                handleButtonSelect={value=>loadToolbarSelection(this, value)}
-            />
-            {this.renderToolbarSelection()}
+        <div>
+
+        </div>
+        <div className="flexContentContainerGeneric reverseWrap">
+          <div id="tDashCourseList">
+            <h1>Classes:</h1>
+            <div id="tDashCourseLinkList">
+              {this.generateClassesList()}
+            </div>
+          </div>
+          <div id="tDashStudentList">
+            <h1>Students:</h1>
+
+            {
+              /*
+              Triple selection.
+              The first option succeeds only on first opening the page & after
+              an error.
+              Otherwise, for empty classes, the second option appears,
+              If the class is not empty, then this will, instead, be a list of
+              students in the class.
+               */
+              this.state.selectedClass === null ?
+                <div><h3>Please select a class</h3></div>
+              :
+                this.state.studentListDisplayed === "" ?
+                  <div><h3>This class is empty</h3></div>
+                :
+                  <div>
+                    <h3>{this.state.selectedClass.name}</h3>
+                    <div id="tDashStudentLinkList">
+                      {this.state.studentListDisplayed}
+                    </div>
+                  </div>
+            }
+            <button
+            id="tDashToReport"
+            disabled={this.state.selectedClass === null}
+            >
+            Modify Class Report
+          </button>
+          </div>
         </div>
       </React.Fragment>
     )

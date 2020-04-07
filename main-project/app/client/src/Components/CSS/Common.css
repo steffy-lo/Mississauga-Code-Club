@@ -62,6 +62,10 @@
   flex-wrap: wrap-reverse;
 }
 
+.flexWrap {
+  flex-wrap: wrap;
+}
+
 .flexContentContainerGeneric {
   display: flex;
   width: 100%;
