@@ -13,20 +13,25 @@ import axios from "axios";
 import "./TeacherDash.css";
 
 /* For local debugging */
-const DEBUG = 1;
+const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
 class TeacherDash extends React.Component {
-   state = {
-      coursesTeaching: [],
-      coursesCompleted:[],
-      email: sessionStorage.getItem('email'),
-      loading: true,
-      toolbarSelection: "courses"
 
+  constructor(props) {
+    super(props);
+    this.state = {
+       coursesTeaching: [],
+       coursesCompleted:[],
+       email: sessionStorage.getItem('email'),
+       loading: true,
+       toolbarSelection: "hours"
+
+   }
   }
+
 
   componentDidMount(){
       this.getClasses();
@@ -122,7 +127,7 @@ class TeacherDash extends React.Component {
       } else if(selection == "hours"){
           return(
             <HoursForm
-            
+
             email={this.state.email}>
 
             </HoursForm>
