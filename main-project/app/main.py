@@ -702,7 +702,7 @@ def getReport():
     """
     Return a PDF containing all worked/volunteer hours
     """
-    report_params = request.json;
+    report_params = request.json
 
     if report_params is None:
         abort(400)
@@ -763,6 +763,50 @@ def getReport():
         return resp_file
 
     abort(500)
+
+
+@app.route('/api/report/', methods=['GET'])
+def getStudentReport():
+    """
+    Return a report for a student for a specific class.
+    Expected json is {"email": some_student@student.com, "classId":"5e5ab2f6e7179a5e7ee4e81b"}
+    """
+
+    try:
+        validate(instance=request.json, schema=SchemaFactory.report_student)
+    except exceptions.ValidationError:
+        abort(400)
+
+    email = mailsane.normalize(request.json['email'])
+
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
+        abort(403)
+
+    # Must first convert classId string in to a ObjectId before executing query
+    convClassId = ObjectId(request.json['classId'])
+
+    # Verify: 'email' is an existing user in DB and 'convClassId' is the idea of an existing class
+    us = dbworker.getUser(str(email))
+    cl = dbworker.getClass(convClassId)
+    if us is None or cl is None:
+        abort(404)
+
+    if us['userType'] != dbworker.userTypeMap['student']:
+        abort(400)
+
+    filt = {"classId": convClassId, "studentEmail": str(email)}
+    proj = {'_id': 0}
+
+    report = dbworker.getStudentReport(filt=filt, proj=proj)
+
+    # Must convert ObjectId 'classId' into a string before responding
+    report['classId'] = str(report['classId'])
+
+    return jsonify({"report": report})
+
 
 @app.route('/api/admin/getusers')
 def getUsers():
