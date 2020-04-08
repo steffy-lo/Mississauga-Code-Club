@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import NavbarGeneric from '../Util/NavbarGeneric';
 import LoadingModal from "../Util/LoadingModal";
@@ -8,7 +7,7 @@ import StatusModal from "../Util/StatusModal";
 import { getClassMarkingScheme, setCriterion, removeCriterion } from "../../Actions/teacher";
 import { getUserTypeExplicit } from "../../Actions/utility";
 
-import "./TeacherDash.css";
+import "../CSS/Teacher/EditClassReport.css";
 import "../CSS/Common.css"
 
 class EditClassReport extends React.Component {
@@ -18,7 +17,6 @@ class EditClassReport extends React.Component {
     this.state = {
        modalWindow: "",
        criteria: {},
-       courseTitle: "",
        criteriaDisplayed: "",
        courseName: "",
 
@@ -36,14 +34,17 @@ class EditClassReport extends React.Component {
   }
 
   getCriteria() {
+    this.setState({modalWindow: <LoadingModal text="Getting Class Marking Schema ..." />});
     getClassMarkingScheme(this.classID)
     .then(criteria => {
       this.setState({
+        modalWindow: "",
         criteria: criteria.markingSections,
         courseName: criteria.courseTitle
       })
     })
     .catch(err => {
+      this.setState({modalWindow: ""});
       console.log(err);
     })
   }
@@ -67,10 +68,10 @@ class EditClassReport extends React.Component {
           onClick={e => this.setBottomCriteria(criterion)}
           key={ticker++}
           >
-          <th>{criterion}</th>
+          <th className="leftAText">{criterion}</th>
           <td>{this.state.criteria[criterion].weight}</td>
           <td>{this.state.criteria[criterion].index}</td>
-          <td>
+          <td className="tCritDelButtons">
             <button onClick={e => {this.deleteCriteria(criterion)}}>
               Delete
             </button>
@@ -82,14 +83,22 @@ class EditClassReport extends React.Component {
   }
 
   deleteCriteria(criterion) {
+    this.setState({modalWindow: <LoadingModal text="Deleting Criterion ..." />})
     removeCriterion(this.classID, criterion)
     .then(res => {
       const newCriteria = this.state.criteria;
       delete newCriteria[criterion];
-      this.setState({ criteria: newCriteria })
+      this.setState({
+        criteria: newCriteria,
+        settingCriterion: "",
+        settingWeight: "",
+        settingIndex: "",
+        modalWindow: ""
+      })
     })
     .catch(err => {
       console.log(err)
+      this.setState({modalWindow: ""})
     })
   }
 
@@ -117,7 +126,10 @@ class EditClassReport extends React.Component {
   render() {
     const navList = [{tag: "Dashboard", link: "/"}]
     if (this.uType === 'a') navList.push({tag: "Course List", link: "/a/courses"});
-    navList.push({tag: `Edit criteria for class ${this.classID}`});
+    navList.push({tag: `Edit criteria for class #${this.classID}`});
+
+    const criteriaList = this.generateCriteriaList();
+    console.log(criteriaList)
     return (
       <React.Fragment>
         {this.state.modalWindow}
@@ -127,19 +139,26 @@ class EditClassReport extends React.Component {
             <h1>
               {this.state.courseName}
             </h1>
-            <table>
-              <thead>
-                <tr>
-                  <th>Criterion</th>
-                  <th>Weight</th>
-                  <th>Index</th>
-                  <th>&nbsp;</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.generateCriteriaList()}
-              </tbody>
-            </table>
+            {
+              criteriaList.length === 0 ?
+                <div className="centreText">
+                  This class currently has no marking scheme
+                </div>
+              :
+              (<table>
+                <thead>
+                  <tr>
+                    <th className="leftAText">Criterion</th>
+                    <th>Weight</th>
+                    <th>Index</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {criteriaList}
+                </tbody>
+              </table>)
+            }
             <div>
               <input
                 type="text"
@@ -160,7 +179,7 @@ class EditClassReport extends React.Component {
                 onChange={e => this.setState({settingIndex: e.target.value})}
                 />
             </div>
-            <div>
+            <div id="tCriteriaButtonDiv">
               <button onClick={e => this.updateCriteria()}>
                 Set Criterion
               </button>

@@ -1,24 +1,14 @@
 import React from "react";
 
-import { setState, action, subscribe } from 'statezero';
-import { Link } from 'react-router-dom';
+import NavbarGeneric from '../Util/NavbarGeneric';
+import LoadingModal from "../Util/LoadingModal";
+import StatusModal from "../Util/StatusModal";
 
-import NavbarGeneric from '../../Util/NavbarGeneric';
-import LoadingModal from "../../Util/LoadingModal";
-import StatusModal from "../../Util/StatusModal";
+import { getClassMarkingScheme, getClassReportByEmail, submitFeedback } from "../../Actions/teacher";
+import { getUserTypeExplicit } from "../../Actions/utility";
 
-import { submitFeedback } from "../Actions/FeedbackForm"
-import { getClassMarkingScheme, getClassReportByEmail } from "../../../Actions/teacher";
-import { getUserTypeExplicit } from "../../../Actions/utility";
-
-import "../../CSS/Common.css"
-import './FeedbackForm.css';
-
-/* For local debugging */
-const DEBUG = 0;
-
-/* Debug variables.*/
-const PREFIX = DEBUG ? "http://localhost:80" : "";
+import '../CSS/Teacher/FeedbackForm.css';
+import "../CSS/Common.css"
 
 class FeedbackForm extends React.Component {
 
@@ -114,7 +104,7 @@ constructor(props) {
     render() {
       const navList = [{tag: "Dashboard", link: "/"}]
       if (this.uType === 'a') navList.push({tag: "Course List", link: "/a/courses"});
-      navList.push({tag: `Report for ${this.studentEmail} in ${this.state.courseName}`});
+      navList.push({tag: `Report for ${this.studentEmail} in class #${this.courseID}`});
         return (
           <React.Fragment>
             {this.state.modalWindow}

@@ -5,11 +5,10 @@ import NavbarGeneric from '../Util/NavbarGeneric';
 import LoadingModal from "../Util/LoadingModal";
 import StatusModal from "../Util/StatusModal";
 
-import {AppBar, Toolbar, Button} from "@material-ui/core";
-import { getClasses, getEnrollment } from "./Actions/TeacherDash";
+import { getClasses, getEnrollment } from "../../Actions/teacher";
 import { getUserTypeExplicit } from "../../Actions/utility";
 
-import "./TeacherDash.css";
+import "../CSS/Teacher/TeacherDash.css";
 import "../CSS/Common.css"
 
 class TeacherDash extends React.Component {

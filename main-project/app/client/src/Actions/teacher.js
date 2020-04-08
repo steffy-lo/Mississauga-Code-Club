@@ -7,6 +7,41 @@ const DEBUG = 0;
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
+export const getClasses = () => {
+  return new Promise((resolve, reject) => {
+    axios.get(PREFIX + '/getClasses/'+ sessionStorage.email)
+    .then((response) => {
+      console.log(response)
+      if (!response || !response.data || !response.data.instructor) reject("Bad")
+      resolve(response.data.instructor);
+    })
+    .catch((error) => {
+      if (error && error.response && error.response.status === 401) {
+        deauthorise();
+        setTimeout(() => window.location.reload(0), 1500);
+      }
+      reject(error);
+    })
+  })
+}
+
+export const getEnrollment = (classId) => {
+  return new Promise((resolve, reject) => {
+    axios.post(PREFIX + '/api/getclass',
+    JSON.stringify({"_id": classId}),
+    {headers: {"Content-Type": "application/json"}})
+    .then((response) => {
+      console.log(response);
+      if (!response || !response.data || !response.data.result) reject("Bad'")
+      resolve(response.data.result)
+    })
+    .catch((error) => {
+      // handle error
+      reject(error);
+    })
+  })
+}
+
 export const getClassReportByEmail = (classId, email) => {
   return new Promise((resolve, reject) => {
     axios.get(PREFIX + `/api/report/${classId}/${email}`)
@@ -17,6 +52,32 @@ export const getClassReportByEmail = (classId, email) => {
     })
     .catch(err => {
       console.log(err);
+    })
+  })
+}
+
+export const submitFeedback = (email, classId, feedbackFormData) => {
+  return new Promise((resolve, reject) => {
+
+    const { marks, feedback, recommended } = feedbackFormData;
+    const requestObj = {
+      email,
+      classId,
+      mark: marks,
+      comments: feedback,
+      nextCourse: recommended
+    }
+
+    console.log("submitting report: ", requestObj)
+    axios.post(PREFIX + '/api/updatereport',
+    requestObj, {headers: {"Content-Type": "application/json"}})
+    .then(response => {
+      console.log(response);
+      resolve()
+    })
+    .catch(error => {
+      console.log(error);
+      reject()
     })
   })
 }

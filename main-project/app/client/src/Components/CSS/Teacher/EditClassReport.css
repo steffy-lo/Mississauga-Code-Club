@@ -1,0 +1,69 @@
+#tCriteriaListMain {
+  background-color: white;
+  padding: 5px;
+}
+
+#tCriteriaListMain h1 {
+  margin: 5px;
+  border-bottom: 2px solid darkblue;
+}
+
+#tCriteriaListMain:hover h1 {
+  border-color: royalblue;
+  box-shadow: 0 5px 5px -5px blue;
+}
+
+#tCriteriaListMain table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#tCriteriaButtonDiv {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 10px 0 5px 0;
+}
+
+#tCriteriaListMain button {
+  margin: 2px;
+  border: none;
+  background-color: royalblue;
+  color: white;
+  padding: 10px 30px;
+  transition: background-color 0.15s linear;
+}
+
+#tCriteriaListMain button:hover {
+  background-color: darkblue;
+}
+
+#tCriteriaListMain input {
+  margin: 2px;
+  /* border: 1px solid royalblue; */
+  padding: 2px;
+}
+
+/* #tCriteriaListMain input:focus {
+  border-color: darkblue;
+  box-shadow: 0 0 2px blue;
+} */
+
+#tCriteriaListMain td {
+  padding: 0 5px;
+  text-align: center;
+}
+
+#tCriteriaListMain table tbody tr:hover {
+  background-color: lavender;
+  color: darkblue;
+}
+
+#tCriteriaListMain tbody th {
+  color: royalblue;
+}
+
+.tCritDelButtons {
+  text-align: center;
+  width: 1%;
+}
