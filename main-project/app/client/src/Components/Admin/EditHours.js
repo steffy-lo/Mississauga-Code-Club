@@ -1,6 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { uid } from 'react-uid';
 
 import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
@@ -57,7 +55,7 @@ class EditHours extends React.Component {
       this.setState({modalWindow: ""});
     })
     .catch(err => {
-        const clFunc = () => this.setState({modalWindow: ""});
+        //const clFunc = () => this.setState({modalWindow: ""});
         if (err.stat === 403) {
           this.setState({modalWindow: ""});
           this.setState({

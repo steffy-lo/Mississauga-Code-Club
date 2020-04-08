@@ -1,7 +1,6 @@
 import React from 'react';
 
 import StatusModal from '../Util/StatusModal';
-import TwoOptionModal from '../Util/TwoOptionModal';
 import LoadingModal from '../Util/LoadingModal';
 
 import { createClass } from '../../Actions/admin';

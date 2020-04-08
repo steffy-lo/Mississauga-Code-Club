@@ -1,63 +1,76 @@
-import React from 'react';
+import React from "react";
 
-import NavbarGeneric from '../Util/NavbarGeneric';
-import StatusModal from '../Util/StatusModal';
-import LoadingModal from '../Util/LoadingModal';
+import NavbarGeneric from "../Util/NavbarGeneric";
+import StatusModal from "../Util/StatusModal";
+import LoadingModal from "../Util/LoadingModal";
 
-import { checkIn } from '../../Actions/admin';
+/* Function used for checking in */
+import { checkIn } from "../../Actions/admin";
 
 import "../CSS/Admin/CheckIn.css";
 
+/**
+ * View for checking in.
+ * FUNCTIONALITY: ALLOW a user to check in, by providing their email,
+ *                reason for signing in & expected number of hours.
+ * CONTEXT: An admin leaves this view open for others to use to check in.
+ *          Ergo, all checking in is to be done on-site.
+ *
+ *
+ * @extends React
+ */
 class CheckIn extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
+      // Check-in details.
       email: "",
       paid: true,
       reason: "",
       numHours: "",
 
-      userRole: "",
-      userName: "",
+      //For modal views.
+      modalWindow: ""
+    };
 
-      modalWindow: "",
-      isVolunteer: 0,
-      submittable: 1
-    }
+    //Used for resetting.
     this.clearParams = () => {
       this.setState({
         email: "",
         paid: true,
         reason: "",
-        numHours: "",
-        userName: "",
-        userRole: "",
-        isVolunteer: "",
-        submittable: 1
-      })
+        numHours: ""
+      });
     };
   }
 
+  /**
+   * HELPER FUNCTION.
+   * Generate a STATUS MODAL window with the give message and title.
+   * DOES NOT automatically insert this modal into the view.
+   *
+   * @param  {[String]} title The title of the STATUS MODAL window.
+   * @param  {[String]} text  The message of the STATUS MODAL window.
+   * @return {[StatusModal:React.Component]}
+   *  A STATUS MODAL window with the given title and message.
+   */
   _generateModal(title, text) {
     return (
       <StatusModal
         title={title}
         text={text}
         onClose={this.clearParams}
-        colourScheme="adminStyle"/>
-    )
+        colourScheme="adminStyle"
+      />
+    );
   }
 
   render() {
-    const navList = [
-      {tag: "Dashboard", link: "/a/"},
-      {tag: 'Check-In'}
-    ];
-    return(
+    const navList = [{ tag: "Dashboard", link: "/a/" }, { tag: "Check-In" }];
+    return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList}/>
+        <NavbarGeneric crumbs={navList} />
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="checkInMainWindow">
@@ -68,22 +81,27 @@ class CheckIn extends React.Component {
                 onSubmit={e => {
                   e.preventDefault();
                   checkIn()
-                  .then(datetime => {
-                    const dateStamp = new Date(datetime);
-                    this.setState({
-                    modalWindow:
-                      <StatusModal title="Check-in successful"
-                        onClose={() => this.setState({modalWindow: ""})}
-                        text={`Signed it at ${dateStamp.toLocalTimeString()}
-                          on ${dateStamp.toLocalDateString()}`}/>
-                  })})
-                  .catch(err => {
-                      const clFunc = () => this.setState({modalWindow: ""});
+                    .then(datetime => {
+                      const dateStamp = new Date(datetime);
+                      this.setState({
+                        modalWindow: (
+                          <StatusModal
+                            title="Check-in successful"
+                            onClose={() => this.setState({ modalWindow: "" })}
+                            text={`Signed it at ${dateStamp.toLocalTimeString()}
+                          on ${dateStamp.toLocalDateString()}`}
+                          />
+                        )
+                      });
+                    })
+                    .catch(err => {
+                      const clFunc = () => this.setState({ modalWindow: "" });
                       if (err.stat === 403) {
-                        this.setState({modalWindow: ""});
+                        this.setState({ modalWindow: "" });
                         this.setState({
-                          modalWindow:
-                            <LoadingModal text={
+                          modalWindow: (
+                            <LoadingModal
+                              text={
                                 <span>
                                   Your login has expired
                                   <br />
@@ -91,160 +109,168 @@ class CheckIn extends React.Component {
                                   <br />
                                   Singing you out ...
                                 </span>
-                            }/>
-                        })
+                              }
+                            />
+                          )
+                        });
                         setTimeout(() => window.location.reload(0), 1000);
                       } else {
-                        this.setState({modalWindow: ""});
+                        this.setState({ modalWindow: "" });
                         this.setState({
-                          modalWindow:
+                          modalWindow: (
                             <StatusModal
                               title="Checki-In Failed"
                               text={err.msg}
                               onClose={clFunc}
                             />
-                        })
+                          )
+                        });
                       }
-                  })
-                }}>
-                <span><b>Email</b>:&nbsp;
-                <input
-                  autoFocus={true}
-                  type="email"
-                  value={this.state.email}
-                  onChange={e => this.setState({email: e.target.value})}/>
+                    });
+                }}
+              >
+                <span>
+                  <b>Email</b>:&nbsp;
+                  <input
+                    autoFocus={true}
+                    type="email"
+                    value={this.state.email}
+                    onChange={e => this.setState({ email: e.target.value })}
+                  />
                 </span>
-                {/*}<button type="submit" onClick={e => {
-                    //axios.get("/api/gcUser")
-                  }}>
-                  Confirm
-                </button>*/}
               </form>
 
               <form id="checkInMCDetailsForm">
-
-                {/*}<div id="checkInMCDetailsHeader">
-                  <div>
-                    Role: {this.state.userRole}
-                  </div>
-                  <div>
-                    Name: {this.state.userName}
-                  </div>
-                </div>*/}
-
                 <div id="checkInMCDetailsMain">
                   <div id="detailPaidSelector">
-                    <h2>
-                      Type of Work:
-                    </h2>
-                    <input type="radio" value="1"
-                      disabled={!this.state.submittable}
+                    <h2>Type of Work:</h2>
+                    <input
+                      type="radio"
+                      value="1"
                       checked={this.state.paid === true}
-                      onChange={e => this.setState({paid: true})}
-                      readOnly={this.state.isVolunteer}/>
+                      onChange={e => this.setState({ paid: true })}
+                    />
                     <label htmlFor="0">Teaching</label>
                     <br />
-                    <input type="radio" value="0"
-                      disabled={!this.state.submittable}
+                    <input
+                      type="radio"
+                      value="0"
                       checked={this.state.paid === false}
-                      onChange={e => this.setState({paid: false})}
-                      readOnly={this.state.isVolunteer}/>
+                      onChange={e => this.setState({ paid: false })}
+                    />
                     <label htmlFor="1">Volunteering</label>
                     <br />
                   </div>
                   <div id="detailEventSelector">
-                    <h2>
-                      Details:
-                    </h2>
-                    <input type="text" placeholder="reason"
+                    <h2>Details:</h2>
+                    <input
+                      type="text"
+                      placeholder="reason"
                       value={this.state.reason}
-                      onChange={e=> this.setState({reason: e.target.value})}
-                      disabled={!this.state.submittable}>
-                    </input>
-                    <input type="number" placeholder="hours"
-                      step="0.25" value={this.state.numHours}
-                      onChange={e=> {this.setState({numHours: e.target.value})}}
-                      disabled={!this.state.submittable}>
-                    </input>
+                      onChange={e => this.setState({ reason: e.target.value })}
+                    ></input>
+                    <input
+                      type="number"
+                      placeholder="hours"
+                      step="0.25"
+                      value={this.state.numHours}
+                      onChange={e => {
+                        this.setState({ numHours: e.target.value });
+                      }}
+                    ></input>
                   </div>
                 </div>
 
                 <div id="mcwButtons">
-                  <button type="submit"
-                    disabled={!this.state.submittable}
+                  <button
+                    type="submit"
                     onClick={e => {
                       e.preventDefault();
-                      const properHours = this.state.numHours -
-                        this.state.numHours % 0.25;
+                      const properHours =
+                        this.state.numHours - (this.state.numHours % 0.25);
                       this.setState({
                         email: this.state.email.trim(),
                         reason: this.state.reason.trim(),
                         numHours: properHours,
-                        modalWindow:
-                          <LoadingModal text="Checking in ..."/>
+                        modalWindow: <LoadingModal text="Checking in ..." />
                       });
-                      checkIn(this.state.email, this.state.reason,
-                        this.state.numHours, this.state.paid)
-                      .then(time => {
-                        const timeObj = new Date(time);
-                        this.setState({
-                          modalWindow:
-                            <StatusModal
-                              title="Check-in Successful"
-                              text={<span>{`User: ${this.state.email}`}<br/>
-                              {`checked in for ${this.state.reason}`}<br/>
-                              {`on ${timeObj.toDateString()}`}<br/>
-                              {`at ${timeObj.toTimeString()}`}<br/>
-                              {`for ${this.state.numHours} hours`}</span>}
-                              onClose={() => {
-                                this.clearParams();
-                                this.setState({modalWindow: ""});
-                              }}
-                            />
-                        })
-                      })
-                      .catch(err => {
-                        let clFunc = () => this.setState({modalWindow: ""});
-                        if (err.stat === 403) {
-                          this.setState({modalWindow: ""});
+                      checkIn(
+                        this.state.email,
+                        this.state.reason,
+                        this.state.numHours,
+                        this.state.paid
+                      )
+                        .then(time => {
+                          const timeObj = new Date(time);
                           this.setState({
-                            modalWindow:
-                              <LoadingModal text={
-                                  <span>
-                                    Invalid Login
-                                    <br />
-                                    Singing you out ...
-                                  </span>
-                              }/>
-                          })
-                          setTimeout(() => window.location.reload(0), 1000);
-                        } else {
-                          this.setState({
-                            modalWindow:
+                            modalWindow: (
                               <StatusModal
-                                title="Check-in Failed"
-                                text={err.msg}
-                                onClose={clFunc}
+                                title="Check-in Successful"
+                                text={
+                                  <span>
+                                    {`User: ${this.state.email}`}
+                                    <br />
+                                    {`checked in for ${this.state.reason}`}
+                                    <br />
+                                    {`on ${timeObj.toDateString()}`}
+                                    <br />
+                                    {`at ${timeObj.toTimeString()}`}
+                                    <br />
+                                    {`for ${this.state.numHours} hours`}
+                                  </span>
+                                }
+                                onClose={() => {
+                                  this.clearParams();
+                                  this.setState({ modalWindow: "" });
+                                }}
                               />
-                          })
-                        }
-                      })
-                    }}>
+                            )
+                          });
+                        })
+                        .catch(err => {
+                          let clFunc = () => this.setState({ modalWindow: "" });
+                          if (err.stat === 403) {
+                            this.setState({ modalWindow: "" });
+                            this.setState({
+                              modalWindow: (
+                                <LoadingModal
+                                  text={
+                                    <span>
+                                      Invalid Login
+                                      <br />
+                                      Singing you out ...
+                                    </span>
+                                  }
+                                />
+                              )
+                            });
+                            setTimeout(() => window.location.reload(0), 1000);
+                          } else {
+                            this.setState({
+                              modalWindow: (
+                                <StatusModal
+                                  title="Check-in Failed"
+                                  text={err.msg}
+                                  onClose={clFunc}
+                                />
+                              )
+                            });
+                          }
+                        });
+                    }}
+                  >
                     {"Check-in"}
                   </button>
-                  <button type="reset"
-                    disabled={!this.state.submittable}
-                    onClick={this.clearParams}>
+                  <button type="reset" onClick={this.clearParams}>
                     {"Clear"}
                   </button>
                 </div>
-
               </form>
             </div>
           </div>
         </div>
       </React.Fragment>
-    )
+    );
   }
 }
 
