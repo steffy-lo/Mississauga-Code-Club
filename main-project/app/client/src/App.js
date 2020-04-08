@@ -23,6 +23,7 @@ import VolunteerDash from './Components/Volunteer/VolunteerDash';
 import TeacherDash from './Components/Teacher/TeacherDash';
 import ViewHours from './Components/Util/ViewHours';
 import TeacherFeedback from './Components/Teacher/FeedbackForm';
+import EditClassReport from './Components/Teacher/EditClassReport';
 
 import ClassImporter from './Components/Admin/ClassImporter'
 
@@ -48,6 +49,7 @@ function App() {
         {/*}<Route exact path="/v/hours" component={ViewHours}/>*/}
         <TRoute exact path="/t" component={TeacherDash}/>
         <TRoute exact path="/t/hours" component={ViewHours}/>
+        <TRoute exact path="/t/course/:course_id" component={EditClassReport}/>
         <TRoute exact path="/t/course=:cid/student=:sid" component={TeacherFeedback}/>
 
 

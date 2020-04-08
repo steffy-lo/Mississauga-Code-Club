@@ -20,7 +20,6 @@ class TeacherDash extends React.Component {
        modalWindow: "",
        allCourses: [],
        studentListDisplayed: "",
-       validStudentList: false,
        showOngoing: true,
        selectedClass: null
    }
@@ -97,6 +96,9 @@ class TeacherDash extends React.Component {
   }
 
   render() {
+    const buttonVars = this.state.showOngoing ?
+      ["Active Courses", "tDC2LActiveCourses", "Click to show completed courses"]
+      : ["Completed Courses", "tDC2LInactiveCourses", "Click to show active courses"]
     return(
       <React.Fragment>
         {this.state.modalWindow}
@@ -107,8 +109,16 @@ class TeacherDash extends React.Component {
         <div className="flexContentContainerGeneric reverseWrap">
           <div id="tDashCourseList">
             <h1>Classes:</h1>
-            <div id="tDashCourseLinkList">
-              {this.generateClassesList()}
+            <div>
+              <h3 id={buttonVars[1]}
+                title={buttonVars[2]}
+                onClick={e => this.setState({
+                  showOngoing: !this.state.showOngoing
+                })}
+                >{buttonVars[0]}</h3>
+              <div id="tDashCourseLinkList">
+                {this.generateClassesList()}
+              </div>
             </div>
           </div>
           <div id="tDashStudentList">
@@ -139,6 +149,9 @@ class TeacherDash extends React.Component {
             <button
             id="tDashToReport"
             disabled={this.state.selectedClass === null}
+            onClick={e => {
+              this.props.history.push(`/${this.uType}/course/${this.state.selectedClass.id}`)
+            }}
             >
             Modify Class Report
           </button>

@@ -49,11 +49,36 @@
   text-align: center;
   margin: 5px 0;
   border: 1px solid lightgrey;
+  padding: 5px 0;
 }
 
 #tDashCourseLinkList{
   overflow-y: auto;
-  height: 450px;
+  height: 400px;
+}
+
+#tDC2LActiveCourses, #tDC2LInactiveCourses {
+  text-align: center;
+  margin: 5px 0;
+  color: white;
+  padding: 5px 0;
+  border: 1px solid transparent;
+}
+
+#tDC2LActiveCourses { background-color: royalblue }
+
+#tDC2LActiveCourses:hover {
+  background-color: darkblue;
+  cursor: pointer;
+}
+
+#tDC2LInactiveCourses {
+  background-color: crimson;
+}
+
+#tDC2LInactiveCourses:hover {
+  background-color: darkred;
+  cursor: pointer;
 }
 
 #tDashStudentLinkList {
@@ -71,12 +96,18 @@
   text-decoration: none;
   align-self: center;
   border:0;
+  font-size: 18px;
 }
 
 #tDashToReport:hover {
   background-color: royalblue;
+  cursor: pointer;
 }
 
 #tDashToReport:disabled {
   background-color: grey;
+}
+
+#tCriteriaListMain {
+
 }
