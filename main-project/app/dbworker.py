@@ -348,7 +348,7 @@ def getReports(filt={}):
     """
     return mclient[database]['reports'].find(filt)
 
-    def getStudentReport(filt={}, proj={}):
+def getStudentReport(filt={}, proj={}):
     """
     Get a single report for a student for a specific class
     """

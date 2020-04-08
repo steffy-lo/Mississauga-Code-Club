@@ -776,19 +776,19 @@ def getReport():
     abort(500)
 
 
-@app.route('/api/report/', methods=['GET'])
-def getStudentReport():
+@app.route('/api/report/<string:class_id>/<string:email>', methods=['GET'])
+def getStudentReport(class_id, email):
     """
     Return a report for a student for a specific class.
     Expected json is {"email": some_student@student.com, "classId":"5e5ab2f6e7179a5e7ee4e81b"}
     """
 
-    try:
-        validate(instance=request.json, schema=SchemaFactory.report_student)
-    except exceptions.ValidationError:
-        abort(400)
+    # try:
+    #     validate(instance={"email":email, "classId":class_id}, schema=SchemaFactory.report_student)
+    # except exceptions.ValidationError:
+    #     abort(400)
 
-    email = mailsane.normalize(request.json['email'])
+    email = mailsane.normalize(email)
 
     if email.error:
         abort(400)
@@ -797,7 +797,7 @@ def getStudentReport():
         abort(403)
 
     # Must first convert classId string in to a ObjectId before executing query
-    convClassId = ObjectId(request.json['classId'])
+    convClassId = ObjectId(class_id)
 
     # Verify: 'email' is an existing user in DB and 'convClassId' is the idea of an existing class
     us = dbworker.getUser(str(email))

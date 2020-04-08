@@ -96,13 +96,17 @@ class TeacherDash extends React.Component {
   }
 
   render() {
+    const navList = this.uType === 'a' ?
+      [{tag: "Dasboard", link: "/a/"}, {tag: "Course List"}]
+    :
+      [{tag: "Dashboard"}]
     const buttonVars = this.state.showOngoing ?
       ["Active Courses", "tDC2LActiveCourses", "Click to show completed courses"]
       : ["Completed Courses", "tDC2LInactiveCourses", "Click to show active courses"]
     return(
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric/>
+        <NavbarGeneric crumbs={navList}/>
         <div>
 
         </div>

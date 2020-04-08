@@ -59,9 +59,14 @@ class EditClassReport extends React.Component {
 
   generateCriteriaList() {
     const critList = [];
+    //For assigning react keys.
+    let ticker = 0;
     for(let criterion in this.state.criteria) {
       critList.push(
-        <tr onClick={e => this.setBottomCriteria(criterion)}>
+        <tr
+          onClick={e => this.setBottomCriteria(criterion)}
+          key={ticker++}
+          >
           <th>{criterion}</th>
           <td>{this.state.criteria[criterion].weight}</td>
           <td>{this.state.criteria[criterion].index}</td>
@@ -110,13 +115,18 @@ class EditClassReport extends React.Component {
   }
 
   render() {
-    return(
+    const navList = [{tag: "Dashboard", link: "/"}]
+    if (this.uType === 'a') navList.push({tag: "Course List", link: "/a/courses"});
+    navList.push({tag: `Edit criteria for class ${this.classID}`});
+    return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric/>
+        <NavbarGeneric crumbs={navList}/>
         <div className="flexContentContainerGeneric">
           <div id="tCriteriaListMain">
-            <h1>{this.state.courseName}</h1>
+            <h1>
+              {this.state.courseName}
+            </h1>
             <table>
               <thead>
                 <tr>
@@ -131,21 +141,24 @@ class EditClassReport extends React.Component {
               </tbody>
             </table>
             <div>
-              <input type="text"
+              <input
+                type="text"
                 value={this.state.settingCriterion}
                 placeholder="Criterion Name"
                 onChange={e => this.setState({settingCriterion: e.target.value})}
                 />
-              <input type="number"
+              <input
+                type="number"
                 value={this.state.settingWeight}
                 placeholder="Criterion Weight"
                 onChange={e => this.setState({settingWeight: e.target.value})}
-              />
-              <input type="number"
+                />
+              <input
+                type="number"
                 value={this.state.settingIndex}
                 placeholder="Criterion Index"
                 onChange={e => this.setState({settingIndex: e.target.value})}
-              />
+                />
             </div>
             <div>
               <button onClick={e => this.updateCriteria()}>
@@ -159,12 +172,12 @@ class EditClassReport extends React.Component {
                   })}}>
                   Clear Inputs
                 </button>
+              </div>
             </div>
-        </div>
-      </div>
-      </React.Fragment>
-    )
+          </div>
+        </React.Fragment>
+      )
+    }
   }
-}
 
 export default EditClassReport;

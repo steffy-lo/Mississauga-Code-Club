@@ -1,15 +1,17 @@
 import React from "react";
-import axios from "axios";
 
 import { setState, action, subscribe } from 'statezero';
 import { Link } from 'react-router-dom';
+
 import NavbarGeneric from '../../Util/NavbarGeneric';
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import GradeInput from "../GradeInput";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from '@material-ui/core/MenuItem';
-import {submitFeedback} from "../Actions/FeedbackForm"
+import LoadingModal from "../../Util/LoadingModal";
+import StatusModal from "../../Util/StatusModal";
+
+import { submitFeedback } from "../Actions/FeedbackForm"
+import { getClassMarkingScheme, getClassReportByEmail } from "../../../Actions/teacher";
+import { getUserTypeExplicit } from "../../../Actions/utility";
+
+import "../../CSS/Common.css"
 import './FeedbackForm.css';
 
 /* For local debugging */
@@ -23,119 +25,143 @@ class FeedbackForm extends React.Component {
 constructor(props) {
   super(props);
     this.state = {
-        studentEmail: "",
-        courseId: "",
-        studentInfo: {},
-        courseInfo: {},
-        inputs: {conditions:'0', variables:'0', loops:'0', functions:'0'},
-        recommended:{},
-        feedback:"",
-        submitted: false
+      modalWindow: "",
+      scheme: {},
+      courseName: "",
+      marks: {},
+      recommended:"",
+      feedback:""
     }
+    this.studentEmail = props.match.params.sid;
+    this.courseID = props.match.params.cid;
+
+    this.uType = getUserTypeExplicit()[0];
   }
 
-    // Updates state.inputs
-    handleChange(event, name) {
-        this.state.inputs[name] = event.target.value;
-    }
+  componentDidMount(){
+      this.populateForm();
+  }
 
-    // Used for the recommended course field
-    renderCourseOptions(){
-        // TODO: Database
-        const courses = [{courseName: "Robotics With Raspberry Pi 4 (2)", courseDesc: "Intermediate course for Robotics With Raspberry Pi 4"},
-                         {courseName: "Project Based Python", courseDesc: "Build your own project using Python"}
-                        ]
-        return courses.map((course, index) => (<MenuItem value={course} key={index}>{course.courseName}</MenuItem>))
-    }
+  populateForm() {
+    this.setState({modalWindow: <LoadingModal text="Getting Report Info ..."/>})
+    const schemePromise = getClassMarkingScheme(this.courseID);
+    const reportPromise = getClassReportByEmail(this.courseID, this.studentEmail);
+    Promise.all([schemePromise, reportPromise])
+    .then(values => {
+      console.log(values);
+      const validMarks = {}
+      for (let section in values[0].markingSections) {
+        validMarks[section] = !values[1].marks[section] ?
+          0 : values[1].marks[section];
+      }
+      this.setState({
+        scheme: values[0].markingSections,
+        courseName: values[0].courseTitle,
+        marks: validMarks,
+        recommended: values[1].nextCourse,
+        feedback: values[1].comments,
+        modalWindow: ""
+      })
+    })
+    .catch(err => {
+      console.log(err);
+      this.setState({modalWindow :""})
+    })
+  }
 
-    componentDidMount() {
-        // TODO: Connect to database
-        const {sid, cid} = this.props.match.params
-        this.state.studentEmail = sid
-        this.state.courseId = cid
-        this.getInfo()
-
+  generateGradingSection() {
+    const gradingList = [];
+    let ticker = 0;
+    for (let section in this.state.scheme) {
+      gradingList.push(
+        <span className="FBgradSection" key={ticker++}>
+          {section}:&nbsp;
+          <input
+            type="number"
+            length="4"
+            max={this.state.scheme[section].weight}
+            min="0"
+            value={this.state.marks[section]}
+            onChange={e => {
+              const exMarks = this.state.marks;
+              exMarks[section] = e.target.value === '' ? 0 : e.target.value;
+              this.setState({marks: exMarks})
+            }}/>
+          &nbsp;/&nbsp;<b>{this.state.scheme[section].weight}</b>
+        </span>
+      )
     }
+    return gradingList;
+  }
 
-    // Updates state with course and student info
-    getInfo(){
-        const currentComponent = this;
-        axios.post(PREFIX + '/api/admin/getuser', {email : this.state.studentEmail})
-            .then(function(response){
-                currentComponent.setState({studentInfo:response.data.result})
-        })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-        })
-        axios.post(PREFIX + '/api/getclass', {_id : this.state.courseId})
-            .then(function(response){
-                currentComponent.state.courseInfo = response.data.result
-        })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-        })
-    }
+  submitForm() {
+    this.setState({modalWindow: <LoadingModal text="Submitting Feedback ..." />});
+    submitFeedback(this.studentEmail, this.courseID, this.state)
+    .then(() => {
+      this.setState({
+        modalWindow:
+        <StatusModal
+          title="Feedback Submission Successful"
+          text={`Feedback successfully submitted for ${this.studentEmail}`}
+          onClose={() => this.setState({modalWindow: ""})} />
+      })
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }
 
     render() {
-        const {students} = this.state
-        const {cid, sid} = this.props.match.params
-
+      const navList = [{tag: "Dashboard", link: "/"}]
+      if (this.uType === 'a') navList.push({tag: "Course List", link: "/a/courses"});
+      navList.push({tag: `Report for ${this.studentEmail} in ${this.state.courseName}`});
         return (
-            <div>
+          <React.Fragment>
+            {this.state.modalWindow}
+            <NavbarGeneric crumbs={navList}/>
+            <div className="flexContentContainerGeneric">
+              <div id="FBmainWrap" className="flex verticalCentre defaultShadow">
+                <h2 id="FBCourseTitle">
+                  {this.state.courseName}
+                </h2>
+                <h3 id="FBReportTag">
+                  Report for {this.studentEmail}:
+                </h3>
+                {/* Grades*/}
+                <div id="FBCriteriaContainer">
+                  {this.generateGradingSection()}
+                </div>
+                {/* Course Recommendation*/}
+                <div id="FBRecommended">
+                  <span>
+                    Recommended Course:&nbsp;
+                  </span>
+                  <input
+                    type="text"
+                    value={this.state.recommended}
+                    onChange={(e)=> this.setState({recommended: e.target.value})}
+                    />
+                </div>
 
-                <NavbarGeneric/>
-                <div id="feedback-form">
-                    <h2>{this.state.studentInfo.firstName} {this.state.studentInfo.lastName}</h2>
-                    <Grid>
-
-                        {/* Grades*/}
-                        <GradeInput name="conditions" value = "" onChange={this.handleChange.bind(this)}/>
-                        <GradeInput name="variables" value = "" onChange={this.handleChange.bind(this)}/>
-                        <GradeInput name="loops" value = "" onChange={this.handleChange.bind(this)}/>
-                        <GradeInput name="functions" value = "" onChange={this.handleChange.bind(this)}/>
-
-                        {/* Course Recommendation*/}
-                        <div className="form-field" id="course-recommendation">
-                            <h5>Recommended Courses</h5>
-                            <TextField
-                            className="input"
-                            select
-                            onChange={(event)=> this.setState({recommended: event.target.value})}
-                            >
-
-                                {this.renderCourseOptions()}
-                            </TextField>
-                        </div>
-
-                        {/* Written Feedback*/}
-                        <div className="form-field" id="feedback">
-                           <h5>Provide Feedback for {this.state.studentInfo.firstName} {this.state.studentInfo.lastName}</h5>
-                           <TextField
-                           className="input"
-                           multiline
-                           onChange={(event)=> this.setState({feedback: event.target.value})}
-                           />
-
-                        </div>
-
-                    </Grid>
-
-                    <Button onClick={()=>submitFeedback(this)}>
-                        Submit
-                    </Button>
-                    {
-                        (() => {
-                                if(this.state.submitted){
-                                    return <p>Report submitted successfully</p>
-                                }
-                        })()
-                    }
-
+                {/* Written Feedback*/}
+                <div id="FBFeedback">
+                  <h5>Feedback:</h5>
+                  <textarea
+                    rows="10"
+                    value={this.state.feedback}
+                    onChange={(e)=> this.setState({feedback: e.target.value})}
+                    />
 
                 </div>
+
+                <div id="FBSubmit">
+                  <button id="FBSubmit" onClick={() => this.submitForm()}>
+                    Submit
+                  </button>
+                </div>
+              </div>
             </div>
+          </React.Fragment>
           );
     }
 }

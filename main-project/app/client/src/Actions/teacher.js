@@ -7,6 +7,20 @@ const DEBUG = 0;
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
+export const getClassReportByEmail = (classId, email) => {
+  return new Promise((resolve, reject) => {
+    axios.get(PREFIX + `/api/report/${classId}/${email}`)
+    .then(response => {
+      if (!response || !response.data || !response.data.report)
+        reject({stat: 500, msg: "Something went wrong"});
+      resolve(response.data.report);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  })
+}
+
 export const getClassMarkingScheme = (id) => {
   return new Promise((resolve, reject) => {
     axios.get(PREFIX + `/api/class/${id}/marking`)

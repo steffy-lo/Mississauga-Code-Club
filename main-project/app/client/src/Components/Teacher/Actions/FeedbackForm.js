@@ -7,32 +7,28 @@ const DEBUG = 0;
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
 
-export const submitFeedback = (feedbackForm) => {
-    const currentComponent = feedbackForm
+export const submitFeedback = (email, classId, feedbackFormData) => {
+  return new Promise((resolve, reject) => {
 
-    console.log("submitting report:",{
-        classId:currentComponent.state.courseId,
-        email:currentComponent.state.studentEmail,
-        mark:currentComponent.state.inputs,
-        comments: currentComponent.state.inputs.feedback
+    const { marks, feedback, recommended } = feedbackFormData;
+    const requestObj = {
+      email,
+      classId,
+      mark: marks,
+      comments: feedback,
+      nextCourse: recommended
+    }
+
+    console.log("submitting report: ", requestObj)
+    axios.post(PREFIX + '/api/updatereport',
+    requestObj, {headers: {"Content-Type": "application/json"}})
+    .then(response => {
+      console.log(response);
+      resolve()
     })
-    axios.post(PREFIX + '/api/updatereport', {
-        classId:currentComponent.state.courseId,
-        email:currentComponent.state.studentEmail,
-        mark:currentComponent.state.inputs,
-        nextCourse: currentComponent.state.recommended,
-        comments: currentComponent.state.feedback
+    .catch(error => {
+      console.log(error);
+      reject()
     })
-        .then(function (response) {
-            // handle success
-            console.log(response.data);
-            currentComponent.setState({submitted: true})
-            currentComponent.forceUpdate()
-
-        })
-        .catch(function (error) {
-            // handle error
-
-            console.log(error);
-        })
+  })
 }

@@ -34,6 +34,16 @@ class SchemaFactory:
         "required": ["classId", "email"]
     }
 
+    # schema for route: /api/report/, method name getStudentReport()
+    report_student = {
+        "type": "object",
+        "properties": {
+            "classId": {"type": "string"},
+            "email": {"type": "string"},
+        },
+        "required": ["classId", "email"]
+    }
+
 
 if __name__ == "__main__":
     print("This file should not be executed directly.")
