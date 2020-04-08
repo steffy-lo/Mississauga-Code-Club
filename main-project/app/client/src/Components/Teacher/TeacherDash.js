@@ -1,129 +1,165 @@
 import React from 'react';
-
-import { setState, action, subscribe, getState } from 'statezero';
-import { uid } from "react-uid";
+import { Link } from 'react-router-dom';
 
 import NavbarGeneric from '../Util/NavbarGeneric';
-import Course from './Course';
-import TeacherToolbar from './TeacherToolbar';
-import HoursForm from './HoursForm';
-import {AppBar, Toolbar, Button} from "@material-ui/core";
-import {getActiveClasses, loadToolbarSelection, displayWorkHours} from "./Actions/TeacherDash";
-import axios from "axios";
-import "./TeacherDash.css";
+import LoadingModal from "../Util/LoadingModal";
+import StatusModal from "../Util/StatusModal";
 
-/* For local debugging */
-const DEBUG = 0;
+import { getClasses, getEnrollment } from "../../Actions/teacher";
+import { getUserTypeExplicit } from "../../Actions/utility";
 
-/* Debug variables.*/
-const PREFIX = DEBUG ? "http://localhost:80" : "";
+import "../CSS/Teacher/TeacherDash.css";
+import "../CSS/Common.css"
 
 class TeacherDash extends React.Component {
-   state = {
-      coursesTeaching: [],
-      coursesCompleted:[],
-      email: getState('email'),
-      loading: true,
-      toolbarSelection: "courses"
 
+  constructor(props) {
+    super(props);
+    this.state = {
+       modalWindow: "",
+       allCourses: [],
+       studentListDisplayed: "",
+       showOngoing: true,
+       selectedClass: null
+   }
+   this.uType = getUserTypeExplicit()[0];
   }
+
 
   componentDidMount(){
-      this.getClasses();
+      this.getClassesList();
   }
 
-  getClasses(){
-      const currentComponent = this;
-      axios.get(PREFIX + '/getClasses/'+ this.state.email)
-          .then(function (response) {
-              // handle success
-              console.log("response", response)
-              const classes = response.data.instructor;
-              const enrolled = [];
-              const completed = [];
-              console.log("\tclasses ", classes)
-
-              // Update state
-              for (let i = 0; i < classes.length; i++) {
-                  if (classes[i].ongoing) {
-                      enrolled.push({'courseName': classes[i].name})
-                  } else {
-                      completed.push({'courseName': classes[i].name})
-                  }
-              }
-              console.log('completed ', completed)
-              currentComponent.setState({'coursesTeaching': enrolled, 'coursesCompleted': completed});
-              currentComponent.setState({'loading': false});
-
-          })
-          .catch(function (error) {
-              // handle error
-              console.log(error);
-          })
+  getClassesList() {
+    this.setState({modalWindow: <LoadingModal text="Getting Classes ..." />})
+    getClasses()
+    .then(classes => {
+      this.setState({
+        allCourses: classes,
+        modalWindow: ""
+      })
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
-  renderToolbarSelection = function(){
-      const selection = this.state.toolbarSelection;
-      if(selection == "courses"){
-          return(
-            <div>
-              <ul id="course-list">
-
-                <h3>Currently Teaching </h3>
-                {this.renderCurrentCourses()}
-
-                <h3>Inactive</h3>
-
-                {this.renderCompletedCourses()}
-
-
-              </ul>
-            </div>
-          )
-      } else if(selection == "hours"){
-          return(
-            <HoursForm
-            onButtonClick={displayWorkHours}
-            email={this.state.email}>
-                       
-            </HoursForm>
-          )
+  generateClassesList() {
+    const displayClassList = [];
+    for (let iClass of this.state.allCourses) {
+      if (iClass.ongoing === this.state.showOngoing) {
+        displayClassList.push(
+          <p key={iClass.id}
+             onClick={e => {
+               this.setState({ selectedClass: iClass })
+               this.generateStudentList(iClass)}
+             }
+          >
+            {iClass.name}
+          </p>
+        )
       }
-
+    }
+    return displayClassList;
   }
 
-  // Return course elements corresponding to current state
-  renderCurrentCourses = function(){
-      return (this.state.coursesTeaching).map((course, idx) =>(
-           <li> <Course
-                  course={course}
-                  id={idx}
-                />
-           </li> )
-      );
+  generateStudentList(iClass) {
+    const loadingString = `Getting Enrollment for ${iClass.name} ...`
+    this.setState({
+      modalWindow: <LoadingModal text={loadingString} />
+    })
+    getEnrollment(iClass.id)
+    .then(enrollment => {
+      const resultList = []
+      for (let student of enrollment.students) {
+        const linkString = `/${this.uType}/course=${iClass.id}/student=${student}`;
+        resultList.push(<Link to={linkString}>{student}</Link>);
+      }
+      this.setState({
+        studentListDisplayed: resultList,
+        modalWindow: ""
+    })
+    })
+    .catch(err => {
+      this.setState({
+        modalWindow: (
+          <StatusModal
+            title="Could not get class data"
+            text="Failed"
+            onClose={() => this.setState({modalWindow: ""})}/>
+        ),
+        selectedClass: null,
+        studentListDisplayed: ""
+      })
+    })
   }
-
-  // Return course elements corresponding to current state
-  renderCompletedCourses = function(){
-      return (this.state.coursesCompleted).map((course, idx) =>(
-           <li> <Course
-                  course={course}
-                  id={idx}
-                />
-           </li> )
-      );
-  }
-
 
   render() {
+    const navList = this.uType === 'a' ?
+      [{tag: "Dasboard", link: "/a/"}, {tag: "Course List"}]
+    :
+      [{tag: "Dashboard"}]
+    const buttonVars = this.state.showOngoing ?
+      ["Active Courses", "tDC2LActiveCourses", "Click to show completed courses"]
+      : ["Completed Courses", "tDC2LInactiveCourses", "Click to show active courses"]
     return(
       <React.Fragment>
-        <NavbarGeneric/>
-        This is the teacher dashboard.
-        <TeacherToolbar
-            handleButtonSelect={value=>loadToolbarSelection(this, value)}
-        />
-        {this.renderToolbarSelection()}
+        {this.state.modalWindow}
+        <NavbarGeneric crumbs={navList}/>
+        <div>
+
+        </div>
+        <div className="flexContentContainerGeneric reverseWrap">
+          <div id="tDashCourseList">
+            <h1>Classes:</h1>
+            <div>
+              <h3 id={buttonVars[1]}
+                title={buttonVars[2]}
+                onClick={e => this.setState({
+                  showOngoing: !this.state.showOngoing
+                })}
+                >{buttonVars[0]}</h3>
+              <div id="tDashCourseLinkList">
+                {this.generateClassesList()}
+              </div>
+            </div>
+          </div>
+          <div id="tDashStudentList">
+            <h1>Students:</h1>
+
+            {
+              /*
+              Triple selection.
+              The first option succeeds only on first opening the page & after
+              an error.
+              Otherwise, for empty classes, the second option appears,
+              If the class is not empty, then this will, instead, be a list of
+              students in the class.
+               */
+              this.state.selectedClass === null ?
+                <div><h3>Please select a class</h3></div>
+              :
+                this.state.studentListDisplayed === "" ?
+                  <div><h3>This class is empty</h3></div>
+                :
+                  <div>
+                    <h3>{this.state.selectedClass.name}</h3>
+                    <div id="tDashStudentLinkList">
+                      {this.state.studentListDisplayed}
+                    </div>
+                  </div>
+            }
+            <button
+            id="tDashToReport"
+            disabled={this.state.selectedClass === null}
+            onClick={e => {
+              this.props.history.push(`/${this.uType}/course/${this.state.selectedClass.id}`)
+            }}
+            >
+            Modify Class Report
+          </button>
+          </div>
+        </div>
       </React.Fragment>
     )
   }

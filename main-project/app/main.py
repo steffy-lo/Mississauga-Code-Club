@@ -368,6 +368,21 @@ def updateCourseInfo():
 
     return jsonify({'success' : True})
 
+@app.route('/api/class/<string:class_id>/marking', methods=['GET'])
+def getCriteria(class_id):
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
+        abort(401)
+
+    # TODO: Validate types
+
+    cl = dbworker.getClass(ObjectId(class_id))
+    if cl is None:
+        abort(404)
+
+    to_return = {"courseTitle": cl['courseTitle'], "markingSections": cl['markingSections']}
+    to_return['_id'] = str(cl['_id'])
+    return jsonify({'result' : to_return, 'success' : True})
+
 @app.route('/api/getclass', methods=['POST'])
 def getClass():
     """
@@ -459,10 +474,10 @@ def updateReport():
     if request.json is None:
         abort(400)
 
-    try:
-        validate(instance=request.json, schema=SchemaFactory.report_update)
-    except exceptions.ValidationError:
-        abort(400)
+    # try:
+    #     validate(instance=request.json, schema=SchemaFactory.report_update)
+    # except exceptions.ValidationError:
+    #     abort(400)
 
     if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(403)
@@ -474,9 +489,9 @@ def updateReport():
     convClassId = ObjectId(request.json['classId'])
     dbworker.updateReport(convClassId,
                           str(studentEmail),
-                          mark=None if 'mark' not in request.json else request.json['mark'],
-                          comments=None if 'comments' not in request.json else request.json['comments'],
-                          nextCourse=None if 'nextCourse' not in request.json else request.json['nextCourse'])
+                          mark={} if 'mark' not in request.json else request.json['mark'],
+                          comments='' if 'comments' not in request.json else request.json['comments'],
+                          nextCourse='' if 'nextCourse' not in request.json else request.json['nextCourse'])
 
     return jsonify({'success': True})
 
@@ -765,19 +780,19 @@ def getReport():
     abort(500)
 
 
-@app.route('/api/report/', methods=['GET'])
-def getStudentReport():
+@app.route('/api/report/<string:class_id>/<string:email>', methods=['GET'])
+def getStudentReport(class_id, email):
     """
     Return a report for a student for a specific class.
     Expected json is {"email": some_student@student.com, "classId":"5e5ab2f6e7179a5e7ee4e81b"}
     """
 
-    try:
-        validate(instance=request.json, schema=SchemaFactory.report_student)
-    except exceptions.ValidationError:
-        abort(400)
+    # try:
+    #     validate(instance={"email":email, "classId":class_id}, schema=SchemaFactory.report_student)
+    # except exceptions.ValidationError:
+    #     abort(400)
 
-    email = mailsane.normalize(request.json['email'])
+    email = mailsane.normalize(email)
 
     if email.error:
         abort(400)
@@ -786,7 +801,7 @@ def getStudentReport():
         abort(403)
 
     # Must first convert classId string in to a ObjectId before executing query
-    convClassId = ObjectId(request.json['classId'])
+    convClassId = ObjectId(class_id)
 
     # Verify: 'email' is an existing user in DB and 'convClassId' is the idea of an existing class
     us = dbworker.getUser(str(email))
@@ -813,7 +828,7 @@ def getUsers():
     """
     Returns a json of the form {'result' : list of users with emails, first and last names, 'success' : True}
     """
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(403)
 
     uList = dbworker.getUsers(projection={'_id' : 0, 'email' : 1, 'firstName': 1, 'lastName' : 1, 'userType': 1})

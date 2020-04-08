@@ -62,6 +62,22 @@
   flex-wrap: wrap-reverse;
 }
 
+.flexWrap {
+  flex-wrap: wrap;
+}
+
+.centreText {
+  text-align: center;
+}
+
+.leftAText {
+  text-align: left;
+}
+
+.defaultShadow {
+  box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
+}
+
 .flexContentContainerGeneric {
   display: flex;
   width: 100%;
