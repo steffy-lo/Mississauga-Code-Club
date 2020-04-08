@@ -37,9 +37,9 @@ class AdminDash extends React.Component {
               <div id="mADwSLeft" className="mainADashWindowS">
                 <h2>Your Information</h2>
                 <Link to="/a/hours">View &amp; Manage Your Hours</Link>
-                {/* <Link to="/a/classes">View &amp; Manage Your Classes</Link> */}
+                <Link to="/a/courses">View &amp; Manage Your Classes</Link>
               </div>
-              
+
               {/*Admin specific functionality.*/}
               <div className="mainADashWindowS">
                 <h2>Administration</h2>

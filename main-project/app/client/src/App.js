@@ -44,6 +44,9 @@ function App() {
         <ARoute exact path="/a/user/:email" component={EditUser}/>
         <ARoute exact path="/a/class" component={SelectClass}/>
         <ARoute exact path="/a/class/:class_id" component={EditClass}/>
+        <ARoute exact path="/a/courses" component={TeacherDash}/>
+        <ARoute exact path="/a/course/:course_id" component={EditClassReport}/>
+        <ARoute exact path="/a/course=:cid/student=:sid" component={FeedbackForm}/>
         <ARoute exact path="/a/import" component={ClassImporter} />
         <VRoute exact path="/v" component={ViewHours}/>
         {/*}<Route exact path="/v/hours" component={ViewHours}/>*/}
