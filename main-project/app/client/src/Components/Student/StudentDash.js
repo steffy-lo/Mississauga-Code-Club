@@ -83,7 +83,9 @@ class StudentDash extends React.Component {
                             </dl>
                         ))}
             </div>
+		<div>
 		<button className="adminStyle" onClick={() => {this.setState({modalWindow: <StatusModal title="Help" text="This page shows all your or your child's classes. This allows you to see their report cards for completed classes." onClose={() => this.setState({modalWindow: ""})}/>}) }}>?</button>
+		</div>
                 </div>
             </React.Fragment>
         );
