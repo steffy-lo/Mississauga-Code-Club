@@ -110,5 +110,6 @@ class StudentDash extends React.Component {
       );
     }
   }
+}
 
 export default StudentDash;
