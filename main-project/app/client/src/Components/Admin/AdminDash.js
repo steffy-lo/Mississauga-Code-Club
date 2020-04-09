@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import CreateClass from "./CreateClass";
 
+import HelpButton from "../Util/HelpButton";
+
 import "../CSS/Admin/Dashboard.css";
 import "../CSS/Common.css";
 
@@ -24,7 +26,13 @@ class AdminDash extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric />
+        <NavbarGeneric
+	    help={
+                <HelpButton
+                      text="This page allows you to access various administration related functions."
+                      parentForClose = {this}
+                    />
+		}/>
         <div className="flexContentContainerGeneric">
           <div className="absolute flex verticalCentre">
             <div id="aDashWelcomeTag">Welcome to the Admin Dashboard</div>
