@@ -128,7 +128,7 @@ class EditUser extends React.Component {
           this.setState({
             modalWindow: (
               <StatusModal
-                title="User Editing Unsuccesfsul"
+                title="User Editing Unsuccessful"
                 text={err.msg}
                 onClose={() => this.setState({ modalWindow: "" })}
               />
