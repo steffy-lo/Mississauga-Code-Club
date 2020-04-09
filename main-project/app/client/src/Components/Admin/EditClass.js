@@ -125,7 +125,33 @@ class EditClass extends React.Component {
             { tag: "Select a Class", link: "/a/class" },
             { tag: `Class ${this.id}` }
           ]}
-        />
+
+
+	help={
+                <HelpButton
+                text={
+                        <div>
+			This page allows you to edit properties of existing classes.
+			<br />
+			Marking a class inactive makes it show up as completed for students, allowing them to see their marks.
+			<br />
+			Criterion are the sections that students are marked on.
+			<br />
+			Points is the how much the section is work.
+			<br />
+			The index is used to sort it in the report in increasing order. When two criterion have the same index, they are sorted alphabetically.
+			<br />
+			eg. For loops, index 1 will appear before If statements, index 2 or Goto statements, index 1
+		        <br />
+			You can add students, instructors, and volunteers to classes by typing their email in and adding them in the appropriate section.
+
+		        </div>
+			}
+
+
+                      parentForClose = {this}
+                    />
+		}/>/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div className="flex verticalCentre" id="editClassPreWrapper">
