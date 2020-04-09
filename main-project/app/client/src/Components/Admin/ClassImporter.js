@@ -37,7 +37,7 @@ class ClassImporter extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric />
+        <NavbarGeneric crumbs={[{tag: "Dashboard", link: "/a"}, {tag: "Import from File"}]}/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="importerFileWindow">

@@ -96,41 +96,12 @@ class EditHours extends React.Component {
           <div className="flex horizontalCentre">
             <div id="mainVHoursWindow">
               <div id="mVHWindowHeader">
-              {/*(this.email !== null) ?
-                (
-                  <Link
-                    className={`${this.uTE}VH`}
-                    id="mVHeaderButton"
-                    to={`/a/user/${this.email}`} >
-                    Back to User
-                  </Link>
-                )
-                :
-                (
-                  <Link
-                    className={`${this.uTE}VH`}
-                    id="mVHeaderButton"
-                    to="/a/hours/" >
-                    Back to View Hours
-                  </Link>
-                )
-              */}
                 <div>
                     Editing Hours for:&nbsp;
                     <br />
                     <i>{this.email === null ? "Yourself" : this.email}</i>
                 </div>
               </div>
-              {/*<table id="VHviewTableHeader">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Purpose</th>
-                    <th>Hours</th>
-                    <th>Paid</th>
-                  </tr>
-                </thead>
-              </table>*/}
               {this.state.deployedList === "" ?
                 (
                   <h2 id="noHoursLogged">

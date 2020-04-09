@@ -1,15 +1,21 @@
+#studentDashWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  justify-content: center;
+}
+
 .enrolled {
-    margin-top: 10px;
-    margin-left: 3%;
-    margin-right: 3%;
+    margin: 0px 5px 10px 5px;
+    padding: 2px;
     float: left;
-	width: 40%;
+	  width: 40%;
     background-color: white;
     min-width: 300px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 20px rgb(0, 0, 0, 0.2);
-    min-height: 400px;
+    min-height: 200px;
 }
 
 .enrolled h1 {
@@ -25,7 +31,8 @@
 }
 
 .completed {
-    margin-top: 10px;
+    margin: 0px 5px 10px 5px;
+    padding: 2px;
     float: left;
     width: 50%;
     background-color: white;
@@ -33,8 +40,12 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 20px rgb(0, 0, 0, 0.2);
-    min-height: 400px;
+    min-height: 200px;
 }
+
+/* .completed dt, .enrolled dt {
+  padding: 0 3%;
+} */
 
 .completed h1 {
     padding-left: 3%;
@@ -48,16 +59,15 @@
     box-shadow: 0 5px 5px -5px green;
 }
 
-.current-courses label {
-    font-size: 24px;
-    padding-left: 5%;
-    padding-right: 5%;
+.enrolled div, .completed div {
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-.completed-courses label {
+.current-courses p, .completed-courses p {
+    margin: 0;
     font-size: 24px;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding: 0 3%;
 }
 
 .completed-courses button {

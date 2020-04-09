@@ -1,20 +1,37 @@
-#comments {
-    width: 50%;
-    height: 100px;
+.stuGradesFeedbackBox {
+    margin: 0 2%;
+    padding: 2px;
+    width: 96%;
     resize: none;
 }
 
 .grades-view {
-    margin: 50px 50px 50px;
+    background-color: white;
+    padding: 5px;
 }
 
 .unavailable {
     text-align: center;
 }
 
+.selCourseStu {
+  padding: 2px;
+  border: 1px solid lightgrey;
+  width: 100%;
+}
+
+.stuGradesHeader {
+  margin: 5px;
+  border-bottom: 2px solid darkgreen;
+}
+
+.stuGradesHeader:hover {
+  border-color: green;
+  box-shadow: 0 0 5px -5px green;
+}
+
 select {
     display: inline-block;
-    width: 30%;
     padding: 10px 15px;
     outline: 0;
     border: 0;
@@ -24,4 +41,13 @@ select {
 
 select:hover, select:active, select:focus {
     background: #f8f8f8;
+}
+
+#stuGradesGradePane {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 96vw;
+  max-height: 80vh;
+  overflow-y: auto;
 }

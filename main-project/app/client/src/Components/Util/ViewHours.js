@@ -102,16 +102,6 @@ class ViewHours extends React.Component {
                   )
                 }
               </div>
-              {/*<table id="VHviewTableHeader">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Purpose</th>
-                    <th>Hours</th>
-                    <th>Paid</th>
-                  </tr>
-                </thead>
-              </table>*/}
               {this.state.deployedList === "" ?
                 (
                   <h2 id="noHoursLogged">

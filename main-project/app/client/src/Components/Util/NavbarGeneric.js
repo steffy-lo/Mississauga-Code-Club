@@ -51,7 +51,7 @@ class NavbarGeneric extends React.Component {
           <div id='topBar'>
             <Link to={`/${type.charAt(0)}/`} id='typer' onClick={e => {
               console.log('Back to dashboard');
-            }}>{type}</Link>
+            }}>{type === "administrator" ? "admin" : type }</Link>
 
           <span id='logoutB' onClick={e => {
               logout().then(() => {

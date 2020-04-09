@@ -1,10 +1,12 @@
 import React from "react";
 import { uid } from "react-uid";
 import Grades from "../Grades"
-import './styles.css'
 import axios from "axios";
 import NavBarGeneric from "../../Util/NavbarGeneric";
 import LoadingModal from "../../Util/LoadingModal";
+
+import './styles.css'
+import "../../CSS/Common.css"
 
 class GradesView extends React.Component {
 
@@ -142,33 +144,36 @@ class GradesView extends React.Component {
             otherCompletedCourses.splice(index, 1);
             return (
                 <div>
-                <NavBarGeneric/>
+                <NavBarGeneric crumbs={[{tag: "Dashboard", link: "/"}, {tag: `Grades for ${this.state.course}`}]}/>
+                <div className="flexContentContainerGeneric">
                 <div className="grades-view">
-                    <select onChange={this.updateDisplay} className="courses-list" id="course-sel">
+                    <select onChange={this.updateDisplay} className="selCourseStu" id="course-sel">
                         <option value="DEFAULT" name={this.state.course}>{this.state.course}</option>
                         {otherCompletedCourses.map(courseName => (
                             <option key={uid(courseName)} name={courseName}>{courseName}</option>
                         ))}
                     </select>
-                    <h2>Your Grades</h2>
-                    {this.state.grades.map(entry => (
-                        <Grades
-                        key={uid(
-                        entry
-                        )} /* unique id required to help React render more efficiently*/
-                        entry={entry}/>
-                    ))}
-                    <h2>Teacher's Comments</h2>
-                    <textarea id="comments" value={this.state.comments} readOnly/>
-                    <h2>Next Steps</h2>
-                    {this.state.recommendations.map(course => (
-                        <dl key={uid(course)} className="recommended-courses">
-                            <dt>
-                                <label>{course}</label>
-                            </dt>
-                        </dl>
-                    ))}
+                    <h2 className="stuGradesHeader">Your Grades</h2>
+                    {/* unique id required to help React render more efficiently */}
+                    <div id="stuGradesGradePane">
+                      {this.state.grades.map(entry => (
+                          <Grades
+                          key={uid(entry)}
+                          entry={entry}/>
+                      ))}
+                    </div>
+                    <h2 className="stuGradesHeader">Teacher's Comments</h2>
+                    <textarea
+                      rows="10"
+                      className="stuGradesFeedbackBox"
+                      value={this.state.comments} readOnly/>
+                    <h2 className="stuGradesHeader">Next Steps</h2>
+                      {<textarea
+                        rows="5"
+                        className="stuGradesFeedbackBox"
+                        value={this.state.recommendations} readOnly/>}
                 </div>
+              </div>
             </div>
             );
         } else {
@@ -180,7 +185,12 @@ class GradesView extends React.Component {
                     </div>
                 );
             } else {
-                return <LoadingModal text="Getting student grades ..."/>;
+                return (
+                  <div>
+                    <LoadingModal text="Getting student grades ..."/>
+                    <NavBarGeneric crumbs={[{tag: "Dashboard", link: "/"}, {tag: `Grades`}]}/>
+                  </div>
+                  )
             }
         }
     }

@@ -7,7 +7,7 @@ class Grades extends React.Component {
         return (
             <dl className="grade-list">
                 <dt>
-                    <label>{entry.name}</label>
+                    <b>{entry.name}</b>
                 </dt>
                 <dd>
                     {entry.grade}
