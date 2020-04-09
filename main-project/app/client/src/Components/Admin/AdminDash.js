@@ -29,7 +29,16 @@ class AdminDash extends React.Component {
         <NavbarGeneric
 	    help={
                 <HelpButton
-                      text="This page allows you to access various administration related functions."
+                text={
+                        <div>
+			This page allows you to access various administration related functions.
+			<br />
+			To create a new class, either import a spreadsheet or click create new classes and enter a class name.
+
+		        </div>
+			}
+
+
                       parentForClose = {this}
                     />
 		}/>
