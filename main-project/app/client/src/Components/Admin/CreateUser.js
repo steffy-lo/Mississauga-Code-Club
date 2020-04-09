@@ -45,7 +45,7 @@ class CreateUser extends React.Component {
                         <div>
 			This page allows you to create a new user without importing a spreadsheet.
 			<br />
-			The email used must be unique to that specific user. Once set, the email <b>cannot</b> be changed.
+			The email used must be unique to that specific user. Once set, the email <b>cannot</b> be changed from this online interface.
 
 		        <br />
 			Students can see their own marks.
