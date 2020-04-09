@@ -1,8 +1,10 @@
 import React from "react";
 
 import NavbarGeneric from "../Util/NavbarGeneric";
-import StatusModal from "../Util/StatusModal";
+import StatusModal from "../Util/StatusModal"; // May not be needed anymore
 import LoadingModal from "../Util/LoadingModal";
+
+import HelpButton from "../Util/HelpButton";
 
 /* Function used for checking in */
 import { checkIn } from "../../Actions/admin";
@@ -70,12 +72,9 @@ class CheckIn extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList} help={
-            <button onClick={() => {
-                this.setState({
-                  modalWindow:
-                    <StatusModal onClose={() => this.setState({modalWindow: ""})}
-                      title="How to use check-in"
+        <NavbarGeneric crumbs={navList}
+	    help={
+                <HelpButton
                       text={
                         <div>
                           The admin should leave this page open.
@@ -86,13 +85,11 @@ class CheckIn extends React.Component {
                           (where teaching is paid & volunteering is not) & how long
                           they will be present for.
                         </div>
-                      }
-                      />
-                })
-              }}>
-              Help
-            </button>
-          }/>
+			      }
+                      parentForClose = {this}
+                    />
+		}
+	/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="checkInMainWindow">
