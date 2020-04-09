@@ -851,6 +851,8 @@ def getUser():
     This method is not just usable by admins, but by instructors
     """
     if dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
+        pass
+    else:
         abort(403)
 
     if request.json is None or 'email' not in request.json:
