@@ -6,6 +6,8 @@ import LoadingModal from '../Util/LoadingModal';
 import EditHourEntry from './EditHourEntry'
 import NewHoursEntry from './NewHoursEntry'
 
+import HelpButton from "../Util/HelpButton";
+
 import { getUserTypeExplicit, getUserHours, getHoursReport } from '../../Actions/utility.js';
 
 import "../CSS/Util/ViewHours.css";

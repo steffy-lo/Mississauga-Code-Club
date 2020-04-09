@@ -4,6 +4,8 @@ import React from "react";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
+
+import HelpButton from "../Util/HelpButton";
 //import ActiveNotification from "../Util/ActiveNotification";
 
 import {

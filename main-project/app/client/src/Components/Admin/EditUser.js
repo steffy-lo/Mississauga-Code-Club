@@ -5,6 +5,8 @@ import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
 
+import HelpButton from "../Util/HelpButton";
+
 import {
   getUserTypeExplicit,
   genUniversalDate
