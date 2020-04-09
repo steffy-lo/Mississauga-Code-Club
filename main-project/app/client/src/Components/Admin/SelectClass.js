@@ -5,6 +5,8 @@ import NavbarGeneric from "../Util/NavbarGeneric";
 import LoadingModal from "../Util/LoadingModal";
 import CreateClass from "../Admin/CreateClass";
 
+import HelpButton from "../Util/HelpButton";
+
 //import { getUserTypeExplicit } from '../../Actions/utility.js';
 import { getClassList } from "../../Actions/admin";
 
@@ -51,7 +53,19 @@ class SelectClass extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList} />
+        <NavbarGeneric crumbs={navList} help={
+                <HelpButton
+                text={
+                        <div>
+			This page allows you to select a class to edit.
+
+		        </div>
+			}
+
+
+                      parentForClose = {this}
+                    />
+		}/>
         <div className="flexContentContainerGeneric">
           <div className={"flex horizontalCentre"}>
             <div id="selectUserMainWindowPW">
