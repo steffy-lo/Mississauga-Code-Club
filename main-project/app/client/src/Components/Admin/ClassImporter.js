@@ -4,6 +4,8 @@ import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
 
+import HelpButton from "../Util/HelpButton";
+
 import { importFromFile } from "../../Actions/admin";
 import "../CSS/Util/StatusModal.css";
 import "../CSS/Common.css";
@@ -37,7 +39,29 @@ class ClassImporter extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={[{tag: "Dashboard", link: "/a"}, {tag: "Import from File"}]}/>
+        <NavbarGeneric crumbs={[{tag: "Dashboard", link: "/a"}, {tag: "Import from File"}]}
+	help={
+                <HelpButton
+                      text={
+                        <div>
+                          This page allows an admin to perform the initial import to create any new class.
+                          <br />
+                          Students that already exist should just have their email listed on the spreadsheet.
+
+			  <br />
+			  New students should have all their information filled in.
+
+			  <br />
+			  If an error occurs, the system will attempt to insert as much as possible. Rows that fail should be inserted manually through the edit class functions accessible on the main admin page.
+
+			  <br />
+			  Supported file types: .xls, .xlsx
+                        </div>
+			      }
+                      parentForClose = {this}
+                    />
+		}
+	/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="importerFileWindow">
