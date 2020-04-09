@@ -489,9 +489,9 @@ def updateReport():
     convClassId = ObjectId(request.json['classId'])
     dbworker.updateReport(convClassId,
                           str(studentEmail),
-                          mark={} if 'mark' not in request.json else request.json['mark'],
-                          comments='' if 'comments' not in request.json else request.json['comments'],
-                          nextCourse='' if 'nextCourse' not in request.json else request.json['nextCourse'])
+                          mark=None if 'mark' not in request.json else request.json['mark'],
+                          comments=None if 'comments' not in request.json else request.json['comments'],
+                          nextCourse=None if 'nextCourse' not in request.json else request.json['nextCourse'])
 
     return jsonify({'success': True})
 
@@ -628,7 +628,11 @@ def editHours():
     if 'dateTime' in request.json['newAttributes']:
         # Convert dateTime from string to datetime object
         # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
-        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['dateTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
+        correctedTime = None
+        try:
+            correctedTime = datetime.datetime.strptime(request.json['newAttributes']['dateTime'], "%Y-%m-%dT%H:%M:%S.%fZ")
+        except:
+            abort(400)
 
         correctedDict = {}
         for x in request.json['newAttributes']:
@@ -905,7 +909,11 @@ def editUser():
     if 'birthday' in request.json['newAttributes']:
         # Convert birthday from string to datetime object
         # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
-        correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%SZ")
+        correctedTime = None
+        try:
+            correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%SZ")
+        except:
+            abort(400)
 
         correctedDict = {}
         for x in request.json['newAttributes']:
@@ -1323,6 +1331,16 @@ def fixReportIssues():
         abort(404)
 
     return jsonify({'result' : dbworker.addMissingEmptyReports()})
+
+@app.route('/deleteorphans')
+def deleteOrphansDebug():
+    # Delete orphans (orphaned by class, not by user)
+    if not ENABLE_DEBUG_ROUTES:
+        abort(404)
+
+    dbworker.clearOrphanedReports()
+
+    return jsonify({'success' : True})
 
 @app.route('/testFile', methods=['POST'])
 def handleSPreadSheetDebug():

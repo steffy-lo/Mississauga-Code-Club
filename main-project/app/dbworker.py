@@ -121,7 +121,12 @@ def createClass(courseTitle, students, instructors, volunteers, semester):
     """
 
     # Returns with 'A field insertedId with the _id value of the inserted document.'
-    return mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+    # This will be returned outside of the function
+    val = mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
+
+    addMissingEmptyReports() # TODO: This is super inefficient, fix this
+
+    return val
 
 def addStudent(courseId, email):
     """
@@ -309,15 +314,15 @@ def addEmptyReport(classId, studentEmail):
     """
     mclient[database]['reports'].insert_one({'classId' : classId, 'studentEmail' : studentEmail, 'nextCourse' : "", 'marks' : {}, 'comments' : ""})
 
-def updateReport(classId, studentEmail, mark={}, comments='', nextCourse=''):
+def updateReport(classId, studentEmail, mark=None, comments=None, nextCourse=None):
     """
     A general call to update a DB record.
     """
     # Set/update only those fields that required in this call
     set_fields = {}
 
-    for f_key, f_val in {"studentEmail": studentEmail, "nextCourse": nextCourse, "marks": mark, "comments": comments}.items():
-        if f_val:
+    for f_key, f_val in {"studentEmail": studentEmail, "nextCourse": nextCourse, "mark": mark, "comments": comments}.items():
+        if f_val is not None:
             set_fields[f_key] = f_val
 
     mclient[database]['reports'].find_one_and_update({'classId': classId, 'studentEmail': studentEmail},
@@ -526,6 +531,23 @@ def addMissingEmptyReports():
                 fixCount += 1
 
     return fixCount
+
+def clearOrphanedReports():
+    # Route to remove reports that are associated with no class
+    # DOES NOT HANDLE REPORTS ASSOCIATED WITH NO USER RIGHT NOW
+
+    allClasses = mclient[database]['classes'].find()
+    classIdList = [cl['_id'] for cl in allClasses]
+
+    allReports = mclient[database]['reports'].find()
+
+    orphans = [x for x in allReports if x['classId'] not in classIdList]
+
+    for x in orphans:
+        mclient[database]['reports'].delete_one({'_id' : x['_id']})
+
+
+
 
 # Map of text -> userType (integer)
 userTypeMap = {}
