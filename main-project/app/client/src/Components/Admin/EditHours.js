@@ -93,7 +93,23 @@ class EditHours extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList}/>
+        <NavbarGeneric crumbs={navList}
+
+	help={
+                <HelpButton
+                text={
+                        <div>
+			This page allows you to edit the hours records associated with yourself or other users.
+			<br />
+
+
+		        </div>
+			}
+
+
+                      parentForClose = {this}
+                    />
+		}/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="mainVHoursWindow">
