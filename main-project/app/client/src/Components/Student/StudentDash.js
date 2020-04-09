@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 import {uid} from "react-uid";
 
 import LoadingModal from '../Util/LoadingModal';
+import StatusModal from '../Util/StatusModal';
 
 class StudentDash extends React.Component {
     constructor(props) {
@@ -51,7 +52,8 @@ class StudentDash extends React.Component {
   render() {
     if (!this.state.loading) {
         return (
-            <React.Fragment>
+		<React.Fragment>
+		{this.state.modalWindow}
                 <div>
                     <NavBarGeneric/>
                     {/* This is the student dashboard. */}
@@ -80,7 +82,10 @@ class StudentDash extends React.Component {
                                 </dt>
                             </dl>
                         ))}
-                    </div>
+            </div>
+		<div>
+		<button className="adminStyle" onClick={() => {this.setState({modalWindow: <StatusModal title="Help" text="This page shows all your or your child's classes. This allows you to see their report cards for completed classes." onClose={() => this.setState({modalWindow: ""})}/>}) }}>?</button>
+		</div>
                 </div>
             </React.Fragment>
         );
