@@ -3,8 +3,6 @@ import React from "react";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
 
-import HelpButton from "../Util/HelpButton";
-
 import { editHours, deleteHoursEntry } from "../../Actions/admin";
 import { genUniversalDate } from "../../Actions/utility";
 
