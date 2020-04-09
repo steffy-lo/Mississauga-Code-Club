@@ -71,7 +71,7 @@ class EditUser extends React.Component {
                     <br />
                     Please reauthenticate
                     <br />
-                    Singing you out ...
+                    Signing you out ...
                   </span>
                 }
               />
@@ -112,7 +112,7 @@ class EditUser extends React.Component {
                     <br />
                     Please reauthenticate
                     <br />
-                    Singing you out ...
+                    Signing you out ...
                   </span>
                 }
               />
