@@ -12,6 +12,7 @@ class NavbarGeneric extends React.Component {
   constructor(props) {
     super(props);
     this.crumbs = props.crumbs instanceof Array ? props.crumbs : [];
+    this.help = props.help === undefined || props.help === null ? "" : props.help;
   }
 
   generateCrumbs() {
@@ -67,6 +68,9 @@ class NavbarGeneric extends React.Component {
         </div>
         <div id="crumbsWrapper">
           {this.generateCrumbs()}
+        </div>
+        <div id="helpWrapper" className={`${type}InnerButton`}>
+          {this.help}
         </div>
       </div>
     );

@@ -70,7 +70,29 @@ class CheckIn extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList} />
+        <NavbarGeneric crumbs={navList} help={
+            <button onClick={() => {
+                this.setState({
+                  modalWindow:
+                    <StatusModal onClose={() => this.setState({modalWindow: ""})}
+                      title="How to use check-in"
+                      text={
+                        <div>
+                          The admin should leave this page open.
+                          <br />
+                          Then, any person who wishes to sign in should
+                          input their email address, the reason they are present,
+                          whether their presence is for volunteering or teaching
+                          (where teaching is paid & volunteering is not) & how long
+                          they will be present for.
+                        </div>
+                      }
+                      />
+                })
+              }}>
+              Help
+            </button>
+          }/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="checkInMainWindow">

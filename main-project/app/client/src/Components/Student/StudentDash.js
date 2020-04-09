@@ -9,6 +9,7 @@ import "./StudentDash.css";
 import "../CSS/Common.css"
 
 import LoadingModal from "../Util/LoadingModal";
+import StatusModal from "../Util/StatusModal";
 
 class StudentDash extends React.Component {
   constructor(props) {
@@ -62,7 +63,17 @@ class StudentDash extends React.Component {
       return (
         <React.Fragment>
           {this.state.modalWindow}
-            <NavBarGeneric crumbs={[{tag: "Dashboard"}]}/>
+            <NavBarGeneric crumbs={[{tag: "Dashboard"}]}
+              help={
+                <button
+                  onClick={() => {this.setState({modalWindow:
+                    <StatusModal title="Help"
+                      text="This page shows all your or your child's classes.
+                      This allows you to see their report cards for completed classes."
+                      onClose={() => this.setState({modalWindow: ""})}/>}) }}>
+                      Help
+                    </button>
+              }/>
             {/* This is the student dashboard. */}
             <div id="studentDashWrapper">
               <div className="enrolled">

@@ -52,7 +52,7 @@
   padding: 5px 0;
 }
 
-#tDashCourseLinkList{
+#tDashCourseLinkList, #tDashStudentLinkList {
   overflow-y: auto;
   height: 400px;
 }
@@ -81,14 +81,9 @@
   cursor: pointer;
 }
 
-#tDashStudentLinkList {
-  height: 400px;
-  overflow-y: auto;
-}
-
 #tDashToReport {
   color: white;
-  background-color: darkblue;
+  background-color: royalblue;
   display: block;
   text-align: center;
   padding: 20px 40px;
@@ -100,8 +95,23 @@
 }
 
 #tDashToReport:hover {
-  background-color: royalblue;
+  background-color: darkblue;
   cursor: pointer;
+}
+
+#tDashToHours {
+  display: block;
+  margin: 5px 0;
+  text-decoration: none;
+  font-size: 18px;
+  background-color: royalblue;
+  color: white;
+  text-align: center;
+  padding: 19px 40px;
+}
+
+#tDashToHours:hover {
+  background-color: darkblue;
 }
 
 #tDashToReport:disabled {

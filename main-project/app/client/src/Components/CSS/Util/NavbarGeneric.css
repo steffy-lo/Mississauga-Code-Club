@@ -34,6 +34,20 @@
   margin-bottom: 20px;
 }
 
+#helpWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 20px 0 0;
+}
+
+#helpWrapper button {
+  border: 0;
+  padding: 10px 30px;
+  font-weight: bolder;
+  color: white;
+  box-shadow: 0 0 5px 0 rgb(0, 0, 0, 0.2);
+}
+
 #crumbsWrapper {
   margin: 5px;
   display: flex;

@@ -106,10 +106,8 @@ class TeacherDash extends React.Component {
       <React.Fragment>
         {this.state.modalWindow}
         <NavbarGeneric crumbs={navList}/>
-        <div>
-
-        </div>
         <div className="flexContentContainerGeneric reverseWrap">
+          {/*<div className="flex verticalCentre">*/}
           <div id="tDashCourseList">
             <h1>Classes:</h1>
             <div>
@@ -122,8 +120,17 @@ class TeacherDash extends React.Component {
               <div id="tDashCourseLinkList">
                 {this.generateClassesList()}
               </div>
+              <Link id="tDashToHours" to={`/${this.uType}/hours`}>
+                View Your Hours
+              </Link>
             </div>
           </div>
+          {/*<div id="tDashToHours">
+            <Link to="/t/hours">
+              View Hours
+            </Link>
+          </div>
+        </div>*/}
           <div id="tDashStudentList">
             <h1>Students:</h1>
 

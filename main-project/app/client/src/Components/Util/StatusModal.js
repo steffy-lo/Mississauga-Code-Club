@@ -2,6 +2,7 @@ import React from 'react';
 
 import "../CSS/Common.css";
 import "../CSS/Util/StatusModal.css";
+import { getUserTypeExplicit } from '../../Actions/utility.js';
 
 class StatusModal extends React.Component {
 
@@ -18,14 +19,14 @@ class StatusModal extends React.Component {
   }
 
   render() {
+    let type = getUserTypeExplicit();
     return(
       <div id="statusModalBlackout" className="fillContainer flex verticalCentre">
         <div id="statusModalSubBlackout" className="flex horizontalCentre">
-          <div id="statusModalWindow">
+          <div id="statusModalWindow" className={`${type}InnerButton`}>
             <h1>{this.title}</h1>
             <p>{this.text}</p>
-            <button className={`${this.colourScheme}`}
-            onClick={e => this.onClose()}>
+            <button onClick={e => this.onClose()}>
               OK
             </button>
           </div>
