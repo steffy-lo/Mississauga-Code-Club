@@ -8,6 +8,8 @@ import LoadingModal from "../../Util/LoadingModal";
 import './styles.css'
 import "../../CSS/Common.css"
 
+import HelpButton from "../../Util/HelpButton";
+
 class GradesView extends React.Component {
 
     constructor(props) {
@@ -144,7 +146,14 @@ class GradesView extends React.Component {
             otherCompletedCourses.splice(index, 1);
             return (
                 <div>
-                <NavBarGeneric crumbs={[{tag: "Dashboard", link: "/"}, {tag: `Grades for ${this.state.course}`}]}/>
+		{this.state.modalWindow}
+                <NavBarGeneric crumbs={[{tag: "Dashboard", link: "/"}, {tag: `Grades for ${this.state.course}`}]}
+		help={
+                <HelpButton
+                      text="This page shows your marks for sections of courses, overall comments by your instructor, and any recommendations they have for next courses for you to take."
+                      parentForClose = {this}
+                    />
+		}/>
                 <div className="flexContentContainerGeneric">
                 <div className="grades-view">
                     <select onChange={this.updateDisplay} className="selCourseStu" id="course-sel">
@@ -187,8 +196,16 @@ class GradesView extends React.Component {
             } else {
                 return (
                   <div>
+		    {this.state.modalWindow}
                     <LoadingModal text="Getting student grades ..."/>
-                    <NavBarGeneric crumbs={[{tag: "Dashboard", link: "/"}, {tag: `Grades`}]}/>
+                    <NavBarGeneric crumbs={[{tag: "Dashboard", link: "/"}, {tag: `Grades`}]}
+
+		    help={
+                <HelpButton
+                      text="This page shows your marks for sections of courses, overall comments by your instructor, and any recommendations they have for next courses for you to take."
+                      parentForClose = {this}
+                    />
+		}/>
                   </div>
                   )
             }

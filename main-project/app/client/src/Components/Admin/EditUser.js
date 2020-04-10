@@ -5,7 +5,12 @@ import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
 
-import { genUniversalDate } from "../../Actions/utility.js";
+import HelpButton from "../Util/HelpButton";
+
+import {
+  getUserTypeExplicit,
+  genUniversalDate
+} from "../../Actions/utility.js";
 import { getUser, editUser } from "../../Actions/admin";
 
 import "../CSS/Admin/EditUser.css";
@@ -82,7 +87,7 @@ class EditUser extends React.Component {
                     <br />
                     Please reauthenticate
                     <br />
-                    Singing you out ...
+                    Signing you out ...
                   </span>
                 }
               />
@@ -129,7 +134,7 @@ class EditUser extends React.Component {
                     <br />
                     Please reauthenticate
                     <br />
-                    Singing you out ...
+                    Signing you out ...
                   </span>
                 }
               />
@@ -147,7 +152,7 @@ class EditUser extends React.Component {
           this.setState({
             modalWindow: (
               <StatusModal
-                title="User Editing Unsuccesfsul"
+                title="User Editing Unsuccessful"
                 text={err.msg}
                 onClose={() => this.setState({ modalWindow: "" })}
               />
@@ -166,7 +171,20 @@ class EditUser extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList} />
+        <NavbarGeneric crumbs={navList}
+	    help={
+                <HelpButton
+                text={
+                        <div>
+			This page allows you to edit properties of existing users.
+
+		        </div>
+			}
+
+
+                      parentForClose = {this}
+                    />
+		}/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             {/*
