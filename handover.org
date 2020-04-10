@@ -16,8 +16,7 @@
    - Passwords are hashed and salted using a tool called bcrypt
      - The password stored in the database contains both the hashed and salted password as well as the salt. Bcrypt knows how to isolate the salt.
      - This is theoretically very hard to reverse so if your database is leaked, it is harder to attack it to actually find out the passwords.
-   - Input validation on the data from the frontend is spotty
-     - This was mostly something we worked on near the end and as a result we did not fully have enough time to work on it. This means there is a weakness there where an attacker could provide invalid input which ends up in the database.
+   - Input validation on the data from the frontend should be covering all routes
    - Npm will try to resolve some vulnerabilities. It is unable to fix all of them and you may wish to look into these to ensure that the website is secure in the long term.
    - Some of the Python packages have hardcoded versions. You may wish to update these in the future to prevent vulnerabilities from forming. You can change this in main-project/requirements.txt
      - This is also where you can add new Python packages to be installed in case you wish to change/expand the backend.
