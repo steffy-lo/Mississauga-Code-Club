@@ -9,7 +9,7 @@ STATIC_FOLDER = 'client/build'
 
 # Turn this to False when properly deploying to make sure that all
 # debugging routes are shut off.
-ENABLE_DEBUG_ROUTES = True
+ENABLE_DEBUG_ROUTES = False
 
 # Database related configuration
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
