@@ -115,6 +115,12 @@ class GradesView extends React.Component {
             })
             .catch(error => {
                 // handle error
+                if (error.response.status === 403 || error.response.status === 401) {
+                    deauthorise();
+                    window.location.reload(true);
+                } else {
+                    currentComponent.props.history.goBack();
+                }
                 console.log(error);
             });
     }
@@ -166,7 +172,7 @@ class GradesView extends React.Component {
             })
             .catch(function (error) {
                 // handle error
-                if (err.response.status === 403 || err.response.status === 401) {
+                if (error.response.status === 403 || error.response.status === 401) {
                     deauthorise();
                     window.location.reload(true);
                 } else {
