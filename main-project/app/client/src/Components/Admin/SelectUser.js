@@ -65,7 +65,7 @@ class SelectUser extends React.Component {
           crumbs={navList}
           help={
             <HelpButton
-              text={<div>This page allows you to select a user to edit.</div>}
+              text={<div>This page allows you to select a user to edit.<br />You can also create a new user at the bottom of the page.</div>}
               parentForClose={this}
             />
           }
