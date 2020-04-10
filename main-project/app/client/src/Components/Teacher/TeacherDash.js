@@ -128,7 +128,7 @@ class TeacherDash extends React.Component {
             <HelpButton
               text={
                 <div>
-                  This page allows you to see the classes you are teaching and edit the reports for each student.
+                  This page allows you to see the classes you are teaching and edit the reports for each student. Admins can see all classes.
                   <br />
 		  At the bottom of the classes column, you can go to another page to see your logged hours.
 		  <br />
