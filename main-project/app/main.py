@@ -1224,6 +1224,9 @@ def createUser():
     except exceptions.ValidationError:
         abort(400)
 
+    if dbworker.getUser(str(email)) is not None:
+        abort(400)
+
     dbworker.createUser(str(email), str(parentEmail), request.json['firstName'], request.json['lastName'], request.json['password'], request.json['userType'], request.json['phoneNumber'], datetime.datetime.strptime(request.json['birthday'], '%Y-%m-%d'), request.json['parentName'])
 
     return jsonify({'success' : True})
@@ -1331,7 +1334,15 @@ def addSampleUser(username):
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    dbworker.createUser(username + '@mcode.club', username + '@mcode.club', 'Sample', 'User', 'I love rock and roll', 1, '647-111-1111', datetime.datetime.strptime('1970-01-01', '%Y-%m-%d'), 'Parent Name')
+    email = mailsane.normalize(username + '@mcode.club')
+    if email.error:
+        abort(400)
+
+
+    if dbworker.getUser(str(username + '@mcode.club')) is not None:
+        abort(400)
+
+    dbworker.createUser(str(email), str(email), 'Sample', 'User', 'I love rock and roll', 1, '647-111-1111', datetime.datetime.strptime('1970-01-01', '%Y-%m-%d'), 'Parent Name')
     return username
 
 @app.route('/showusers')
