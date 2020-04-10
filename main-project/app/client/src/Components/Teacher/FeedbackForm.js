@@ -162,6 +162,7 @@ class FeedbackForm extends React.Component {
               }
               parentForClose={this}
 
+		    />}
 
 	/>
         <div className="flexContentContainerGeneric">
