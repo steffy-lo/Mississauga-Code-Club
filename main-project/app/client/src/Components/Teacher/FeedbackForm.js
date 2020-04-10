@@ -3,6 +3,8 @@ import React from "react";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import LoadingModal from "../Util/LoadingModal";
 import StatusModal from "../Util/StatusModal";
+
+import HelpButton from "../Util/HelpButton";
 import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import {
@@ -145,7 +147,23 @@ class FeedbackForm extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList} />
+        <NavbarGeneric crumbs={navList}
+		help={
+            <HelpButton
+              text={
+                <div>
+		  This page allows you to edit the marks for an individual student.
+                  <br />
+		  At the top, you can edit the mark the student received for each section.
+		  <br />
+		  At the bottom, you can recommend courses for them to take in the future as well as provide overall feedback on their performance.
+
+                </div>
+              }
+              parentForClose={this}
+
+
+	/>
         <div className="flexContentContainerGeneric">
           <div id="FBmainWrap" className="flex verticalCentre defaultShadow">
             <h2 id="FBCourseTitle">{this.state.courseName}</h2>
