@@ -3,6 +3,7 @@ import React from "react";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal"; // May not be needed anymore
 import LoadingModal from "../Util/LoadingModal";
+import { STD_LOG, STD_STAT } from "../Util/PrebuiltModals";
 
 import HelpButton from "../Util/HelpButton";
 
@@ -267,7 +268,7 @@ class CheckIn extends React.Component {
                           });
                         })
                         .catch(err => {
-                          let clFunc = () => this.setState({ modalWindow: "" });
+                          this.setState({ modalWindow: "" });
                           if (err.stat === 403) {
                             /*
                             If this is reached, Then
@@ -278,32 +279,8 @@ class CheckIn extends React.Component {
                             on page reload, will be taken back to the login page.
                             Reload occurs after 1 second.
                              */
-                            this.setState({ modalWindow: "" });
-                            this.setState({
-                              modalWindow: (
-                                <LoadingModal
-                                  text={
-                                    <span>
-                                      Invalid Login
-                                      <br />
-                                      Singing you out ...
-                                    </span>
-                                  }
-                                />
-                              )
-                            });
-                            setTimeout(() => window.location.reload(0), 1000);
-                          } else {
-                            this.setState({
-                              modalWindow: (
-                                <StatusModal
-                                  title="Check-in Failed"
-                                  text={err.msg}
-                                  onClose={clFunc}
-                                />
-                              )
-                            });
-                          }
+                            STD_LOG(this);
+                          } else STD_STAT("Check-in Failed", err.msg, this);
                         });
                     }}
                   >

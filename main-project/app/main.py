@@ -817,6 +817,9 @@ def getStudentReport(class_id, email):
 
     report = dbworker.getStudentReport(filt=filt, proj=proj)
 
+    if report is None:
+        abort(400)
+
     # Must convert ObjectId 'classId' into a string before responding
     report['classId'] = str(report['classId'])
 
@@ -1228,6 +1231,9 @@ def handleSpreadSheet():
 @app.route('/api/getClasses/<email>', methods=['GET'])
 @app.route('/getClasses/<email>', methods=['GET'])
 def getUserClasses(email):
+    if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['student']]):
+        abort(403)
+
     email = mailsane.normalize(email)
     if email.error:
         abort(400)

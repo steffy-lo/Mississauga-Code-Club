@@ -7,6 +7,8 @@
   background-color: white;
   padding: 10px;
   margin: 5px;
+  display: flex;
+  flex-direction: column;
 }
 
 #tDashCourseList h1, #tDashStudentList h1 {
@@ -36,10 +38,7 @@
   cursor: pointer;
 }
 
-#tDashStudentList {
-  display: flex;
-  flex-direction: column;
-}
+#tDashStudentList {}
 
 #tDashStudentList div {
   flex-grow: 1;

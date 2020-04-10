@@ -3,6 +3,7 @@ import React from "react";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
+import { STD_LOG, STD_STAT } from "../Util/PrebuiltModals";
 
 import HelpButton from "../Util/HelpButton";
 
@@ -97,34 +98,8 @@ class ClassImporter extends React.Component {
                     })
                     .catch(err => {
                       this.setState({ modalWindow: "" });
-                      if (err.stat === 403) {
-                        this.setState({
-                          modalWindow: (
-                            <LoadingModal
-                              text={
-                                <span>
-                                  Your login has expired
-                                  <br />
-                                  Please reauthenticate
-                                  <br />
-                                  Singing you out ...
-                                </span>
-                              }
-                            />
-                          )
-                        });
-                        setTimeout(() => window.location.reload(0), 1000);
-                      } else {
-                        this.setState({
-                          modalWindow: (
-                            <StatusModal
-                              title="Import Failed"
-                              text={err.msg}
-                              onClose={() => this.setState({ modalWindow: "" })}
-                            />
-                          )
-                        });
-                      }
+                      if (err.stat === 403) STD_LOG(this);
+                      else STD_STAT("Import Failed", err.msg, this);
                     });
                 }}
               >

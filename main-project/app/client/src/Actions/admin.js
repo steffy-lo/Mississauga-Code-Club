@@ -250,7 +250,7 @@ export const getClass = id => {
 export const addStudent = (email, classId) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || email === "")
-      return reject({ status: 500, msg: "Missing class id or email" });
+      return reject({ status: 400, msg: "Missing class id or email" });
     axios
       .post(
         PREFIX + "/api/admin/addstudent",
@@ -294,7 +294,7 @@ export const addStudent = (email, classId) => {
 export const addTeacher = (email, classId) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || email === "")
-      return reject({ status: 500, msg: "Missing class id or email" });
+      return reject({ status: 400, msg: "Missing class id or email" });
     axios
       .post(
         PREFIX + "/api/admin/addinstructor",
@@ -337,10 +337,8 @@ export const addTeacher = (email, classId) => {
  */
 export const addVolunteer = (email, classId) => {
   return new Promise((resolve, reject) => {
-    console.log(email);
-    console.log(classId);
     if (classId === "" || email === "")
-      return reject({ status: 500, msg: "Missing class id or email" });
+      return reject({ status: 400, msg: "Missing class id or email" });
     axios
       .post(
         PREFIX + "/api/admin/addvolunteer",
@@ -385,10 +383,8 @@ export const addVolunteer = (email, classId) => {
  */
 export const removeUserFromClass = (email, classId, type) => {
   return new Promise((resolve, reject) => {
-    console.log(email);
-    console.log(classId);
     if (classId === "" || email === "")
-      return reject({ status: 500, msg: "Missing class id or email" });
+      return reject({ status: 400, msg: "Missing class id or email" });
     // In reality, the call below alternates between a theoretical 3
     // different calls (one for each possible type: instructor, student & volunteer)
     axios
@@ -435,7 +431,7 @@ export const removeUserFromClass = (email, classId, type) => {
 export const updateCourseInfo = (classId, status, newTitle) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || newTitle === "")
-      return reject({ status: 500, msg: "Missing class id or title" });
+      return reject({ status: 400, msg: "Missing class id or title" });
     axios
       .post(
         PREFIX + "/api/admin/updatecourseinfo",
@@ -734,7 +730,7 @@ export const importFromFile = file => {
   return new Promise((resolve, reject) => {
     if (file === null) {
       //return reject({state: 400, msg: "Request was poorly formatted"});
-      return reject({ stat: 500, msg: "No File Given" });
+      return reject({ stat: 400, msg: "No File Given" });
     }
     const formData = new FormData();
     formData.append("file", file);

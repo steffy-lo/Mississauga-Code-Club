@@ -20,15 +20,23 @@ export const getClasses = () => {
     axios.get(PREFIX + '/getClasses/'+ sessionStorage.email)
     .then((response) => {
       console.log(response)
-      if (!response || !response.data || !response.data.instructor) reject("Bad")
+      if (!response || !response.data || !response.data.instructor)
+        return reject({stat: 500, msg: "Something went wrong"})
       resolve(response.data.instructor);
     })
     .catch((error) => {
-      if (error && error.response && error.response.status === 401) {
+      if (error.response.status === 403) {
         deauthorise();
-        setTimeout(() => window.location.reload(0), 1500);
+        reject({stat: 403, msg: "Improper Authentication. Please reauthenticate."});
+      } else if (error.response.status === 400) {
+        deauthorise()
+        reject({stat: 400, msg: `${sessionStorage.email} is not a valid email`});
+      } else {
+        reject({
+          stat: error.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
       }
-      reject(error);
     })
   })
 }
@@ -49,12 +57,22 @@ export const getEnrollment = (classId) => {
     {headers: {"Content-Type": "application/json"}})
     .then((response) => {
       console.log(response);
-      if (!response || !response.data || !response.data.result) reject("Bad'")
+      if (!response || !response.data || !response.data.result)
+        return reject({stat: 500, msg: "Something went wrong"})
       resolve(response.data.result)
     })
     .catch((error) => {
       // handle error
-      reject(error);
+      if (error.response.status === 401)
+        reject({stat: 403, msg: "Improper authorisation. Please reauthenticate."});
+      else if (error.response.status === 409)
+        reject({stat: 400, msg: "Request missing "});
+      else {
+        reject({
+          stat: error.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
     })
   })
 }
@@ -74,11 +92,22 @@ export const getClassReportByEmail = (classId, email) => {
     axios.get(PREFIX + `/api/report/${classId}/${email}`)
     .then(response => {
       if (!response || !response.data || !response.data.report)
-        reject({stat: 500, msg: "Something went wrong"});
+        return reject({stat: 500, msg: "Something went wrong"});
       resolve(response.data.report);
     })
     .catch(err => {
-      console.log(err);
+      if (err.response.status === 403)
+        reject({stat: 403, msg: "Improper Authentication. Please reauthenticate."});
+      else if (err.response.status === 400)
+        reject({stat: 400, msg: `There is no student with the email ${email} in the class in question.`});
+      else if (err.response.status === 404)
+        reject({stat: 400, msg: `There is no class with id: ${classId}`});
+      else {
+        reject({
+          stat: err.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
     })
   })
 }
@@ -105,17 +134,22 @@ export const submitFeedback = (email, classId, feedbackFormData) => {
       comments: feedback,
       nextCourse: recommended
     }
-
-    console.log("submitting report: ", requestObj)
     axios.post(PREFIX + '/api/updatereport',
     JSON.stringify(requestObj), {headers: {"Content-Type": "application/json"}})
     .then(response => {
-      console.log(response);
       resolve()
     })
     .catch(error => {
-      console.log(error);
-      reject()
+      if (error.response.status === 403)
+        reject({stat: 403, msg: "Improper Authentication. Please reauthenticate."})
+      else if (error.response.status === 400)
+        reject({stat: 400, msg: `${email} is not a valid email`});
+      else {
+        reject({
+          stat: error.response.status,
+          msg: "There was an error processing your request. Please, try again later."
+        });
+      }
     })
   })
 }
@@ -133,7 +167,7 @@ export const getClassMarkingScheme = (id) => {
     axios.get(PREFIX + `/api/class/${id}/marking`)
     .then(res => {
       if (!res || !res.data || !res.data.result) reject({stat: 500, msg: "Something went wrong"});
-      resolve(res.data.result);
+      else resolve(res.data.result);
     })
     .catch(err => {
       if (err.response.status === 403 || err.response.status === 401) {
@@ -169,7 +203,7 @@ export const getClassMarkingScheme = (id) => {
 export const setCriterion = (classId, sectionTitle, weight, index) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || sectionTitle === "" || weight < 1 || index < 1)
-      return reject({status: 500, msg: "Missing or invalid class ID and/or criterion information"});
+      return reject({stat: 400, msg: "Missing or invalid class ID and/or criterion information"});
     axios.patch(PREFIX + "/api/setmarkingsection",
     JSON.stringify({ classId, sectionTitle, weightInfo: { weight, index }}),
     {headers: {"Content-Type": "application/json"}})
@@ -179,7 +213,7 @@ export const setCriterion = (classId, sectionTitle, weight, index) => {
         deauthorise();
         reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
       } else if (err.response.status === 400) {
-        reject({stat: 400, msg: `Missing or invalid class ID and/or criterion information.`});
+        reject({stat: 404, msg: `Missing or invalid class ID and/or criterion information.`});
       } else {
         reject({
           stat: err.response.status,
@@ -202,7 +236,7 @@ export const setCriterion = (classId, sectionTitle, weight, index) => {
 export const removeCriterion = (classId, sectionTitle) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || sectionTitle === "")
-      return reject({status: 500, msg: "Missing class id or criterion"});
+      return reject({stat: 400, msg: "Missing class id or criterion name"});
     axios.patch(PREFIX + "/api/deletemarkingsection",
     JSON.stringify({ classId, sectionTitle }),
     {headers: {"Content-Type": "application/json"}})
@@ -212,7 +246,7 @@ export const removeCriterion = (classId, sectionTitle) => {
         deauthorise();
         reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
       } else if (err.response.status === 400) {
-        reject({stat: 400, msg: `Missing or invalid class ID and/or criterion.`});
+        reject({stat: 404, msg: `Missing or invalid class ID and/or criterion.`});
       } else {
         reject({
           stat: err.response.status,

@@ -4,6 +4,7 @@ import React from "react";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
+import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import HelpButton from "../Util/HelpButton";
 //import ActiveNotification from "../Util/ActiveNotification";
@@ -99,29 +100,8 @@ class EditClass extends React.Component {
       })
       .catch(err => {
         this.setState({ modalWindow: "" });
-        if (err.stat === 403) {
-          this.setState({
-            modalWindow: (
-              <LoadingModal
-                text={
-                  <span>
-                    Your login has expired
-                    <br />
-                    Please reauthenticate
-                    <br />
-                    Singing you out ...
-                  </span>
-                }
-              />
-            )
-          });
-          setTimeout(() => window.location.reload(0), 1000);
-        } else {
-          this.setState({
-            modalWindow: <LoadingModal text={err.msg} />
-          });
-          setTimeout(() => this.props.history.push("/a/class"), 1000);
-        }
+        if (err.stat === 403) STD_LOG(this);
+        else STD_RELOAD(err.msg, this, () => this.props.history.push("/a/class"));
       });
   }
 
@@ -239,36 +219,8 @@ class EditClass extends React.Component {
                           .catch(err => {
                             console.log(err);
                             this.setState({ modalWindow: "" });
-                            if (err.stat === 403) {
-                              this.setState({
-                                modalWindow: (
-                                  <LoadingModal
-                                    text={
-                                      <span>
-                                        Your login has expired
-                                        <br />
-                                        Please reauthenticate
-                                        <br />
-                                        Singing you out ...
-                                      </span>
-                                    }
-                                  />
-                                )
-                              });
-                              setTimeout(() => window.location.reload(0), 1000);
-                            } else {
-                              this.setState({
-                                modalWindow: (
-                                  <StatusModal
-                                    title="Update Unsuccesfsul"
-                                    text={err.msg}
-                                    onClose={() =>
-                                      this.setState({ modalWindow: "" })
-                                    }
-                                  />
-                                )
-                              });
-                            }
+                            if (err.stat === 403) STD_LOG(this);
+                            else STD_STAT("Update Unsuccesfsul", err.msg, this);
                           });
                       }}
                     >
@@ -352,6 +304,9 @@ class EditClass extends React.Component {
                               });
                             })
                             .catch(err => {
+                              this.setState({ modalWindow: "" })
+                              if (err.stat === 403) STD_LOG(this);
+                              else {
                               this.setState({
                                 criterionTitle: "",
                                 criterionWeight: "",
@@ -365,6 +320,7 @@ class EditClass extends React.Component {
                                   />
                                 )
                               });
+                            }
                             });
                         }}
                       />
@@ -402,21 +358,12 @@ class EditClass extends React.Component {
                               stList.push(trEm);
                               this.setState({
                                 modalWindow: "",
-                                teacherList: stList
+                                teacherList: stList,
+                                teacherEmail: ""
                               });
                             })
                             .catch(err => {
-                              this.setState({
-                                modalWindow: (
-                                  <StatusModal
-                                    title="Could Not Add Teacher"
-                                    text={err.msg}
-                                    onClose={e =>
-                                      this.setState({ modalWindow: "" })
-                                    }
-                                  />
-                                )
-                              });
+                              STD_STAT("Could Not Add Teacher", err.msg, this);
                             });
                         }}
                       />
@@ -452,21 +399,12 @@ class EditClass extends React.Component {
                               stList.push(stdEm);
                               this.setState({
                                 modalWindow: "",
-                                studentList: stList
+                                studentList: stList,
+                                studentEmail: ""
                               });
                             })
                             .catch(err => {
-                              this.setState({
-                                modalWindow: (
-                                  <StatusModal
-                                    title="Could Not Add Student"
-                                    text={err.msg}
-                                    onClose={e =>
-                                      this.setState({ modalWindow: "" })
-                                    }
-                                  />
-                                )
-                              });
+                              STD_STAT("Could Not Add Student", err.msg, this);
                             });
                         }}
                       />
@@ -502,21 +440,12 @@ class EditClass extends React.Component {
                               stList.push(stdEm);
                               this.setState({
                                 modalWindow: "",
-                                volunteerList: stList
+                                volunteerList: stList,
+                                volunteerEmail: ""
                               });
                             })
                             .catch(err => {
-                              this.setState({
-                                modalWindow: (
-                                  <StatusModal
-                                    title="Could Not Add Volunteer"
-                                    text={err.msg}
-                                    onClose={e =>
-                                      this.setState({ modalWindow: "" })
-                                    }
-                                  />
-                                )
-                              });
+                              STD_STAT("Could Not Add Volunteer", err.msg, this);
                             });
                         }}
                       />
@@ -682,7 +611,7 @@ class EditClass extends React.Component {
    *
    * NOTE: This method is specifically different from those three above,
    * due to the differing format of the marking scheme for a class.
-   * @return {[type]} [description]
+   * @return {[<tr:JSX>]} The compiled table-row based view of the criteria of this class.
    */
   generateCriteriaList() {
     const compiledList = [];

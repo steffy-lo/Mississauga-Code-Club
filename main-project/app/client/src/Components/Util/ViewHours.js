@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
+import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import {
   getUserTypeExplicit,
@@ -64,30 +65,11 @@ class ViewHours extends React.Component {
         this.setState({ modalWindow: "" });
       })
       .catch(err => {
+        this.setState({ modalWindow: "" });
         if (err.stat === 403) {
-          this.setState({ modalWindow: "" });
-          this.setState({
-            modalWindow: (
-              <LoadingModal
-                text={
-                  <span>
-                    Your login has expired
-                    <br />
-                    Please reauthenticate
-                    <br />
-                    Singing you out ...
-                  </span>
-                }
-              />
-            )
-          });
-          setTimeout(() => window.location.reload(0), 1000);
+          STD_LOG(this);
         } else {
-          this.setState({ modalWindow: "" });
-          this.setState({
-            modalWindow: <LoadingModal text={err.msg} />
-          });
-          setTimeout(() => this.props.history.push("/"), 1000);
+          STD_RELOAD(err.msg, this, () => this.props.history.push("/"));
         }
       });
   }
@@ -253,17 +235,7 @@ class ViewHours extends React.Component {
                           a.click();
                         })
                         .catch(err => {
-                          this.setState({
-                            modalWindow: (
-                              <StatusModal
-                                title="Could Not Get Report"
-                                text={err.msg}
-                                onClose={e =>
-                                  this.setState({ modalWindow: "" })
-                                }
-                              />
-                            )
-                          });
+                          STD_STAT("Could Not Get Report", err.msg, this);
                         });
                     }}
                   >

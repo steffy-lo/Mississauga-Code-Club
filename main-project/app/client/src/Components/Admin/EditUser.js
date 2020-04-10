@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
+import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import HelpButton from "../Util/HelpButton";
 
@@ -78,27 +79,9 @@ class EditUser extends React.Component {
       .catch(err => {
         this.setState({ modalWindow: "" });
         if (err.stat === 403) {
-          this.setState({
-            modalWindow: (
-              <LoadingModal
-                text={
-                  <span>
-                    Your login has expired
-                    <br />
-                    Please reauthenticate
-                    <br />
-                    Signing you out ...
-                  </span>
-                }
-              />
-            )
-          });
-          setTimeout(() => window.location.reload(0), 1000);
+          STD_LOG(this);
         } else {
-          this.setState({
-            modalWindow: <LoadingModal text={err.msg} />
-          });
-          setTimeout(() => this.props.history.push("/a/user"), 1000);
+          STD_RELOAD(err.msg, this, () => this.props.history.push("/a/user"))
         }
       });
   }
@@ -124,41 +107,12 @@ class EditUser extends React.Component {
       })
       .catch(err => {
         this.setState({ modalWindow: "" });
-        if (err.stat === 403) {
-          this.setState({
-            modalWindow: (
-              <LoadingModal
-                text={
-                  <span>
-                    Your login has expired
-                    <br />
-                    Please reauthenticate
-                    <br />
-                    Signing you out ...
-                  </span>
-                }
-              />
-            )
-          });
-          setTimeout(() => window.location.reload(0), 1000);
-        } else if (err.stat === 404) {
+        if (err.stat === 403) STD_LOG(this);
+        else if (err.stat === 404) {
           // Forced removal from page, if this user does not exist.
           // "If there is nothing to see, then there is no reason for the user to be here"
-          this.setState({
-            modalWindow: <LoadingModal text={err.msg} />
-          });
-          setTimeout(() => this.props.history.push("/a/user"), 1000);
-        } else {
-          this.setState({
-            modalWindow: (
-              <StatusModal
-                title="User Editing Unsuccessful"
-                text={err.msg}
-                onClose={() => this.setState({ modalWindow: "" })}
-              />
-            )
-          });
-        }
+          STD_RELOAD(err.msg, this, () => this.props.history.push("/a/user"));
+        } else STD_STAT("User Editing Unsuccesfsul", err.msg, this);
       });
   }
 

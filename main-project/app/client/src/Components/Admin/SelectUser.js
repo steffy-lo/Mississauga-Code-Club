@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import NavbarGeneric from "../Util/NavbarGeneric";
 //import StatusModal from '../Util/StatusModal';
 import LoadingModal from "../Util/LoadingModal";
+import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import HelpButton from "../Util/HelpButton";
 
@@ -48,10 +49,7 @@ class SelectUser extends React.Component {
       })
       .catch(err => {
         this.setState({ modalWindow: "" });
-        this.setState({
-          modalWindow: <LoadingModal text={err.msg} />
-        });
-        setTimeout(() => this.props.history.push("/"), 1000);
+        STD_RELOAD(err.msg, this, () => this.props.history.push("/a"));
       });
   }
 

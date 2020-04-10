@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import LoadingModal from "../Util/LoadingModal";
 import StatusModal from "../Util/StatusModal";
+import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import { getClasses, getEnrollment } from "../../Actions/teacher";
 import { getUserTypeExplicit } from "../../Actions/utility";
+import { deauthorise } from '../../Actions/auth';
 
 import "../CSS/Teacher/TeacherDash.css";
 import "../CSS/Common.css";
@@ -38,7 +40,12 @@ class TeacherDash extends React.Component {
         });
       })
       .catch(err => {
-        console.log(err);
+        this.setState({modalWindow: ""});
+        if (err.stat === 403) STD_LOG(this);
+        else {
+          if (this.uType === 't') deauthorise();
+          STD_RELOAD(err.msg, this, () => this.props.history.goBack());
+        }
       });
   }
 

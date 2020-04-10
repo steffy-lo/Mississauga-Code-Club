@@ -3,6 +3,7 @@ import React from "react";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import LoadingModal from "../Util/LoadingModal";
 import StatusModal from "../Util/StatusModal";
+import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import {
   getClassMarkingScheme,
@@ -49,7 +50,8 @@ class EditClassReport extends React.Component {
       })
       .catch(err => {
         this.setState({ modalWindow: "" });
-        console.log(err);
+        if (err.stat === 403) STD_LOG(this);
+        else STD_RELOAD(err.msg, this, () => this.props.history.goBack());
       });
   }
 
@@ -104,12 +106,16 @@ class EditClassReport extends React.Component {
         });
       })
       .catch(err => {
-        console.log(err);
         this.setState({ modalWindow: "" });
+        if (err.stat === 403) STD_LOG(this);
+        else STD_STAT("Could Not Remove Criterion", err.msg, this);
       });
   }
 
   updateCriteria() {
+    this.setState({
+      modalWindow: <LoadingModal text="Setting Criterion ..." />
+    });
     const { settingCriterion, settingWeight, settingIndex } = this.state;
     setCriterion(this.classID, settingCriterion, settingWeight, settingIndex)
       .then(res => {
@@ -122,11 +128,14 @@ class EditClassReport extends React.Component {
           criteria: newCriteria,
           settingCriterion: "",
           settingWeight: "",
-          settingIndex: ""
+          settingIndex: "",
+          modalWindow: ""
         });
       })
       .catch(err => {
-        console.log(err);
+        this.setState({ modalWindow: "" });
+        if (err.stat === 403) STD_LOG(this);
+        else STD_STAT("Could Not Set Criterion", err.msg, this);
       });
   }
 

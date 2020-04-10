@@ -3,6 +3,8 @@ import React from "react";
 import NavbarGeneric from "../Util/NavbarGeneric";
 //import StatusModal from '../Util/StatusModal';
 import LoadingModal from "../Util/LoadingModal";
+import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
+
 import CreateClass from "../Admin/CreateClass";
 
 import HelpButton from "../Util/HelpButton";
@@ -46,10 +48,7 @@ class SelectClass extends React.Component {
       })
       .catch(err => {
         this.setState({ modalWindow: "" });
-        this.setState({
-          modalWindow: <LoadingModal text={err.msg} />
-        });
-        setTimeout(() => this.props.history.push("/a"), 1000);
+        STD_RELOAD(err.msg, this, () => this.props.history.push("/a"));
       });
   }
 
