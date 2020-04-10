@@ -94,6 +94,8 @@ class ViewHours extends React.Component {
 		  You may filter for various criteria by clicking Filtering Options and entering the appropriate information.
 		  <br />
 		  After filtering, you may click Get Report to get a formal PDF indicating the hours selected, such as between two dates.
+		  <br />
+		  Please contact an administrator if there is an error with your hours.
 
 		  <br />
 		  Admins can also edit hours from this page by pressing the Edit Hours button.
