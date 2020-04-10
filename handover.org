@@ -13,10 +13,10 @@
 ** Security
    - Passwords are hashed and salted using a tool called bcrypt
      - The password stored in the database contains both the hashed and salted password as well as the salt. Bcrypt knows how to isolate the salt.
-     - This is theoretically very hard to reverse so if your database is leaked, it is harder to attack it.
+     - This is theoretically very hard to reverse so if your database is leaked, it is harder to attack it to actually find out the passwords.
    - Input validation on the data from the frontend is spotty
      - This was mostly something we worked on near the end and as a result we did not fully have enough time to work on it. This means there is a weakness there where an attacker could provide invalid input which ends up in the database.
-   - Npm will try to resolve some vulnerabilities. It is unable to fix all of them
+   - Npm will try to resolve some vulnerabilities. It is unable to fix all of them and you may wish to look into these to ensure that the website is secure in the long term.
    - Some of the Python packages have hardcoded versions. You may wish to update these in the future to prevent vulnerabilities from forming.
 
 * Configuration
@@ -28,13 +28,12 @@
     - DBUSER :: This is the username for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
     - DBPASSWORD :: This is the password for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
     - MONGOURI :: This tells the server where the MongoDB instance is. This should be changed once you determine where your production MongoDB server will be.
-    - DATABASE :: This points to the *database* within a MongoDB instance. The idea is Instance -> *database* -> collection (eg. reports, users) -> record
+    - DATABASE :: This points to the *database* within a MongoDB instance. The idea is instance -> *database* -> collection (eg. reports, users) -> record. Our provider only allowed us one *database* with an unlimited amount of collections within that database. Once you determine what your database will be named, change this variable to be the same.
 
 * Deployment
 ** Requirements
-   - You must have several packages installed
-     - Node.js and NPM
-     - Python
+   - You must have several packages/pieces of software installed
+     - Node.js and NPM (used to build react)
      - Docker
      - Make
      - A shell of your choice (eg. bash)
@@ -63,8 +62,8 @@ cd main-project; make prod
 ** Troubleshooting (Common Errors we had while developing)
 *** When I browse to the page, it says 404 not found even though it worked before
 This is likely due to React not building correctly. Check the build for errors.
-*** Container already in use?
-Run the following make command to remove the loaded Docker image.
+*** Docker container already in use?
+Run the following make command to remove the loaded Docker image. Afterwards, you may attempt to deploy as normal.
 
 #+BEGIN_SRC sh
 make clean
