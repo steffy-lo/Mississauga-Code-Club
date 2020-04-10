@@ -67,7 +67,7 @@ class SheetHandler:
         for a new student. All students that are already in the database only need their email.
 
         :param index: the sheet index in the table dictionary
-        :return:
+        :return: list of student emails
        """
         global studentAttributes
 
@@ -132,7 +132,7 @@ class SheetHandler:
         Construct a list of instructors
 
         :param index: the sheet index in the table dictionary
-        :return:
+        :return: list of instructor emails
         """
 
         instructorList = []
@@ -153,7 +153,7 @@ class SheetHandler:
         """
         Construct a list of helpers
         :param index: the sheet index in the table dictionary
-        :return:
+        :return: list of volunteer emails
         """
         volunteerList = []
         self.failures['Helpers'][index] = []
