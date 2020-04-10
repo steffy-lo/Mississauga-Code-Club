@@ -19,3 +19,35 @@
     - DBPASSWORD :: This is the password for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
     - MONGOURI :: This tells the server where the MongoDB instance is. This should be changed once you determine where your production MongoDB server will be.
     - DATABASE :: This points to the *database* within a MongoDB instance. The idea is Instance -> *database* -> collection (eg. reports, users) -> record
+
+* Deployment
+** Requirements
+   - You must have several packages installed
+     - Node.js and NPM
+     - Python
+     - Docker
+     - Make
+     - A shell of your choice (eg. bash)
+     - Heroku CLI (optional, only if you are deploying to Heroku)
+** Process
+   - Assuming that you are running bash, are at the directory that this file is located in, and you are deploying to Heroku, you want to do the following things
+   - Edit main-project/Makefile's entry for shipprod. Right now it says the following thing. You will want to change the *bolded areas* to be the same as your *Heroku App Name*
+
+
+shipprod:
+
+	heroku container:login
+
+	heroku container:push web --app *mcc-prod-301*
+
+	heroku container:release web --app *mcc-prod-301*
+
+Afterwards, again assuming that you are in the directory where this file is located, you want to run the following command.
+
+#+BEGIN_SRC sh
+cd main-project; make prod
+#+END_SRC
+
+** Troubleshooting
+*** When I browse to the page, it says 404 not found even though it worked before
+This is likely due to React not building correctly. Check the build for errors.
