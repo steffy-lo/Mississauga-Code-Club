@@ -134,6 +134,12 @@ export const submitFeedback = (email, classId, feedbackFormData) => {
       comments: feedback,
       nextCourse: recommended
     }
+    // const convMarks = {};
+    // for (mark in requestObj.mark) {
+    //   const convMark = Number.parseInt(requestObj.mark[mark]);
+    //   convMarks[mark] = !(convMark >= 0) ? 0 : convMark;
+    // }
+    // requestObj.mark = convMarks;
     axios.post(PREFIX + '/api/updatereport',
     JSON.stringify(requestObj), {headers: {"Content-Type": "application/json"}})
     .then(response => {
@@ -174,7 +180,7 @@ export const getClassMarkingScheme = (id) => {
         deauthorise();
         reject({stat: 403, msg: "Your login has expired. Please, reauthenticate."})
       } else if (err.response.status === 400) {
-        reject({stat: 400, msg: "Missing class id."});
+        reject({stat: 400, msg: "Missing or invalid class id."});
       } else if (err.response.status === 404) {
         reject({stat: 404, msg: `There was no class found with the given id.`});
       } else {
@@ -200,9 +206,11 @@ export const getClassMarkingScheme = (id) => {
  * ON SUCCESS: A Promise that resolves.
  * ON FAILURE: Standard ERROR reject Promise.
  */
-export const setCriterion = (classId, sectionTitle, weight, index) => {
+export const setCriterion = (classId, sectionTitle, weightRaw, indexRaw) => {
   return new Promise((resolve, reject) => {
-    if (classId === "" || sectionTitle === "" || weight < 1 || index < 1)
+    const weight = Number.parseInt(weightRaw);
+    const index = Number.parseInt(indexRaw);
+    if (classId === "" || sectionTitle === "" || !(weight > 0) || !(index > 0))
       return reject({stat: 400, msg: "Missing or invalid class ID and/or criterion information"});
     axios.patch(PREFIX + "/api/setmarkingsection",
     JSON.stringify({ classId, sectionTitle, weightInfo: { weight, index }}),

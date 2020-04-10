@@ -79,12 +79,17 @@ class FeedbackForm extends React.Component {
           {section}:&nbsp;
           <input
             type="number"
-            length="4"
-            max={this.state.scheme[section].weight}
-            min="0"
+            size="4"
             value={this.state.marks[section]}
             onChange={e => {
               const exMarks = this.state.marks;
+              // let provNum = Number.parseInt(e.target.value);
+              // if (!provNum && provNum !== 0) provNum = 0;
+              // else {
+              //   provNum = Math.min(provNum, this.state.scheme[section].weight);
+              //   provNum = Math.max(provNum, 0);
+              // }
+              // exMarks[section] = provNum;
               exMarks[section] = e.target.value === "" ? 0 : e.target.value;
               this.setState({ marks: exMarks });
             }}
@@ -97,10 +102,21 @@ class FeedbackForm extends React.Component {
   }
 
   submitForm() {
+    const stateSnap = this.state;
+    for (let section in stateSnap.marks) {
+      let markConv = +stateSnap.marks[section];
+      if (!markConv && markConv != 0) markConv = 0;
+      else {
+        markConv = Math.min(markConv, stateSnap.scheme[section].weight);
+        markConv = Math.max(markConv, 0);
+      }
+      stateSnap.marks[section] = markConv;
+    }
     this.setState({
-      modalWindow: <LoadingModal text="Submitting Feedback ..." />
+      modalWindow: <LoadingModal text="Submitting Feedback ..." />,
+      marks: stateSnap.marks
     });
-    submitFeedback(this.studentEmail, this.courseID, this.state)
+    submitFeedback(this.studentEmail, this.courseID, stateSnap)
       .then(() => {
         this.setState({
           modalWindow: (
