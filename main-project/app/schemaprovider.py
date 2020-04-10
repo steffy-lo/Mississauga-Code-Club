@@ -126,6 +126,30 @@ class SchemaFactory:
         "required": ["currentEmail", "newAttributes"]
     }
 
+    move_user = {
+        "type": "object",
+        "properties": {
+            "email": {"type": "string"},
+            "classId":  {"type": "string"}
+        },
+        "required": ["email", "classId"]
+    }
+
+    create_user = {
+        "type": "object",
+        "properties": {
+            "email": "string",
+            "password": "string",
+            "userType": "number",
+            "firstName": "string",
+            "lastName": "string",
+            "phoneNumber": "string",
+            "birthday": "string",
+            "parentEmail": "string",
+            "parentName": "string"
+        }
+    }
+
 
 
 

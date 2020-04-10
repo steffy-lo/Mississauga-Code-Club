@@ -898,7 +898,6 @@ def editUser():
     # TODO: Validate that all the changes made are valid
     # ie. ban changes to any invalid attributes
 
-    # TODO: Validate types of all the changes requested
     try:
         validate(instance=request.json, schema=SchemaFactory.edit_user)
     except exceptions.ValidationError:
@@ -969,7 +968,11 @@ def addStudent():
 
     convClassId = ObjectId(request.json['classId'])
 
-    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.move_user)
+    except exceptions.ValidationError:
+        abort(400)
+
     us = dbworker.getUser(str(email))
     cl = dbworker.getClass(convClassId)
     if us is None or cl is None:
@@ -1001,7 +1004,11 @@ def addInstructor():
 
     convClassId = ObjectId(request.json['classId'])
 
-    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.move_user)
+    except exceptions.ValidationError:
+        abort(400)
+
     us = dbworker.getUser(str(email))
     cl = dbworker.getClass(convClassId)
     if us is None or cl is None:
@@ -1033,7 +1040,11 @@ def removeInstructor():
 
     convClassId = ObjectId(request.json['classId'])
 
-    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.move_user)
+    except exceptions.ValidationError:
+        abort(400)
+
     us = dbworker.getUser(str(email))
     cl = dbworker.getClass(convClassId)
     if us is None or cl is None:
@@ -1067,7 +1078,12 @@ def removeStudent():
 
     convClassId = ObjectId(request.json['classId'])
 
-    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.move_user)
+    except exceptions.ValidationError:
+        abort(400)
+
+
     us = dbworker.getUser(str(email))
     cl = dbworker.getClass(convClassId)
     if us is None or cl is None:
@@ -1101,7 +1117,11 @@ def addVolunteer():
 
     convClassId = ObjectId(request.json['classId'])
 
-    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.move_user)
+    except exceptions.ValidationError:
+        abort(400)
+
     us = dbworker.getUser(str(email))
     cl = dbworker.getClass(convClassId)
     if us is None or cl is None:
@@ -1137,7 +1157,11 @@ def removeVolunteer():
 
     convClassId = ObjectId(request.json['classId'])
 
-    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.move_user)
+    except exceptions.ValidationError:
+        abort(400)
+
     us = dbworker.getUser(str(email))
     cl = dbworker.getClass(convClassId)
     if us is None or cl is None:
