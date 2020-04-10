@@ -149,7 +149,7 @@ class CreateUser extends React.Component {
                   </span>
                 </div>
                 <div id="ssfwRight">
-                  <span>
+                  <span title="Phone number format: ###-###-####">
                     Phone #:&nbsp;
                     <input
                       type="tel"
