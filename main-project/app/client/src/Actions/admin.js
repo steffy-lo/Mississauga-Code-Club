@@ -608,7 +608,7 @@ export const editUser = (email, details) => {
       details.telephone === "" ||
       (details.userType === 4 &&
         (details.birthday === "" || details.parentEmail === "")) ||
-      details.password === ""
+      (details.changePassword && details.password === "")
     ) {
       return reject({ state: 400, msg: "Request was poorly formatted" });
     }
@@ -622,6 +622,7 @@ export const editUser = (email, details) => {
       compiledReq["parentEmail"] = details.parentEmail;
       compiledReq["parentName"] = details.parentName;
     }
+    if (details.changePassword) compiledReq['password'] = details.password;
     axios
       .patch(
         PREFIX + "/api/admin/edituser",

@@ -44,6 +44,7 @@ class EditUser extends React.Component {
       parentEmail: "",
       birthday: "",
       changePassword: 0,
+      password: "",
       isStudent: 0,
       parentName: ""
     };
@@ -238,18 +239,20 @@ class EditUser extends React.Component {
                   </span>
                 </div>
               </div>
-              {/*}<div id="suePasswordField">
-                  <span>Change Password?&nbsp;&nbsp;
+              <div id="suePasswordField">
+                  <span>
+                    Change Password?&nbsp;&nbsp;
                     <input type="checkbox" onChange={e =>  {
                       this.setState({changePassword: !this.state.changePassword});
-                    }}/>
-                    {// For vertical-centering of what comes before this.}
-                    <input type="text" className="hidden" style={{width: 0}}/>
+                    }} />
+                  {/* For vertical-centering of what comes before this. */}
+                    <input type="text" className="hidden" style={{width: 0}} />
                   </span>
                   <input type="password"
                   placeholder="new password"
-                  disabled={!this.state.changePassword}/>
-              </div>*/}
+                  disabled={!this.state.changePassword}
+                  onChange={e => this.setState({ password: e.target.value})} />
+              </div>
               <div id="sueButtonField">
                 <button
                   onClick={e => {
