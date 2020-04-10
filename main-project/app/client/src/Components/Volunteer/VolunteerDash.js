@@ -119,6 +119,7 @@ class VolunteerDash extends React.Component {
                 </div>
               }
               parentForClose={this}
+      }
       />
         {/* This is the volunteer dashboard. */}
         <div className="volunteer-container">
