@@ -600,7 +600,7 @@ def editHours():
 
 
     if request.json['newAttributes'] == {} or '_id' in request.json['newAttributes']:
-        # No changes requested or an attempt was made to change the email or _id or the password
+        # No changes requested or an attempt was made to change the _id
         abort(400)
 
     # TODO: Validate that all the changes made are valid
