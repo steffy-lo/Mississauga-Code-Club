@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import NavBarGeneric from "../Util/NavbarGeneric";
-import { logout, deauthorise } from './auth';
+import { logout, deauthorise } from '../../Actions/auth';
 
 import { Link } from "react-router-dom";
 import { uid } from "react-uid";
