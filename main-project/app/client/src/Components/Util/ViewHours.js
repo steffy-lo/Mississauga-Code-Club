@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
+
+import HelpButton from "../Util/HelpButton";
+
 import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import {
@@ -80,7 +83,28 @@ class ViewHours extends React.Component {
         {this.state.modalWindow}
         <NavbarGeneric
           crumbs={[{ tag: "Dashboard", link: "/" }, { tag: "View Your Hours" }]}
-        />
+        help={
+            <HelpButton
+              text={
+                <div>
+		  This page allows you to see the hours logged associated with yourself.
+                  <br />
+		  If paid is True, then the work was done for money. If it is False, then it was volunteer work. This does not indicate if you have actually been paid.
+		  <br />
+		  You may filter for various criteria by clicking Filtering Options and entering the appropriate information.
+		  <br />
+		  After filtering, you may click Get Report to get a formal PDF indicating the hours selected, such as between two dates.
+
+		  <br />
+		  Admins can also edit hours from this page by pressing the Edit Hours button.
+
+                </div>
+              }
+              parentForClose={this}
+            />
+          }
+
+	/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="mainVHoursWindow">
