@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import LoadingModal from "../Util/LoadingModal";
 import StatusModal from "../Util/StatusModal";
+
+import HelpButton from "../Util/HelpButton";
+
 import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import { getClasses, getEnrollment } from "../../Actions/teacher";
@@ -120,7 +123,21 @@ class TeacherDash extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList} />
+        <NavbarGeneric crumbs={navList}
+	help={
+            <HelpButton
+              text={
+                <div>
+                  This page allows you to see the classes you are teaching and edit the reports for each student.
+                  <br />
+		  At the bottom of the classes column, you can go to another page to see your logged hours.
+		  <br />
+		  If you do not see a class listed here, please contact an administrator.
+
+                </div>
+              }
+              parentForClose={this}
+	/>
         <div className="flexContentContainerGeneric reverseWrap">
           {/*<div className="flex verticalCentre">*/}
           <div id="tDashCourseList">
