@@ -449,13 +449,13 @@ def isClassInstructor(email, classId):
     return email in cl['instructors']
 
 
-def removeStudent(courseId, email):
+def removeStudent(classId, email):
     """
     Removes a student from the class with _id == courseId
 
     Returns whether or not the removal was successful
     """
-    matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
+    matchingClass = mclient[database]['classes'].find_one({'_id' : classId})
 
     if matchingClass is None:
         return False
@@ -472,22 +472,26 @@ def removeStudent(courseId, email):
 
     studentList.remove(email)
 
-    backupReport = mclient[database]['reports'].find_one({'studentEmail' : email}) # Backup in case the second delete fails
+    # Temporarily store a backupReport incase the 'update_one' call on the 'classes' collection fails.
+    # If a fail does occur, then restore the delete report (ie: re-insert it into 'reports' collection
+    backupReport = mclient[database]['reports'].find_one({'studentEmail': email, 'classId': classId})
 
-    res = mclient[database]['reports'].delete_one({'studentEmail' : email})
+    res = mclient[database]['reports'].delete_one({'studentEmail': email, 'classId': classId})
 
     if res.deleted_count != 1:
         # Check if the delete worked
         return False
 
-    res = mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'students' : studentList}}) # TODO: Check if this update worked
+    res = mclient[database]['classes'].update_one({'_id': classId}, {'$set': {'students': studentList}})
 
+    # Make sure only a single record in 'classes' was modified
     if res.modified_count != 1:
-        # Second update failed, revert the first one
-        mclient[database]['reports'].insert_one(backupReport) # TODO: Does this work?
+        # 'Classes' collection update above failed, revert the report deletion
+        mclient[database]['reports'].insert_one(backupReport)
         return False
 
     return True
+
 
 def editHour(hourLogId, changes):
     """
