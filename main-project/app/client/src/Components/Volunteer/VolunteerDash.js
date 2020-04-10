@@ -115,7 +115,10 @@ class VolunteerDash extends React.Component {
                   This page allows you to see the hours logged associated with yourself.
                   <br />
 		  If paid is True, then the work was done for money. If it is False, then it was volunteer work. This does not indicate if you have actually been paid.
-
+		<br />
+		  You may filter for various criteria by clicking Filtering Options and entering the appropriate information.
+		  <br />
+		  After filtering, you may click Get Report to get a formal PDF indicating the hours selected, such as between two dates.
                 </div>
               }
               parentForClose={this}
