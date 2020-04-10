@@ -54,6 +54,7 @@ These variables are located in main-project/app/config.py
   1. Install required software
   2. If deploying to Heroku, log in with the CLI
   3. Configure main-project/app/config.py appropriately. (see [[*Configuration Variables]])
+  4. Add an admin user to the database. To do this, you want userType to equal 1, and you can use the following text for a password "$2y$12$XC7w31h31eigbig.KDcSWejGq6mFPawyiwvRCqf8cCVpuSd5FGiAC" (without the quotations). This is a hashed and salted version of "password"
 
 ** Process
    - Assuming that you are running bash, are at the directory that this file is located in, and you are deploying to Heroku, you want to do the following things
