@@ -132,7 +132,7 @@ class TeacherDash extends React.Component {
                   <br />
 		  At the bottom of the classes column, you can go to another page to see your logged hours.
 		  <br />
-		  If you do not see a class listed here, please contact an administrator.
+		  If you do not see a class or student listed here, please contact an administrator.
 
                 </div>
               }
