@@ -1,0 +1,82 @@
+.FBgradSection {
+  margin: 4px;
+  padding: 10px 20px;
+  text-align: right;
+  box-shadow: 0 0 5px 0 lightgrey;
+}
+
+.FBgradSection input {
+  text-align: right;
+}
+
+.FBgradSection:hover {
+  box-shadow: 0 5px 5px -5px blue;
+}
+
+#FBmainWrap {
+  display: flex;
+  flex-direction: column;
+  margin: 2px;
+  padding: 5px;
+  background-color: white;
+}
+
+#FBCourseTitle {
+  padding-left: 10px;
+  margin: 5px 5px 10px 5px;
+}
+
+#FBReportTag {
+  padding-left: 20px;
+  margin: 5px;
+}
+
+#FBCriteriaContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  max-height: 400px;
+  min-width: 200px;
+  width: 100%;
+  max-width: 980px;
+  margin: 10px 2px;
+}
+
+#FBRecommended {}
+
+#FBFeedback {
+  display: flex;
+  flex-direction: column;
+}
+
+#FBFeedback h5 {
+  margin: 5px;
+  font-size: 18px;
+}
+
+#FBFeedback textarea {
+  align-self: center;
+  resize: none;
+  min-width: 200px;
+  width: 95%;
+}
+
+#FBSubmit {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+#FBSubmit button {
+  color: white;
+  background-color: royalblue;
+  padding: 15px 40px;
+  margin: 10px 0;
+  font-size: 16px;
+  border: 0;
+}
+
+#FBSubmit button:hover {
+  background-color: darkblue;
+}

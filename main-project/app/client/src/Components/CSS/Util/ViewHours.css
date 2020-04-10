@@ -3,11 +3,11 @@
 }
 
 .teacherVH {
-  background-color: blue;
+  background-color: royalblue;
 }
 
 .volunteerVH {
-  background-color: gold;
+  background-color: #ffa801;
 }
 
 .studentVH {
@@ -22,7 +22,7 @@
 }
 
 .volunteerVH:hover {
-  background-color: goldenrod;
+  background-color: #cc8e35;
 }
 
 .studentVH:hover {
@@ -42,6 +42,7 @@
   font-weight: bold;
   font-size: 22px;
   background-color: #ef5350;
+  text-align: center;
 }
 
 .paid {
@@ -49,6 +50,19 @@
   font-weight: bold;
   font-size: 22px;
   background-color: lightgreen;
+  text-align: center;
+}
+
+.VHviewRow {
+  text-align: left;
+}
+
+.VHviewRow:hover {
+  background-color: lightgrey;
+}
+
+.VHviewRow td {
+  padding: 0 5px;
 }
 
 #mainVHoursWindow input[type=radio]:disabled{
@@ -94,17 +108,31 @@
 }
 
 #VHviewTable {
+  min-width: 500px;
   width: 100%;
-  text-align: center;
+  text-align: left;
+  border-collapse: collapse;
 }
 
 #VHviewTable th {
-  color: transparent;
-  height: 1px;
-  line-height: 0.5px;
-  margin: 0;
+  border-bottom: 1px solid lightgrey;
+}
+
+#VHhoursCount {
+  padding: 5px 10px;
+  margin: 10px 0 5px 0;
+
+}
+
+#VHhoursCount span {
+  border: 2px solid lightgrey;
+  padding: 5px 10px;
+}
+
+#VHhoursCount span span{
   padding: 0;
-  border: 0;
+  border: none;
+  font-weight: bold;
 }
 
 #VHviewTableHeader {
@@ -115,7 +143,8 @@
 
 #scrollableHoursPane {
   max-height: 500px;
-  overflow-y: auto;
+  overflow: auto;
+  max-width: 96vw;
   margin: 5px;
 }
 
@@ -128,10 +157,11 @@
 
 #mainVHoursWindow {
   width: 50%;
-  min-width: 600px;
+  min-width: 300px;
   background-color: white;
   box-shadow: 0 0 20px 0 rgb(0, 0, 0, 0.2);
-  margin: 10px;
+  margin: 10px 0;
+  flex-grow: 1;
 }
 
 #mVHWindowHeader {
@@ -147,6 +177,7 @@
 #mVHWindowHeader div {
   flex-grow: 1;
   font-size: 36px;
+
 }
 
 #mVHWindowHeader a {
@@ -154,8 +185,9 @@
   padding: 5px 30px;
   color: white;
   line-height: 36px;
-  display: inline-block;
-  vertical-align: middle;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   font-size: 22px;
   transition: background-color 0.5s linear;
 }

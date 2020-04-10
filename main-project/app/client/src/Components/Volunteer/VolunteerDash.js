@@ -7,12 +7,20 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 
+import HelpButton from "../Util/HelpButton";
+
 /* For local debugging */
 const DEBUG = 0;
 
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
+/*
+  Legacy unused code.
+  Kept to allow for future modification.
+  This is the original Volunteer dashboard.
+  Completion State: Incomplete.
+ */
 class VolunteerDash extends React.Component {
     constructor(props) {
         super(props);
@@ -79,7 +87,7 @@ class VolunteerDash extends React.Component {
   };
 
   componentDidMount() {
-    this.intervalID = setInterval(() => 
+    this.intervalID = setInterval(() =>
       this.tick(), 1000
     )
   }
@@ -94,11 +102,28 @@ class VolunteerDash extends React.Component {
       time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
     })
   }
-  
+
   render() {
     return(
       <React.Fragment>
-      <NavbarGeneric/>
+      {this.state.modalWindow}
+      <NavbarGeneric
+      help={
+            <HelpButton
+              text={
+                <div>
+                  This page allows you to see the hours logged associated with yourself.
+                  <br />
+		  If paid is True, then the work was done for money. If it is False, then it was volunteer work. This does not indicate if you have actually been paid.
+		<br />
+		  You may filter for various criteria by clicking Filtering Options and entering the appropriate information.
+		  <br />
+		  After filtering, you may click Get Report to get a formal PDF indicating the hours selected, such as between two dates.
+                </div>
+              }
+              parentForClose={this}
+      />}
+      />
         {/* This is the volunteer dashboard. */}
         <div className="volunteer-container">
           <div className="clocking">

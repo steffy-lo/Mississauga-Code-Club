@@ -1,0 +1,122 @@
+.MuiToolbar-root{
+    display: inline-block;
+    top:30px;
+}
+
+#tDashCourseList, #tDashStudentList {
+  background-color: white;
+  padding: 10px;
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+#tDashCourseList h1, #tDashStudentList h1 {
+  margin: 10px 5px 5px 5px;
+  border-bottom: 2px solid darkblue;
+  padding: 5px 40px;
+}
+
+#tDashCourseList:hover h1, #tDashStudentList:hover h1{
+  border-color: darkblue;
+  box-shadow: 0 5px 5px -5px blue;
+}
+
+#tDashCourseList p, #tDashStudentList div a {
+  padding: 2px;
+  margin: 0;
+  display: block;
+  text-decoration: none;
+}
+
+#tDashStudentList a {
+  color: royalblue;
+}
+
+#tDashCourseList p:hover, #tDashStudentList div a:hover {
+  background-color: lightgrey;
+  cursor: pointer;
+}
+
+#tDashStudentList {}
+
+#tDashStudentList div {
+  flex-grow: 1;
+}
+
+#tDashStudentList div h3 {
+  text-align: center;
+  margin: 5px 0;
+  border: 1px solid lightgrey;
+  padding: 5px 0;
+}
+
+#tDashCourseLinkList, #tDashStudentLinkList {
+  overflow-y: auto;
+  height: 400px;
+}
+
+#tDC2LActiveCourses, #tDC2LInactiveCourses {
+  text-align: center;
+  margin: 5px 0;
+  color: white;
+  padding: 5px 0;
+  border: 1px solid transparent;
+}
+
+#tDC2LActiveCourses { background-color: royalblue }
+
+#tDC2LActiveCourses:hover {
+  background-color: darkblue;
+  cursor: pointer;
+}
+
+#tDC2LInactiveCourses {
+  background-color: crimson;
+}
+
+#tDC2LInactiveCourses:hover {
+  background-color: darkred;
+  cursor: pointer;
+}
+
+#tDashToReport {
+  color: white;
+  background-color: royalblue;
+  display: block;
+  text-align: center;
+  padding: 20px 40px;
+  margin: 5px 0;
+  text-decoration: none;
+  align-self: center;
+  border:0;
+  font-size: 18px;
+}
+
+#tDashToReport:hover {
+  background-color: darkblue;
+  cursor: pointer;
+}
+
+#tDashToHours {
+  display: block;
+  margin: 5px 0;
+  text-decoration: none;
+  font-size: 18px;
+  background-color: royalblue;
+  color: white;
+  text-align: center;
+  padding: 19px 40px;
+}
+
+#tDashToHours:hover {
+  background-color: darkblue;
+}
+
+#tDashToReport:disabled {
+  background-color: grey;
+}
+
+#tCriteriaListMain {
+
+}

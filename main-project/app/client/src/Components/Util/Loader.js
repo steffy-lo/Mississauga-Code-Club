@@ -1,7 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import '../CSS/Loader.css';
+import "../CSS/Loader.css";
 
+/* Premade modifiable loader. Mainly used in LoadingModal */
 class Loader extends React.Component {
   constructor(props) {
     super(props);
@@ -11,13 +12,12 @@ class Loader extends React.Component {
   }
 
   render() {
-    const styling={height: this.height, width: this.width,
-      borderWidth: this.border};
-    return (
-        <div style={styling}
-        id='loaderContainer'>
-        </div>
-    );
+    const styling = {
+      height: this.height,
+      width: this.width,
+      borderWidth: this.border
+    };
+    return <div style={styling} id="loaderContainer"></div>;
   }
 }
 

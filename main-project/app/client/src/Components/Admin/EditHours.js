@@ -1,13 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 import NavbarGeneric from "../Util/NavbarGeneric";
 import StatusModal from "../Util/StatusModal";
 import LoadingModal from "../Util/LoadingModal";
+import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
+
+import EditHourEntry from "./EditHourEntry";
+import NewHoursEntry from "./NewHoursEntry";
 
 import HelpButton from "../Util/HelpButton";
-
-import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import {
   getUserTypeExplicit,
@@ -19,22 +20,22 @@ import "../CSS/Util/ViewHours.css";
 import "../CSS/Common.css";
 
 /**
- * View for allowing the user to view their accumulated hours of teaching and volunteering.
- * FUNCTIONALITY: View acquired hours.
- * ALSO: FILTER HOURS by: String query (i.e. only if the reason contains "...")
- *  AND/OR ONLY entries after some date AND/OR entries before some date
- *  AND/OR Only volunteer/teaching/all entries.
- *  ALSO: Request and download an auto-generated confirmation PDF of the hours acquired,
- *  based on the filter used (excluding the string filter).
- *  ALSO, display the total number of hours.
+ * View for editing the hours log for a given user.
+ * FUNCTIONALITY: Special version of ViewHours, but also with editable hours
+ * (by clicking on an entry, it can be edited) & a button for creating new entries.
+ * For more information, see Util:ViewHours.js
  *
- * CONTEXT: Not accessible to Students.
- * NOTE: This is the dashboard for Volunteers.
+ * EXPECTS URL PROP: <email:String>: Email of the user, whose hours log is to be modified.
  * @extends React
  */
-class ViewHours extends React.Component {
+class EditHours extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
+    this.email =
+      props.match.params.email === undefined || props.match.params.email === "@"
+        ? null
+        : props.match.params.email;
     this.uTE = getUserTypeExplicit();
     this.state = {
       modalWindow: "",
@@ -50,15 +51,14 @@ class ViewHours extends React.Component {
   }
 
   componentDidMount() {
-    //this.setState({deployedList: this.generateHoursRows(this.state.fullList)})
-    this.getOwnHours();
+    this.getHours();
   }
 
-  getOwnHours() {
+  getHours(loadingText = "Getting hours records ...") {
     this.setState({
-      modalWindow: <LoadingModal text="Getting Hours ..." />
+      modalWindow: <LoadingModal text={loadingText} />
     });
-    getUserHours()
+    getUserHours(this.email)
       .then(hours => {
         const deployment = this.generateHoursRows(hours);
         this.setState({
@@ -69,56 +69,49 @@ class ViewHours extends React.Component {
       })
       .catch(err => {
         this.setState({ modalWindow: "" });
-        if (err.stat === 403) {
-          STD_LOG(this);
-        } else {
-          STD_RELOAD(err.msg, this, () => this.props.history.push("/"));
-        }
+        if (err.stat === 403) STD_LOG(this);
+        else STD_RELOAD(err.msg, this, () => this.props.history.push("/"));
       });
   }
 
   render() {
+    const navList = [{ tag: "Dashboard", link: "/a/" }];
+    navList.push(
+      this.email === null
+        ? { tag: "Edit Your Hours" }
+        : { tag: `Edit Hours for ${this.email}` }
+    );
     return (
       <React.Fragment>
         {this.state.modalWindow}
         <NavbarGeneric
-          crumbs={[{ tag: "Dashboard", link: "/" }, { tag: "View Your Hours" }]}
-        help={
+          crumbs={navList}
+          help={
             <HelpButton
               text={
                 <div>
-		  This page allows you to see the hours logged associated with yourself.
+                  This page allows you to edit the hours records associated with
+                  yourself or other users.
                   <br />
-		  If paid is True, then the work was done for money. If it is False, then it was volunteer work. This does not indicate if you have actually been paid.
+		  If paid is True, then the work was done for money. If it is False, then it was volunteer work. This does not indicate if the user has been paid.
 		  <br />
-		  You may filter for various criteria by clicking Filtering Options and entering the appropriate information.
-		  <br />
-		  After filtering, you may click Get Report to get a formal PDF indicating the hours selected, such as between two dates.
-		  <br />
-		  Please contact an administrator if there is an error with your hours.
-
-		  <br />
-		  Admins can also edit hours from this page by pressing the Edit Hours button.
+		  To edit the hours of another user, go to the Admin Dashboard, then Manage Users, then choose a non Student and click Edit Hours.
 
                 </div>
               }
               parentForClose={this}
             />
           }
-
-	/>
+        />
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="mainVHoursWindow">
               <div id="mVHWindowHeader">
-                <div>Hours Worked</div>
-                {this.uTE !== "administrator" ? (
-                  ""
-                ) : (
-                  <Link className={`${this.uTE}VH`} to="/a/hours/@">
-                    Edit Hours
-                  </Link>
-                )}
+                <div>
+                  Editing Hours for:&nbsp;
+                  <br />
+                  <i>{this.email === null ? "Yourself" : this.email}</i>
+                </div>
               </div>
               {this.state.deployedList === "" ? (
                 <h2 id="noHoursLogged">You have not logged any hours.</h2>
@@ -147,7 +140,6 @@ class ViewHours extends React.Component {
                 </div>
               )}
 
-              {/* Collapsible filter options box. */}
               <form>
                 <div id="vhSettingsWrapper">
                   <div
@@ -213,7 +205,6 @@ class ViewHours extends React.Component {
                       <input
                         type="radio"
                         value={-1}
-                        disabled={/*this.uTE === 'volunteer'*/ false}
                         checked={this.state.isPaid === null}
                         onChange={_ => this.setState({ isPaid: null })}
                       />
@@ -222,7 +213,6 @@ class ViewHours extends React.Component {
                       <input
                         type="radio"
                         value={1}
-                        disabled={/*this.uTE === 'volunteer'*/ false}
                         checked={this.state.isPaid === true}
                         onChange={_ => this.setState({ isPaid: true })}
                       />
@@ -251,7 +241,8 @@ class ViewHours extends React.Component {
                       getHoursReport(
                         this.state.fromDate,
                         this.state.toDate,
-                        this.state.isPaid
+                        this.state.isPaid,
+                        this.email
                       )
                         .then(url => {
                           this.setState({ modalWindow: "" });
@@ -266,6 +257,29 @@ class ViewHours extends React.Component {
                     }}
                   >
                     Get Report
+                  </button>
+
+                  <button
+                    className={`${this.uTE}VH`}
+                    onClick={e => {
+                      e.preventDefault();
+                      this.setState({
+                        modalWindow: (
+                          <NewHoursEntry
+                            email={this.email}
+                            modalInteract={modal =>
+                              this.setState({ modalWindow: modal })
+                            }
+                            reload={() => {
+                              this.setState({ deployedList: "" });
+                              this.getHours("Refreshing hours record ...");
+                            }}
+                          />
+                        )
+                      });
+                    }}
+                  >
+                    New Entry
                   </button>
                   <input
                     className={`${this.uTE}VH`}
@@ -304,11 +318,6 @@ class ViewHours extends React.Component {
     );
   }
 
-  /*
-        Complex filter function constructor.
-        The constructed function is used as a filter by generateHoursRows().
-        Called everytime "Apply Filter" is clicked.
-       */
   constructFilterFunction() {
     const payCheck =
       this.state.isPaid === null
@@ -335,11 +344,6 @@ class ViewHours extends React.Component {
     return compiledFunc;
   }
 
-  /*
-          Used to rerender the list of valid hours.
-          Valid hours change based on the filter applied.
-          Called on application of a new filter.
-         */
   repopulateDeployedList() {
     const toDeploy = this.generateHoursRows(
       this.state.fullList,
@@ -348,11 +352,8 @@ class ViewHours extends React.Component {
     this.setState({ deployedList: toDeploy });
   }
 
-  /*
-          Populates the view table for hours, using the given list and filter function.
-          If no filter is given, the default includes everything.
-         */
   generateHoursRows(inputList, filter = _ => true) {
+    console.log(inputList);
     let hoursSum = 0;
     const compiledList = [];
     for (let record of inputList) {
@@ -360,10 +361,20 @@ class ViewHours extends React.Component {
         compiledList.push(
           <HoursRow
             key={record._id}
-            date={new Date(record.dateTime).toLocaleString()}
+            id={record._id}
+            date={new Date(record.dateTime)}
             event={record.purpose}
             hours={record.hours}
             paid={record.paid}
+            modalInteract={modal => {
+              this.setState({
+                modalWindow: modal
+              });
+            }}
+            reload={() => {
+              this.setState({ deployedList: "" });
+              this.getHours("Refreshing hours record ...");
+            }}
           />
         );
         hoursSum += parseFloat(record.hours);
@@ -374,24 +385,44 @@ class ViewHours extends React.Component {
   }
 }
 
-/* A table row containing the information for a single hours entry */
 class HoursRow extends React.Component {
   constructor(props) {
     super(props);
-    this.paid =
-      props.paid === undefined || props.paid === null ? 0 : props.paid;
-    this.date = props.date;
-    this.hours = props.hours;
-    this.event = props.event;
+    this._id = props.id;
+    this.reload = props.reload;
+    this.state = {
+      paid:
+        props.paid === undefined || props.paid === null ? false : props.paid,
+      date: props.date,
+      hours: props.hours,
+      purpose: props.event
+    };
+    this.modal = props.modalInteract;
   }
 
   render() {
     return (
-      <tr className="VHviewRow">
-        <td>{this.date}</td>
-        <td>{this.event}</td>
-        <td>{this.hours}</td>
-        {this.paid ? (
+      <tr
+        className="VHviewRow"
+        onClick={e => {
+          const arg = (
+            <EditHourEntry
+              modalInteract={this.modal}
+              paid={this.state.paid}
+              id={this._id}
+              numHours={this.state.hours}
+              purpose={this.state.purpose}
+              date={this.state.date}
+              reload={this.reload}
+            />
+          );
+          this.modal(arg);
+        }}
+      >
+        <td>{this.state.date.toLocaleString()}</td>
+        <td>{this.state.purpose}</td>
+        <td>{this.state.hours}</td>
+        {this.state.paid ? (
           <td className="paid">&#10003;</td>
         ) : (
           <td className="unPaid">&times;</td>
@@ -401,4 +432,4 @@ class HoursRow extends React.Component {
   }
 }
 
-export default ViewHours;
+export default EditHours;

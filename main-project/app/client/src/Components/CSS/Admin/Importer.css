@@ -1,0 +1,209 @@
+#importerFileWindow {
+  background-color: white;
+  box-shadow: 0 0 15px rgb(0, 0, 0, 0.2);
+}
+
+#importerFileWindow form {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#importerFileWindow h1 {
+  text-align: center;
+  margin-bottom: 0px;
+  border-bottom: 2px solid darkred;
+  margin: 10px 5px 10px 5px;
+}
+
+#importerFileWindow:hover h1{
+  border-bottom-color: crimson;
+  box-shadow: 0 5px 5px -5px red;
+}
+
+#importerFileWindow form * {
+  margin: 2px;
+}
+
+#importerFileWindow p {
+  text-align: center;
+  font-weight: 300;
+}
+
+#importerFileWindow input[type="file"] {
+  margin-bottom: 10px;
+}
+
+#importerFileWindow button {
+  background-color: crimson;
+  border: 0;
+  padding: 10px 40px;
+  color: white;
+  transition: background-color 0.15s linear;
+}
+
+#importerFileWindow button:hover {
+  background-color: darkred;
+}
+
+#importerLogModal {
+  padding: 10px;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  max-width: 96vw;
+}
+
+.intCloseButton {
+  padding: 0 10px;
+  background-color: crimson;
+  float: right;
+  color: white;
+}
+
+.intCloseButton:hover {
+  background-color: red;
+  cursor: pointer;
+}
+
+.importerModalPane {
+  background-color: white;
+  flex-grow: 0;
+  margin: 5px;
+  padding: 5px;
+  min-width: 300px;
+  width: 40%;
+  max-width: 96vw;
+}
+
+.importerModalPane h4 {
+  text-align: center;
+  margin: 5px;
+}
+
+.importerModalPane p {
+  text-align: center;
+}
+
+#impSheetSelectHeader {
+  margin: 0;
+}
+
+.importerModalPane select {
+  border: 1px solid darkgrey;
+  text-align: center;
+  width: 95%;
+  margin: 2px;
+  padding: 5px;
+}
+
+.importerModalPane:hover h2 {
+  border-bottom-color: crimson;
+  box-shadow: 0 5px 5px -5px red;
+}
+
+.importerModalPane h2 {
+  text-align: center;
+  border-bottom: 2px solid darkgrey;
+  padding: 0 0px 10px 0px;
+  margin: 10px 5px 10px 5px;
+}
+
+.scrollableMIDisplay {
+  overflow-y: auto;
+  max-height: 27vh;
+}
+
+#impRightPane {
+  max-height: 27vh;
+  overflow-y: auto;
+}
+
+#impRightPane div div {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#descView {
+
+}
+
+#descViewAdv h4 {
+  border-bottom: 1px solid grey;
+}
+
+#scrollableMITable {
+  text-align: left;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#scrollableMITable tbody {}
+
+#scrollableMITable th, #scrollableMITable td {
+  padding: 1px;
+}
+
+#scrollableMITable th {
+  text-align: left;
+  font-weight: normal;
+}
+
+#scrollableMITable td {
+  text-align: center;
+}
+
+#scrollableMITable thead {}
+
+#scrollableMITable tbody tr:hover {
+  background-color: lightgrey;
+}
+
+.simpleListView {
+  text-align: left;
+  margin: 1px;
+  padding: 0;
+  font-size: 12px;
+}
+
+.simpleListView:hover {
+  background-color: lightgrey;
+}
+
+.errorless td{
+  background-color: lightgreen;
+}
+
+.errorless:hover td{
+  background-color: #27ae60;
+  color: black;
+}
+
+.fatal-errored td{
+  background-color: #ff7675;
+}
+
+.fatal-errored:hover td{
+  background-color: #e74c3c;
+  color: black;
+}
+
+.errored td{
+  background-color: #ffa801;
+}
+
+.errored:hover td{
+  background-color: goldenrod;
+  color: black;
+}
+
+#scrollableMITable thead th {
+  text-align: center;
+  font-weight: bolder;
+  border-bottom: 2px solid lightgrey;
+}
+
+/* #scrollableMITable:hover th {
+  border-bottom-color: crimson;
+} */

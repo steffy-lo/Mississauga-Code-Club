@@ -1,39 +1,86 @@
+#studentDashWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  justify-content: center;
+}
+
 .enrolled {
-    margin-top: 60px;
-    margin-left: 35px;
+    margin: 0px 5px 10px 5px;
+    padding: 2px;
     float: left;
-	width: 50%;
+	  width: 40%;
+    background-color: white;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgb(0, 0, 0, 0.2);
+    min-height: 200px;
+}
+
+.enrolled h1 {
+    padding-left: 3%;
+    padding-right: 3%;
+    margin: 1%;
+    border-bottom: 2px solid green;
+}
+
+.enrolled:hover h1 {
+    border-bottom-color: green;
+    box-shadow: 0 5px 5px -5px green;
 }
 
 .completed {
-    margin-top: 60px;
-	margin-left: 35px;
+    margin: 0px 5px 10px 5px;
+    padding: 2px;
     float: left;
+    width: 50%;
+    background-color: white;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgb(0, 0, 0, 0.2);
+    min-height: 200px;
 }
 
-.current-courses label {
-    font-size: 24px;
+/* .completed dt, .enrolled dt {
+  padding: 0 3%;
+} */
+
+.completed h1 {
+    padding-left: 3%;
+    padding-right: 3%;
+    margin: 1%;
+    border-bottom: 2px solid green;
 }
 
-.completed-courses label {
+.completed:hover h1 {
+    border-bottom-color: green;
+    box-shadow: 0 5px 5px -5px green;
+}
+
+.enrolled div, .completed div {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.current-courses p, .completed-courses p {
+    margin: 0;
     font-size: 24px;
+    padding: 0 3%;
 }
 
 .completed-courses button {
-    font-family: "Roboto", sans-serif;
-    text-transform: uppercase;
-    outline: 0;
-    background: #5866D1;
-    width: 40%;
-    border: 0;
-    padding: 5px;
-    color: #FFFFFF;
-    font-size: 12px;
-    cursor: pointer;
-    margin-top: 15px;
-    margin-bottom: 15px;
-  }
+    border: none;
+    padding: 5px 40px;
+    font-size: 18px;
+    transition: background-color 0.15s linear;
+    background-color: green;
+    color: white;
+    margin-left: 5%;
+    margin-top: 10px;
+}
 
-  .completed-courses button:hover,.form button:active,.form button:focus {
-    background: #535FC1;
-  }
+.completed-courses button:hover,.form button:active,.form button:focus {
+    background-color: darkgreen;
+}
