@@ -472,9 +472,9 @@ def removeStudent(courseId, email):
 
     studentList.remove(email)
 
-    backupReport = mclient[database]['reports'].find_one({'email' : email}) # Backup in case the second delete fails
+    backupReport = mclient[database]['reports'].find_one({'studentEmail' : email}) # Backup in case the second delete fails
 
-    res = mclient[database]['reports'].delete_one({'email' : email})
+    res = mclient[database]['reports'].delete_one({'studentEmail' : email})
 
     if res.deleted_count != 1:
         # Check if the delete worked
