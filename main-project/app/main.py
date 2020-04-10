@@ -1220,7 +1220,11 @@ def createUser():
     if parentEmail.error:
         abort(400)
 
-    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.create_user)
+    except exceptions.ValidationError:
+        abort(400)
+
     dbworker.createUser(str(email), str(parentEmail), request.json['firstName'], request.json['lastName'], request.json['password'], request.json['userType'], request.json['phoneNumber'], datetime.datetime.strptime(request.json['birthday'], '%Y-%m-%d'), request.json['parentName'])
 
     return jsonify({'success' : True})

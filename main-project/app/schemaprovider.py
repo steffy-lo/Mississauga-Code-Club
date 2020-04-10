@@ -138,16 +138,18 @@ class SchemaFactory:
     create_user = {
         "type": "object",
         "properties": {
-            "email": "string",
-            "password": "string",
-            "userType": "number",
-            "firstName": "string",
-            "lastName": "string",
-            "phoneNumber": "string",
-            "birthday": "string",
-            "parentEmail": "string",
-            "parentName": "string"
-        }
+            "email": {"type":"string"},
+            "password": {"type":"string"},
+            "userType": {"type": "number"},
+            "firstName": {"type":"string"},
+            "lastName": {"type":"string"},
+            "phoneNumber": {"type":"string"},
+            "birthday": {"type":"string"},
+            "parentEmail": {"type":"string"},
+            "parentName": {"type":"string"}
+        },
+        "required": ["email", "password", "userType", "firstName", "lastName", "phoneNumber", "birthday",
+                     "parentEmail", "parentName"]
     }
 
 
