@@ -10,13 +10,19 @@ import "../../CSS/Common.css"
 
 import HelpButton from "../../Util/HelpButton";
 
+/**
+ * View for Students' Grades.
+ * In this view, the student who is logged in is able to see his/her grades for completed courses.
+ *
+ * @extends React
+ */
 class GradesView extends React.Component {
 
     constructor(props) {
         super(props);
         this.updateDisplay = this.updateDisplay.bind(this);
         this.getCompletedClasses = this.getCompletedClasses.bind(this);
-        this.getMarks = this.getMarks.bind(this);
+        this._getMarks = this._getMarks.bind(this);
         this.state = {
             email: sessionStorage.getItem('email'),
             prefix: sessionStorage.getItem('prefix'),
@@ -31,6 +37,12 @@ class GradesView extends React.Component {
         }
     }
 
+    /**
+     * FUNCTIONALITY: This method sets the state of the component with all the detailed grade information fetched
+     * before the final rendering of the page.
+     * CONTEXT: This function is the last function called right before the final rendering
+     *
+     */
     setInitialState() {
         const courseName = this.props.location.state.courseInfo.courseName;
         const courses = this.state.coursesCompleted.courseNames;
@@ -47,7 +59,15 @@ class GradesView extends React.Component {
         this.setState({'loading': false});
     }
 
-    getMarks(email) {
+    /**
+     * HELPER FUNCTION for the getCompletedClasses method.
+     * Sends a GET request to retrieve the grades of each of the completed course of the given student's through his/her
+     * associated email.
+     *
+     * @param  email - the email of the student's whose grades we want to retrieve
+     *
+     */
+    _getMarks(email) {
         const currentComponent = this;
         const classIds = this.state.coursesCompleted.classIds;
         axios.get(currentComponent.state.prefix + '/api/mymarks/')
@@ -98,6 +118,11 @@ class GradesView extends React.Component {
             });
     }
 
+    /**
+     * FUNCTIONALITY: This method updates the associated grade information given the currently selected course from the
+     * selector by setting the appropriate state changes.
+     *
+     */
     updateDisplay() {
         const sel = document.querySelector('#course-sel');
         const courseName = sel.value;
@@ -115,6 +140,11 @@ class GradesView extends React.Component {
         }
     }
 
+    /**
+     * FUNCTIONALITY: This method gets the classes completed by the logged in user, and gets the marks associated with
+     * each completed course through the getMarks helper method.
+     *
+     */
     getCompletedClasses(email) {
         const currentComponent = this;
         axios.get(currentComponent.state.prefix + '/getClasses/'+ this.state.email)

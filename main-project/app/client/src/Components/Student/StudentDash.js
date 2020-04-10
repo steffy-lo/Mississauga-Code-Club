@@ -11,6 +11,14 @@ import "../CSS/Common.css"
 import LoadingModal from "../Util/LoadingModal";
 import HelpButton from "../Util/HelpButton";
 
+/**
+ * View for the Student Dashboard.
+ * In this view, the student who is logged in is able to see his/her currently enrolled courses and completed courses.
+ * For each completed course, the associated grade can be viewed by clicking the "view grade" button, bringing the user
+ * to the grades view, showing a detailed breakdown of the grades the student has received in the course.
+ *
+ * @extends React
+ */
 class StudentDash extends React.Component {
   constructor(props) {
     super(props);
@@ -27,6 +35,11 @@ class StudentDash extends React.Component {
     this.getClasses();
   }
 
+  /**
+   * FUNCTIONALITY: This method performs a GET request of the corresponding classes given the student's email.
+   * CONTEXT: This function is called right before rendering (i.e., as soon as the component is mounted)
+   *
+   */
   getClasses() {
     this.setState({modalWindow: <LoadingModal text="Getting student data ..." />})
     const currentComponent = this;
@@ -50,7 +63,6 @@ class StudentDash extends React.Component {
           coursesCompleted: completed,
           modalWindow: ""
         });
-        currentComponent.setState({ loading: false });
       })
       .catch(function(error) {
         // handle error
