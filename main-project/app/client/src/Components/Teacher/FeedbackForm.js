@@ -154,7 +154,7 @@ class FeedbackForm extends React.Component {
                 <div>
 		  This page allows you to edit the marks for an individual student.
                   <br />
-		  At the top, you can edit the mark the student received for each section.
+		  At the top, you can edit the mark the student received for each section. To change the criterion used, return to the Dashboard, select a course and click Modify Class Report at the bottom of the second column.
 		  <br />
 		  At the bottom, you can recommend courses for them to take in the future as well as provide overall feedback on their performance.
 

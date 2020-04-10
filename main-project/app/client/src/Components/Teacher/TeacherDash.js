@@ -134,6 +134,8 @@ class TeacherDash extends React.Component {
 		  <br />
 		  To swap between seeing Active and Completed courses, click on the Active or Completed Courses button at the top of the list of classes.
 		  <br />
+		  To edit the weights for each section in each class, select a class and click Modify Class Report at the bottom of the second column.
+		  <br />
 		  If you do not see a class or student listed here, please contact an administrator.
 
                 </div>
