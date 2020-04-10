@@ -94,6 +94,8 @@ class EditHours extends React.Component {
                   yourself or other users.
                   <br />
 		  If paid is True, then the work was done for money. If it is False, then it was volunteer work. This does not indicate if the user has been paid.
+		  <br />
+		  To edit the hours of another user, go to the Admin Dashboard, then Manage Users, then choose a non Student and click Edit Hours.
 
                 </div>
               }
