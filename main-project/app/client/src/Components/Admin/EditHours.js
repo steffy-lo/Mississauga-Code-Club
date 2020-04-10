@@ -93,6 +93,8 @@ class EditHours extends React.Component {
                   This page allows you to edit the hours records associated with
                   yourself or other users.
                   <br />
+		  If paid is True, then the work was done for money. If it is False, then it was volunteer work. This does not indicate if the user has been paid.
+
                 </div>
               }
               parentForClose={this}
