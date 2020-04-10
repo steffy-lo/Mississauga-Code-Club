@@ -205,7 +205,7 @@ class EditUser extends React.Component {
                   <span>
                     <input style={{ visibility: "hidden" }} type="text" />
                   </span>
-                  <span>
+                  <span title="Phone number format: ###-###-####">
                     Phone #:&nbsp;
                     <input
                       type="tel"
