@@ -1,0 +1,10 @@
+#+TITLE: Documentation of CSC 301
+#+AUTHOR: Nathan Fischer, Andriyan Bilyk, Steffy Lo, Philip Smith, Dragan Soso, Ari Truanovsky, and Edwin Chan
+
+* Technical Structure
+** Backend
+   - Python using a library called Flask
+   - Database is MongoDB
+
+** Frontend
+   - React Application (a library available for Node.js)
