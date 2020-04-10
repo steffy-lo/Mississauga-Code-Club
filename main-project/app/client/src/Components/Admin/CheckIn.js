@@ -33,7 +33,7 @@ class CheckIn extends React.Component {
       modalWindow: ""
     };
 
-    //Used for resetting.
+    //Used for resetting fields.
     this.clearParams = () => {
       this.setState({
         email: "",
@@ -72,6 +72,7 @@ class CheckIn extends React.Component {
         {this.state.modalWindow}
         <NavbarGeneric crumbs={navList} help={
             <button onClick={() => {
+                // Help button contents.
                 this.setState({
                   modalWindow:
                     <StatusModal onClose={() => this.setState({modalWindow: ""})}
@@ -94,6 +95,7 @@ class CheckIn extends React.Component {
             </button>
           }/>
         <div className="flexContentContainerGeneric">
+          {/* Alignment divs */}
           <div className="flex horizontalCentre">
             <div id="checkInMainWindow">
               <h1>Check-In</h1>
@@ -102,7 +104,13 @@ class CheckIn extends React.Component {
                 id="checkInMCSelectorForm"
                 onSubmit={e => {
                   e.preventDefault();
-                  checkIn()
+                  /*
+                    Legacy code fragment.
+                    IS NOT FUNCTIONAL IN ORIGINAL CAPACITY.
+                    ORIGINAL CAPACITY: VALIDATE user email BEFORE proper check-in.
+                    */
+
+                  /*checkIn()
                     .then(datetime => {
                       const dateStamp = new Date(datetime);
                       this.setState({
@@ -117,8 +125,9 @@ class CheckIn extends React.Component {
                       });
                     })
                     .catch(err => {
-                      const clFunc = () => this.setState({ modalWindow: "" });
+                      //Clear existing loading modal.
                       if (err.stat === 403) {
+                        //Unauthorised. I.e. "You should not be here".
                         this.setState({ modalWindow: "" });
                         this.setState({
                           modalWindow: (
@@ -137,18 +146,20 @@ class CheckIn extends React.Component {
                         });
                         setTimeout(() => window.location.reload(0), 1000);
                       } else {
+                        //Alerts user of failure.
+                        const clFunc = () => this.setState({ modalWindow: "" });
                         this.setState({ modalWindow: "" });
                         this.setState({
                           modalWindow: (
                             <StatusModal
-                              title="Checki-In Failed"
+                              title="Check-In Failed"
                               text={err.msg}
                               onClose={clFunc}
                             />
                           )
                         });
                       }
-                    });
+                    });*/
                 }}
               >
                 <span>
@@ -162,6 +173,10 @@ class CheckIn extends React.Component {
                 </span>
               </form>
 
+              {/*
+                Reason for sign in, # of hours & type of sign in
+                (i.e. teaching vs volunteering).
+                */}
               <form id="checkInMCDetailsForm">
                 <div id="checkInMCDetailsMain">
                   <div id="detailPaidSelector">
@@ -207,9 +222,12 @@ class CheckIn extends React.Component {
                   <button
                     type="submit"
                     onClick={e => {
+                      // Checkin.
                       e.preventDefault();
+                      //Enforce hours format consistency.
                       const properHours =
                         this.state.numHours - (this.state.numHours % 0.25);
+                      //SHows the user a loading modal. This is common.
                       this.setState({
                         email: this.state.email.trim(),
                         reason: this.state.reason.trim(),
@@ -223,6 +241,8 @@ class CheckIn extends React.Component {
                         this.state.paid
                       )
                         .then(time => {
+                          //Successful sign in.
+                          //Shows the user a modal window with relevant information.
                           const timeObj = new Date(time);
                           this.setState({
                             modalWindow: (
@@ -252,6 +272,15 @@ class CheckIn extends React.Component {
                         .catch(err => {
                           let clFunc = () => this.setState({ modalWindow: "" });
                           if (err.stat === 403) {
+                            /*
+                            If this is reached, Then
+                            EITHER the user is NOT LOGGED IN
+                            OR the user is attempting to access resources
+                            which they are not allowed to access.
+                            Byt his point, they have been deauthorised &,
+                            on page reload, will be taken back to the login page.
+                            Reload occurs after 1 second.
+                             */
                             this.setState({ modalWindow: "" });
                             this.setState({
                               modalWindow: (
@@ -283,6 +312,7 @@ class CheckIn extends React.Component {
                   >
                     {"Check-in"}
                   </button>
+                  {/* Clears fields. */}
                   <button type="reset" onClick={this.clearParams}>
                     {"Clear"}
                   </button>

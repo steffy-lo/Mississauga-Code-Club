@@ -10,28 +10,32 @@ import "../CSS/Common.css";
 
 import "../CSS/Admin/Importer.css";
 
+/**
+ * View for importing classes from a spreadsheet file.
+ * FUNCTIONALITY: Allow an admin to upload a validly formatted spreadsheet
+ * which will be used to create classes and students, accordingly.
+ * MULTIPLE SHEETS SUPPORTED & EACH SHEET ACTS AS A CLASS/COURSE.
+ * (FORMAT EXPECTED: .XLSX OR .XLS)
+ * See extra information provided on handover for more information about what
+ * constitutes a valid sheet.
+ * On successful return, displays a quick summary of the status of the report
+ * INCLUDING errors importing students, teachers and volunteers
+ *  AND sheet (file) format errors (FATAL).
+ *
+ * CONTEXT: ONLY to be used by admins.
+ *
+ * @extends React
+ */
 class ClassImporter extends React.Component {
   constructor(props) {
     super(props);
+    //Necessary for sending files.
     this.file = React.createRef();
+    //Most operations in this view are modalised.
     this.state = {
       modalWindow: ""
     };
   }
-
-  // componentDidMount() {
-  //   this.setState({modalWindow:
-  //   <CIModal
-  //   onClose={() => this.setState({modalWindow: ""})}
-  //   log={{
-  //     Students: {'a2': ['erbgfdfds', 'df', 's', 'd', 's', 's', 'a', 's', 's', 's', 's', 's']},
-  //     'Invalid File Formats': {'a2': []},
-  //     Instructors: {'a2': []},
-  //     Helpers: {'a2': []}
-  //   }}
-  //   />
-  //   })
-  // }
 
   render() {
     return (
@@ -40,6 +44,7 @@ class ClassImporter extends React.Component {
         <NavbarGeneric crumbs={[{tag: "Dashboard", link: "/a"}, {tag: "Import from File"}]}/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
+            {/* Upload Window */}
             <div id="importerFileWindow">
               <h1>Import A Class</h1>
               <form
@@ -112,10 +117,22 @@ class ClassImporter extends React.Component {
   }
 }
 
+/**
+ * Modal used to display the report for what was not successfully imported.
+ * CONTEXT: USED BY ClassImporter to achieve the goal stated above.
+ *
+ * EXPECTS PROPS:
+ *  onClose: FUNCTION | The function to be executed, when the close button is pressed.
+ *    SHOULD: Remove this modal window from the main view it is attached to.
+ *  log: ONJECT | The object returned by the server containing any errors for any
+ *    sheet in the spreadsheet that occured.
+ *    SEE ACTIONS:admin.js, importFromFile() for further details. *
+ *
+ * @extends React
+ */
 class CIModal extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       selectedItem: "",
       descView: "",
@@ -125,6 +142,8 @@ class CIModal extends React.Component {
     this.close = props.onClose;
     // this.totalErrors = 0;
     this.baseData = props.log;
+    // Get the two disjoint lists of sheets, which together, comprise all sheets
+    // of the spreadsheet.
     this.eLogKeys = Object.keys(props.log.Students).concat(
       Object.keys(props.log["Invalid File Formats"])
     );
@@ -134,11 +153,21 @@ class CIModal extends React.Component {
     this.singleTimeSetup();
   }
 
+  /* Setup function */
   singleTimeSetup() {
+    // Tickers are used to assign keys for react DOM objects lists for efficiency,
+    // wherever a naturally provided alternative (e.x. id) does not exist.
     let ticker = 0;
+
+    /*
+      List used by select, allowing for the user to view the logs of each sheet
+      in further detail.
+     */
     const slList = [];
+    // List of sheets (by name) & their number of errors.
+    // Each entry is a table row (JSX).
     const shList = [];
-    console.log(this.eLogKeys);
+    // Default selection option.
     slList.push(
       <option key={ticker} value={null}>
         {"-- Pick a Sheet --"}
@@ -146,11 +175,13 @@ class CIModal extends React.Component {
     );
     for (let sheet of this.eLogKeys) {
       ticker++;
+      // Add the select option.
       slList.push(
         <option key={ticker} value={sheet}>
           {sheet}
         </option>
       );
+      // Construct the table row for this sheet.
       const iffNum = !this.baseData["Invalid File Formats"][sheet] ? 0 : 1;
       const stuNum = (!this.baseData.Students[sheet]
         ? []
@@ -165,11 +196,18 @@ class CIModal extends React.Component {
         : this.baseData.Helpers[sheet]
       ).length;
 
+      /*
+        Gives the counts a colour.
+        RED IF FATAL ERROR (file format error).
+        YELLOW IF NON-FATAL ERRORS (teacher/student/volunteer import error).
+        GREEN IF NO ERRORS.
+       */
+      const errorCountColour = iffNum === 1 ? "fatal-errored" :
+        stuNum + instNum + volNum === 0 ? "errorless" : "errored";
+
       shList.push(
         <tr
-          className={
-            iffNum + stuNum + instNum + volNum === 0 ? "errorless" : "errored"
-          }
+          className={errorCountColour}
           key={ticker}
         >
           <th>{sheet}</th>
@@ -186,10 +224,22 @@ class CIModal extends React.Component {
     });
   }
 
+  /**
+   * HELPER METHOD.
+   * Generates a simple list with the information given.
+   * CONTEXT: Generates lists of errors for _populateDescription()
+   *
+   * @param  {[String]} list A [list:?] of errors to display.
+   * @return {[<p:JSX>]}
+   *  A list of <p> wrapped & styled errors.
+   *  If no errors, then returns a list with a single entry declaring this.
+   */
   _genSimpleList(list) {
+    // If list is null, undefined or empty, return this.
     if (!list) return [<p className="simpleListView">No errors</p>];
     let ticker = 0;
     const compList = [];
+    // General case.
     for (let item of list) {
       compList.push(
         <p className="simpleListView" key={ticker++}>
@@ -197,6 +247,7 @@ class CIModal extends React.Component {
         </p>
       );
     }
+    //Completion check. Theoretically, this should never be executed.
     if (compList.length < 1) {
       compList.push(
         <p className="simpleListView" key={ticker++}>
@@ -207,8 +258,15 @@ class CIModal extends React.Component {
     return compList;
   }
 
+  /**
+   * HELPER METHOD
+   * Generates the right pane view for the two-part modal,
+   * which contains a more detailed report for the errors of the sheet selected.
+   *
+   * @return {[<div:JSX>]} The populated list sections of the right pane of this modal.
+   */
   _populateDescription() {
-    console.log(this.state.selectedItem);
+    // For invalid selections (& the default selection).
     if (!this.eLogKeys.includes(this.state.selectedItem)) {
       return (
         <p>
@@ -218,6 +276,9 @@ class CIModal extends React.Component {
         </p>
       );
     }
+    /*
+      Gets information based on state variable "selectedITem", set through a select box.
+     */
     const fileListing = this.baseData["Invalid File Formats"][
       this.state.selectedItem
     ];
@@ -227,6 +288,9 @@ class CIModal extends React.Component {
     ];
     const volunteersListing = this.baseData.Helpers[this.state.selectedItem];
 
+    /*
+      For each of these, generates a report list. For more info, see previous function.
+     */
     return (
       <div id="descViewAdv">
         <h4>File Errors:</h4>
@@ -256,14 +320,12 @@ class CIModal extends React.Component {
     return (
       <div id="statusModalBlackout" className="fillContainer verticalCentre">
         <div id="importerLogModal" className="flex horizontalCentre">
+          {/*
+            Left Pane
+            FEATURES a list of sheets with their number of each type of error.
+          */}
           <div className="importerModalPane">
             <h2 title="A quick summary of any erros present">Summary</h2>
-            {/*<h4>
-                Total:
-              </h4>
-              <p>
-                <b>{this.totalErrors}</b> errors in <b>{this.eLogKeys.length}</b> sheets
-              </p>*/}
             <h4>Sheets:</h4>
             <div className="scrollableMIDisplay">
               <table id="scrollableMITable">
@@ -280,13 +342,25 @@ class CIModal extends React.Component {
               </table>
             </div>
           </div>
+          {/*
+            Right Pane
+          */}
           <div className="importerModalPane">
             <h2 title="A per sheet description of any errors that may have occured.">
               Details
+              {/*
+                Quite possibly the only traditional 'X' close button used.
+                Executes the provided close function (via the onClose prop).
+                 */}
               <span className="intCloseButton" onClick={this.close}>
                 &times;
               </span>
             </h2>
+            {/*
+              As promised somewhere above, the select box that sets the selected item.
+              This will repopulate each time a new item is selected.
+              Uses the selectionList generated and assigned in singleTimeSetup.
+            */}
             <p title="Select a sheet">
               <select
                 onChange={e => {

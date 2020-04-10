@@ -12,10 +12,25 @@ import "../CSS/Admin/EditHours.css";
 
 import "react-datepicker/dist/react-datepicker.css";
 
+/**
+ * MODAL VIEW
+ * For editing an individual entry in a user's log of hours.
+ * FUNCTIONALITY: MODIFY and SAVE the details of a some hours entry.
+ * EXPECTS PROPS
+ *  modal: FUNCTION | SHOULD be used for setting state of the view this modal is attached to.
+ *  id: STRING | The HoursEntry ID of the entry that we wish to edit.
+ *  reload: FUNCTION | SHOULD be used for reloading the data in the view this moadl is attached to.
+ *  paid, date, numHours, purpose: Attributes of the hours entry to be edited.
+ *    IN ORDER; TYPES: BOOLEAN OR NULL, (TIME)STRING, INT, STRING
+ * CONTEXT: Admin only.
+ *  Connected to/called by every displayed hours entry in the table in that view
+ *  (ONCLICK).
+ *
+ * @extends React
+ */
 class EditHourEntry extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.modal =
       props.modalInteract === null || props.modalInteract === undefined
         ? e => true
@@ -43,6 +58,7 @@ class EditHourEntry extends React.Component {
     };
   }
 
+  /* Does what it says on the tin. */
   saveChanges() {
     const composeObj = {
       paid: this.state.paid,
@@ -50,6 +66,7 @@ class EditHourEntry extends React.Component {
       purpose: this.state.purpose,
       dateTime: new Date(this.state.date + " " + this.state.time).toISOString()
     };
+    // See ACTIONS:admin.js, editHours for more information.
     this.modal(<LoadingModal text="Applying changes ..." />);
     editHours(this.id, composeObj)
       .then(success => {
@@ -58,7 +75,6 @@ class EditHourEntry extends React.Component {
         // this.modal("")
       })
       .catch(err => {
-        console.log(err);
         if (err.stat === 403) {
           this.modal(
             <LoadingModal
@@ -88,7 +104,9 @@ class EditHourEntry extends React.Component {
       });
   }
 
+  /* These tins are labelled for your viewing pleasure. */
   deleteRecord() {
+    // See ACTIONS:admin.js, deleteHoursEntry for more information.
     deleteHoursEntry(this.id)
       .then(s => {
         this.modal(
@@ -96,6 +114,7 @@ class EditHourEntry extends React.Component {
             title="Record Successfully Deleted"
             text={`Succesfully deleted record with id ${this.id}`}
             onClose={() => {
+              //Clear modal and reload information.
               this.modal("");
               this.reload();
             }}
@@ -141,6 +160,11 @@ class EditHourEntry extends React.Component {
         <div id="statusModalSubBlackout" className="flex horizontalCentre">
           <div id="statusModalWindow">
             <h1>Edit Hours Record</h1>
+            {/*
+              Lots of wrappers, to align things by means of flexbox.
+              Inputs located below.
+              All controlled.
+            */}
             <div id="EHwrapper">
               <div id="EHwrapperLeft">
                 <div id="EHModalID">
@@ -149,11 +173,6 @@ class EditHourEntry extends React.Component {
                 </div>
                 <div>
                   Date:&nbsp;
-                  {/*<DatePicker
-                                  onChange={(date)=>this.setState({date: date})}
-                                  selected={this.state.date}
-                                  >
-                                </DatePicker>*/}
                   <input
                     type="date"
                     value={this.state.date}
@@ -220,11 +239,12 @@ class EditHourEntry extends React.Component {
                       checked={this.state.paid === false}
                       onChange={e => this.setState({ paid: false })}
                     />
-                    <label htmlFor="female">Volunteering</label>
+                  <label htmlFor="volunteer">Volunteering</label>
                   </span>
                 </div>
               </div>
             </div>
+            {/* Function buttons */}
             <div className="buttonSectionWrapper">
               <button
                 className="adminStyle"

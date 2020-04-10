@@ -9,6 +9,16 @@ import { createUser } from "../../Actions/admin";
 import "../CSS/Admin/EditUser.css";
 import "../CSS/Common.css";
 
+/**
+ * View for creating a new user.
+ * FUNCTIONALITY: Create a new user from a set of inputs.
+ *  CAN create users of ANY type.
+ *  STUDENTS ALSO require a birthday, a phone number for their parent(s)
+ *    & their parent's/parents' email.
+ * CONTEXT: Admin use only.
+ *
+ * @extends React
+ */
 class CreateUser extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +35,6 @@ class CreateUser extends React.Component {
       password: "",
       isStudent: 1
     };
-    this.resetChanges = () => null;
   }
 
   render() {
@@ -70,6 +79,10 @@ class CreateUser extends React.Component {
                   </select>
                 </span>
               </div>
+              {/*
+                Main User Creation window.
+                The inputs are split into left and right sections.
+              */}
               <div id="sueStandardFieldsWrapper">
                 <div id="ssfwLeft">
                   <span>
@@ -107,10 +120,6 @@ class CreateUser extends React.Component {
                   </span>
                 </div>
                 <div id="ssfwRight">
-                  {/*<span>Email:&nbsp;
-                      <input type="text" value={this.state.firstName}
-                      onChange={e => this.setState({firstName: e.target.value})}/>
-                    </span>*/}
                   <span>
                     Phone #:&nbsp;
                     <input

@@ -7,6 +7,7 @@ const DEBUG = 0;
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
+/* Utility function for getting the name of the user type logged in */
 export function getUserTypeExplicit() {
   let type = "";
   switch (sessionStorage.getItem("uType")) {
@@ -33,6 +34,26 @@ export function getUserTypeExplicit() {
   return type;
 }
 
+/**
+ * Function for getting an automatically generated report from the server,
+ * based on provided filter options.
+ *
+ * IF fromDate is not included (i.e. empty string), then no minimum is present.
+ * Likewise for toDate with respect to maximum.
+ * If isPaid is null, then ALL hours are included in the report.
+ * If email is null, then returns the report for the current user,
+ * ohterwise for the specified user.
+ * If email is not null, then the current user MUST be an admin.
+ *
+ * @param  {[String]}  fromDate     Minimum date for included hours entries.
+ * @param  {[String]}  toDate       MAximum date for included hours entries.
+ * @param  {Boolean} isPaid       Boolean corresponding to which kind of hours to consider.
+ * @param  {[String]}  [email=null] Email of the user, whose report is desired, with these parameters,
+ * @return {[Promise]}
+ *  ON SUCCESS: Promise that resolves with the url of the report to download.
+ *  ON FAILURE: PRomise that rejects with a status code and message (to display).
+ *    ON 403: User is deauthorised & logged out.
+ */
 export const getHoursReport = (fromDate, toDate, isPaid, email = null) => {
   return new Promise((resolve, reject) => {
     const compileObj = {};
@@ -69,6 +90,16 @@ export const getHoursReport = (fromDate, toDate, isPaid, email = null) => {
   });
 };
 
+/**
+ * Function foor getting the hours of some user.
+ *
+ * other is for admins only..
+ * @param  {[String]} [other=null] Email of the target, if this target is not the current user,
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves with the hours informaton for the requsted user.
+ * ON FAILURE: PRomise that rejects with a status code and message (to display).
+ *    ON 403: User is deauthorised & logged out.
+ */
 export const getUserHours = (other = null) => {
   return new Promise((resolve, reject) => {
     const urlQuery = other === null ? "" : "?user=" + other;
@@ -97,6 +128,13 @@ export const getUserHours = (other = null) => {
   });
 };
 
+/*
+  Specific function for stripping the date from a JS Date object
+  & returnign a String in the specific YYYY-MM-DD format.
+
+  This only exists, because Chrome is especially picky about the format used by
+  input JSX objects of type "date".
+ */
 export function genUniversalDate(date) {
   try {
     const y = date.getFullYear();

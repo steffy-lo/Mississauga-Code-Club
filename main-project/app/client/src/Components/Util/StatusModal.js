@@ -4,6 +4,19 @@ import "../CSS/Common.css";
 import "../CSS/Util/StatusModal.css";
 import { getUserTypeExplicit } from '../../Actions/utility.js';
 
+/**
+ * MODAL VIEW
+ * Generic, prolific and versatile means of displaying a confirmable status to the
+ * user.
+ *
+ * EXPECTS PROPS: <title:String>, <text:String> &
+ *  onClose: FUNCTION | The action to perform when the OK button is pressed.
+ * CONTEXT: GENERIC modal for use anywhere.
+ *
+ * NOTE: This modal will not remove itself automatically, if onClose does not
+ *        feature functionality to this end.
+ * @extends React
+ */
 class StatusModal extends React.Component {
 
   constructor(props) {
@@ -14,8 +27,6 @@ class StatusModal extends React.Component {
       "" : props.text;
     this.onClose = props.onClose === null || props.onClose === undefined ?
       () => true : props.onClose;
-    this.colourScheme = props.colourScheme === null || props.colourScheme === undefined ?
-      "defaultStatusButton" : props.colourScheme;
   }
 
   render() {

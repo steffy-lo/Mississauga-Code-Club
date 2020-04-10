@@ -7,6 +7,22 @@ const DEBUG = 0;
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
+/*
+  "Standard ERROR reject response means:
+  A Promise that rejects with an object, with an error code "stat" & a message "msg".
+ */
+
+/**
+ * Checks in the user with the given email using the provided details (at this moment).
+ * @param  {[String]} email    The email of the user in question.
+ * @param  {[String]} purpose  The reason for this hours record (e.x. a course title: "Intro to Python").
+ * @param  {[Float]} hours    The number of hours for this entry.
+ * @param  {[Boolean]} paid     Whether or not this is vounteer work or (paid) teaching work.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves with the ISO-String datetime
+ *  corresponding to when this check-in was successfully processed.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const checkIn = (email, purpose, hours, paid) => {
   return new Promise((resolve, reject) => {
     if (email === "" || purpose === "" || hours === 0)
@@ -40,6 +56,13 @@ export const checkIn = (email, purpose, hours, paid) => {
   });
 };
 
+/**
+ * Deletes the hours entry with the given id.
+ * @param  {[String]} id The id of the hours entry to be deleted.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const deleteHoursEntry = id => {
   return new Promise((resolve, reject) => {
     axios
@@ -73,6 +96,19 @@ export const deleteHoursEntry = id => {
   });
 };
 
+/**
+ * Generates a new hours record for the user with the given email.
+ * For use in creating a new hours entry in the EditHours view.
+ *
+ * @param  {[String]} email    The email of the user in question.
+ * @param  {[String]} purpose  The reason for this hours record (e.x. a course code, such as PY234).
+ * @param  {[Float]} hours    The number of hours for this entry.
+ * @param  {[Boolean]} paid     Whether or not this is vounteer work or (paid) teaching work.
+ * @param  {[String]} dateTime (ISO format, like for all dates) The datetime that this entry will have been submitted.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const genHours = (email, purpose, hours, paid, dateTime) => {
   return new Promise((resolve, reject) => {
     if (purpose === "" || hours === "" || dateTime === "")
@@ -110,6 +146,13 @@ export const genHours = (email, purpose, hours, paid, dateTime) => {
   });
 };
 
+/**
+ * Creates a new class with the given name.
+ * @param  {[String]} courseTitle The name of the new class to be created.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves with the id of the newly created class.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const createClass = courseTitle => {
   return new Promise((resolve, reject) => {
     if (courseTitle === "")
@@ -131,6 +174,12 @@ export const createClass = courseTitle => {
   });
 };
 
+/**
+ * Gets a list of all classes.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves with a list of all classes (class id & name).
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const getClassList = () => {
   return new Promise((resolve, reject) => {
     axios
@@ -147,6 +196,13 @@ export const getClassList = () => {
   });
 };
 
+/**
+ * Gets the class information of the class with the given id.
+ * @param  {[String]} id The id of the class inquestion
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves with the information of the class in queston.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const getClass = id => {
   return new Promise((resolve, reject) => {
     axios
@@ -183,6 +239,14 @@ export const getClass = id => {
   });
 };
 
+/**
+ * Adds the student with the given email to the class with the given id.
+ * @param {[String]} email   The email of the student to be added to this class.
+ * @param {[String]} classId The id of the class to which this student should be added.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const addStudent = (email, classId) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || email === "")
@@ -219,6 +283,14 @@ export const addStudent = (email, classId) => {
   });
 };
 
+/**
+ * Adds the teacher with the given email to the class with the given id.
+ * @param {[String]} email   The email of the teacher to be added to this class.
+ * @param {[String]} classId The id of the class to which this teacher should be added.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const addTeacher = (email, classId) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || email === "")
@@ -255,6 +327,14 @@ export const addTeacher = (email, classId) => {
   });
 };
 
+/**
+ * Adds the volunteer with the given email to the class with the given id.
+ * @param {[String]} email   The email of the volunteer to be added to this class.
+ * @param {[String]} classId The id of the class to which this volunteer should be added.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const addVolunteer = (email, classId) => {
   return new Promise((resolve, reject) => {
     console.log(email);
@@ -293,12 +373,24 @@ export const addVolunteer = (email, classId) => {
   });
 };
 
+/**
+ * Removes the user with the user with the given email from the class with the given id,
+ * soecifying the type of user that is being removed.
+ * @param  {[String]} email   The email of the user to be removed.
+ * @param  {[String]} classId The id of the class from which this user is to be removed.
+ * @param  {[String]} type    The type of user to be removed.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const removeUserFromClass = (email, classId, type) => {
   return new Promise((resolve, reject) => {
     console.log(email);
     console.log(classId);
     if (classId === "" || email === "")
       return reject({ status: 500, msg: "Missing class id or email" });
+    // In reality, the call below alternates between a theoretical 3
+    // different calls (one for each possible type: instructor, student & volunteer)
     axios
       .post(
         PREFIX + "/api/admin/remove" + type,
@@ -331,81 +423,15 @@ export const removeUserFromClass = (email, classId, type) => {
   });
 };
 
-export const setCriterion = (classId, sectionTitle, weight, index) => {
-  return new Promise((resolve, reject) => {
-    if (classId === "" || sectionTitle === "" || weight < 1 || index < 1)
-      return reject({
-        status: 500,
-        msg: "Missing or invalid class ID and/or criterion information"
-      });
-    axios
-      .patch(
-        PREFIX + "/api/setmarkingsection",
-        JSON.stringify({
-          classId,
-          sectionTitle,
-          weightInfo: { weight, index }
-        }),
-        { headers: { "Content-Type": "application/json" } }
-      )
-      .then(res => resolve())
-      .catch(err => {
-        if (err.response.status === 401) {
-          deauthorise();
-          reject({
-            stat: 403,
-            msg: "Your login has expired. Please, reauthenticate."
-          });
-        } else if (err.response.status === 400) {
-          reject({
-            stat: 400,
-            msg: `Missing or invalid class ID and/or criterion information.`
-          });
-        } else {
-          reject({
-            stat: err.response.status,
-            msg:
-              "There was an error processing your request. Please, try again later."
-          });
-        }
-      });
-  });
-};
-
-export const removeCriterion = (classId, sectionTitle) => {
-  return new Promise((resolve, reject) => {
-    if (classId === "" || sectionTitle === "")
-      return reject({ status: 500, msg: "Missing class id or criterion" });
-    axios
-      .patch(
-        PREFIX + "/api/deletemarkingsection",
-        JSON.stringify({ classId, sectionTitle }),
-        { headers: { "Content-Type": "application/json" } }
-      )
-      .then(res => resolve())
-      .catch(err => {
-        if (err.response.status === 401) {
-          deauthorise();
-          reject({
-            stat: 403,
-            msg: "Your login has expired. Please, reauthenticate."
-          });
-        } else if (err.response.status === 400) {
-          reject({
-            stat: 400,
-            msg: `Missing or invalid class ID and/or criterion.`
-          });
-        } else {
-          reject({
-            stat: err.response.status,
-            msg:
-              "There was an error processing your request. Please, try again later."
-          });
-        }
-      });
-  });
-};
-
+/**
+ * Change the activity state and/or title of the class with the given class id.
+ * @param  {[String]} classId  The id of the class to modify.
+ * @param  {[Boolean]} status   The new activity status of this class.
+ * @param  {[String]} newTitle The new title/name of this class.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const updateCourseInfo = (classId, status, newTitle) => {
   return new Promise((resolve, reject) => {
     if (classId === "" || newTitle === "")
@@ -442,6 +468,13 @@ export const updateCourseInfo = (classId, status, newTitle) => {
   });
 };
 
+/**
+ * Creates a new user with the given details.
+ * @param  {[Object]} details The information required for the creation of a new user. The format is just below.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const createUser = details => {
   return new Promise((resolve, reject) => {
     if (
@@ -491,6 +524,13 @@ export const createUser = details => {
   });
 };
 
+/**
+ * Gets the details user with the given email.
+ * @param  {[String]} email The email of the user in question.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves with the requested user's data.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const getUser = email => {
   return new Promise((resolve, reject) => {
     axios
@@ -530,6 +570,13 @@ export const getUser = email => {
   });
 };
 
+/**
+ * Gets the list of all users. STRICTLY admin only.
+ *
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves withthe list of users.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const getUserList = () => {
   return new Promise((resolve, reject) => {
     axios
@@ -548,6 +595,14 @@ export const getUserList = () => {
   });
 };
 
+/**
+ * Set the information for the user with the given email to that of 'details'.
+ * @param  {[String]} email   The email of the user to modify.
+ * @param  {[Object]} details The information to be changed for this user's data. Format below.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const editUser = (email, details) => {
   return new Promise((resolve, reject) => {
     if (
@@ -608,6 +663,14 @@ export const editUser = (email, details) => {
   });
 };
 
+/**
+ * Sets the information for the hours log with the given id to that of the given object.
+ * @param  {[String]} currentId     ID of the hours record in question.
+ * @param  {[Object]} newAttributes New information for this hours record. See the corresponding URI in main.py for format info.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves.
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const editHours = (currentId, newAttributes) => {
   return new Promise((resolve, reject) => {
     axios
@@ -642,6 +705,7 @@ export const editHours = (currentId, newAttributes) => {
   });
 };
 
+/* HELPER FUNCTION. Standard reject. Very commonly occurs. */
 const standardReject = (err, reject) => {
   if (err !== undefined && (err.status === 403 || err.status === 401)) {
     deauthorise();
@@ -658,6 +722,14 @@ const standardReject = (err, reject) => {
   }
 };
 
+/**
+ * Attempts to import students and classes from the given file.
+ * @param  {[File]} file The file from which this information shall be had. SHOULD be an .XLSX OR .XLS file.
+ * @return {[Promise]}
+ * ON SUCCESS: A Promise that resolves with the error log for this import.
+ *  (i.e. what went wrong, if anything)
+ * ON FAILURE: Standard ERROR reject Promise.
+ */
 export const importFromFile = file => {
   return new Promise((resolve, reject) => {
     if (file === null) {
@@ -712,6 +784,7 @@ export const importFromFile = file => {
   });
 };
 
+/* Test method for uploading files. Legacy code. */
 export const uploadFileTest = file => {
   return new Promise((resolve, reject) => {
     if (file === null) {

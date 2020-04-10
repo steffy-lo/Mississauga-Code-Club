@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { uid } from 'react-uid';
 
 import NavbarGeneric from '../Util/NavbarGeneric';
 import StatusModal from '../Util/StatusModal';
@@ -11,6 +10,20 @@ import { getUserTypeExplicit, getUserHours, getHoursReport } from '../../Actions
 import "../CSS/Util/ViewHours.css";
 import "../CSS/Common.css";
 
+/**
+ * View for allowing the user to view their accumulated hours of teaching and volunteering.
+ * FUNCTIONALITY: View acquired hours.
+ * ALSO: FILTER HOURS by: String query (i.e. only if the reason contains "...")
+ *  AND/OR ONLY entries after some date AND/OR entries before some date
+ *  AND/OR Only volunteer/teaching/all entries.
+ *  ALSO: Request and download an auto-generated confirmation PDF of the hours acquired,
+ *  based on the filter used (excluding the string filter).
+ *  ALSO, display the total number of hours.
+ *
+ * CONTEXT: Not accessible to Students.
+ * NOTE: This is the dashboard for Volunteers.
+ * @extends React
+ */
 class ViewHours extends React.Component {
 
   constructor(props) {
@@ -48,7 +61,6 @@ class ViewHours extends React.Component {
       this.setState({modalWindow: ""});
     })
     .catch(err => {
-        const clFunc = () => this.setState({modalWindow: ""});
         if (err.stat === 403) {
           this.setState({modalWindow: ""});
           this.setState({
@@ -133,6 +145,7 @@ class ViewHours extends React.Component {
                 </div>
               }
 
+              {/* Collapsible filter options box. */}
               <form>
                 <div id="vhSettingsWrapper">
                   <div
@@ -289,6 +302,11 @@ class ViewHours extends React.Component {
         );
       }
 
+      /*
+        Complex filter function constructor.
+        The constructed function is used as a filter by generateHoursRows().
+        Called everytime "Apply Filter" is clicked.
+       */
       constructFilterFunction() {
         const payCheck = this.state.isPaid === null ? (_) => true :
         (paid) => paid === this.state.isPaid;
@@ -307,15 +325,22 @@ class ViewHours extends React.Component {
         return compiledFunc;
         }
 
+        /*
+          Used to rerender the list of valid hours.
+          Valid hours change based on the filter applied.
+          Called on application of a new filter.
+         */
         repopulateDeployedList() {
-          console.log(this.state)
           const toDeploy =
           this.generateHoursRows(this.state.fullList, this.constructFilterFunction());
           this.setState({deployedList: toDeploy});
         }
 
+        /*
+          Populates the view table for hours, using the given list and filter function.
+          If no filter is given, the default includes everything.
+         */
         generateHoursRows(inputList, filter=(_) => true) {
-          console.log(inputList)
           let hoursSum = 0
           const compiledList = [];
           for (let record of inputList) {
@@ -337,6 +362,7 @@ class ViewHours extends React.Component {
 
       }
 
+      /* A table row containing the information for a single hours entry */
       class HoursRow extends React.Component {
         constructor(props) {
           super(props);

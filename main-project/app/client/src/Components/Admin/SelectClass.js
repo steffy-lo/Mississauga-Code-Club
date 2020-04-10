@@ -11,6 +11,13 @@ import { getClassList } from "../../Actions/admin";
 import "../CSS/Admin/SelectUser.css";
 import "../CSS/Common.css";
 
+/**
+ * View for choosing a class from all of the clases.
+ * FUNCTIONALITY: Links to every class are displayed in a scrollable list.
+ *  This view splits the classes shown into active and "archived", where
+ *  only one group is shown at a time & the user can switch between them.
+ * @extends React
+ */
 class SelectClass extends React.Component {
   constructor(props) {
     super(props);
@@ -25,6 +32,7 @@ class SelectClass extends React.Component {
     this.getAllClasses();
   }
 
+  /* Does as you would expect. Only called on startup. */
   getAllClasses() {
     this.setState({
       modalWindow: <LoadingModal text="Getting classes ..." />
@@ -96,6 +104,7 @@ class SelectClass extends React.Component {
                   </table>
                 </div>
 
+                {/* Create a new class */}
                 <div id="suUCButton">
                   <button
                     onClick={e => {
@@ -121,10 +130,18 @@ class SelectClass extends React.Component {
     );
   }
 
+  /*
+    Creates the list of Links displayed to the user.
+    Only renders those views that are selected (i.e. only one of active and
+    archived at a time).
+    Rerendered on state change (specifically, after selection of the other kind of
+    class).
+   */
   generateSelectionList() {
     const compiledList = [];
     for (let classEntry of this.state.classList) {
       if (classEntry.ongoing === this.state.onGoing) {
+        //ClassNames refer to colours. This is a port of SelectUser, after all.
         compiledList.push(
           <tr
             className={`${classEntry.ongoing ? "sluTeacher" : "sluAdmin"}`}

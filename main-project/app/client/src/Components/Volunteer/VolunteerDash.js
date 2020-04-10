@@ -13,6 +13,12 @@ const DEBUG = 0;
 /* Debug variables.*/
 const PREFIX = DEBUG ? "http://localhost:80" : "";
 
+/*
+  Legacy unused code.
+  Kept to allow for future modification.
+  This is the original Volunteer dashboard.
+  Completion State: Incomplete.
+ */
 class VolunteerDash extends React.Component {
     constructor(props) {
         super(props);
@@ -79,7 +85,7 @@ class VolunteerDash extends React.Component {
   };
 
   componentDidMount() {
-    this.intervalID = setInterval(() => 
+    this.intervalID = setInterval(() =>
       this.tick(), 1000
     )
   }
@@ -94,7 +100,7 @@ class VolunteerDash extends React.Component {
       time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
     })
   }
-  
+
   render() {
     return(
       <React.Fragment>
