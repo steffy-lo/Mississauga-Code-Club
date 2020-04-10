@@ -90,6 +90,42 @@ class SchemaFactory:
         "required": ["_id"]
     }
 
+    edit_hours = {
+        "type": "object",
+        "properties": {
+            "currentId":{"type": "string"},
+            "newAttributes": {"type": "object",
+                              "properties": {
+                                  "dateTime": {"type": "string"},
+                                  "hours": {"type": "string"},
+                                  "paid": {"type": "boolean"},
+                                  "purpose": {"type": "string"}
+                                },
+                              }
+
+        },
+        "required": ["currentId", "newAttributes"]
+    }
+
+    edit_user = {
+        "type": "object",
+        "properties": {
+            "currentEmail": {"type": "string"},
+            "newAttributes": {"type": "object",
+                              "properties": {
+                                  "birthday": {"type": "string"},
+                                  "firstName": {"type": "string"},
+                                  "lastName": {"type": "string"},
+                                  "parentEmail": {"type": "string"},
+                                  "parentName": {"type": "string"},
+                                  "phoneNumber": {"type": "string"}
+                                }
+                              }
+
+        },
+        "required": ["currentEmail", "newAttributes"]
+    }
+
 
 
 

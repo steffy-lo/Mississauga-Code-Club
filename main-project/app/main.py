@@ -374,8 +374,6 @@ def getClass():
     if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(401)
 
-    # TODO: Validate types
-
     try:
         validate(instance=request.json, schema=SchemaFactory.get_class)
     except exceptions.ValidationError:
@@ -606,7 +604,10 @@ def editHours():
     # TODO: Validate that all the changes made are valid
     # ie. ban changes to any invalid attributes
 
-    # TODO: Validate types of all the changes requested
+    try:
+        validate(instance=request.json, schema=SchemaFactory.edit_hours)
+    except exceptions.ValidationError:
+        abort(400)
 
     if 'dateTime' in request.json['newAttributes']:
         # Convert dateTime from string to datetime object
@@ -875,6 +876,7 @@ def editUser():
 
     It can change any attribute that is not the email
     """
+    sys.stderr.write(str(request.json) + '\n')
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']):
         abort(403)
 
@@ -888,7 +890,8 @@ def editUser():
     if dbworker.getUser(str(email)) is None:
         abort(404)
 
-    if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes'] or 'password' in request.json['newAttributes']:
+    if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes'] \
+            or 'password' in request.json['newAttributes']:
         # No changes requested or an attempt was made to change the email or _id or the password
         abort(400)
 
@@ -896,13 +899,17 @@ def editUser():
     # ie. ban changes to any invalid attributes
 
     # TODO: Validate types of all the changes requested
+    try:
+        validate(instance=request.json, schema=SchemaFactory.edit_user)
+    except exceptions.ValidationError:
+        abort(400)
 
     if 'birthday' in request.json['newAttributes']:
         # Convert birthday from string to datetime object
         # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
         correctedTime = None
         try:
-            correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%SZ")
+            correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%S.%fZ")
         except:
             abort(400)
 
