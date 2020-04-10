@@ -172,6 +172,7 @@ class EditClassReport extends React.Component {
 
                 </div>
               }
+	    />}
 	/>
         <div className="flexContentContainerGeneric">
           <div id="tCriteriaListMain">

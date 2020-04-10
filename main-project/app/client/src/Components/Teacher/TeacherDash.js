@@ -141,6 +141,7 @@ class TeacherDash extends React.Component {
                 </div>
               }
               parentForClose={this}
+	    />}
 	/>
         <div className="flexContentContainerGeneric reverseWrap">
           {/*<div className="flex verticalCentre">*/}
