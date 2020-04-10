@@ -7,6 +7,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 
+import HelpButton from "../Util/HelpButton";
+
 /* For local debugging */
 const DEBUG = 0;
 
@@ -104,7 +106,20 @@ class VolunteerDash extends React.Component {
   render() {
     return(
       <React.Fragment>
-      <NavbarGeneric/>
+      {this.state.modalWindow}
+      <NavbarGeneric
+      help={
+            <HelpButton
+              text={
+                <div>
+                  This page allows you to see the hours logged associated with yourself.
+                  <br />
+		  If paid is True, then the work was done for money. If it is False, then it was volunteer work. This does not indicate if you have actually been paid.
+
+                </div>
+              }
+              parentForClose={this}
+      />
         {/* This is the volunteer dashboard. */}
         <div className="volunteer-container">
           <div className="clocking">
