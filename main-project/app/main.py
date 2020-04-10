@@ -284,47 +284,6 @@ def deleteMarkingSection():
 
     return jsonify({'success' : True})
 
-@app.route('/api/setmark', methods=['POST', 'PATCH'])
-def setMark():
-    """
-    Takes in a JSON of the following format
-    {classId, studentEmail, sectionTitle, mark : Int}
-
-    Returns {success : Boolean}
-
-    Sets the mark of sectionTitle in classId to <weight>
-    This will override existing values
-    """
-    # Validate credentials here
-    if 'email' not in session or session['email'] is None:
-        abort(401)
-
-    email = mailsane.normalize(session['email'])
-    if email.error:
-        abort(400)
-
-
-    # TODO: Validate types
-    if request.json is None:
-        abort(400)
-
-    for x in ['classId', 'studentEmail', 'sectionTitle', 'mark']:
-        if x not in request.json:
-            abort(400)
-
-    try:
-        validate(instance=request.json, schema=SchemaFactory.set_mark)
-    except exceptions.ValidationError:
-        abort(400)
-
-    convClassId = ObjectId(request.json['classId'])
-    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
-        abort(401)
-
-
-    dbworker.setMark(convClassId, request.json['studentEmail'], request.json['sectionTitle'], request.json['mark'])
-
-    return jsonify({'success' : True})
 
 @app.route('/api/admin/updatecourseinfo', methods=['POST'])
 def changeCourseInfo():
