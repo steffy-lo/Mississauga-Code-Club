@@ -167,18 +167,18 @@ class GradesView extends React.Component {
                     }
                 }
                 currentComponent.setState({'coursesCompleted': {'classIds': completed_id, 'courseNames': completed}});
-                currentComponent.getMarks(email)
+                currentComponent._getMarks(email)
 
             })
             .catch(function (error) {
                 // handle error
+                console.log(error);
                 if (error.response.status === 403 || error.response.status === 401) {
                     deauthorise();
                     window.location.reload(true);
                 } else {
                     currentComponent.props.history.goBack();
                 }
-                console.log(error);
             })
     }
 
