@@ -58,7 +58,7 @@ class SchemaFactory:
                            "required": ["weight", "index"]
                            }
         },
-        "required": ["classID", "sectionTitle", "weightInfo"]
+        "required": ["classId", "sectionTitle", "weightInfo"]
     }
 
     set_mark = {
