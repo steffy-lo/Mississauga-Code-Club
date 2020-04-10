@@ -6,9 +6,6 @@ import math
 import sys
 
 
-# request.files, files['file']
-
-# /testFile
 
 # List of the names of attribute needed to construct a student user
 studentAttributes = ['MCC Account', 'Parent\'s Email', 'First Name', 'Last Name', 'Password', 'Phone Number',
@@ -65,6 +62,13 @@ class SheetHandler:
 
 
     def getStudentList(self, index):
+        """
+        Construct a list of students. Check to make sure each column and cell for the table is filled with valid data
+        for a new student. All students that are already in the database only need their email.
+
+        :param index: the sheet index in the table dictionary
+        :return:
+       """
         global studentAttributes
 
         studentList = []
@@ -124,7 +128,13 @@ class SheetHandler:
 
 
     def getInstructorList(self, index):
-        # Construct lists of instructors
+        """
+        Construct a list of instructors
+
+        :param index: the sheet index in the table dictionary
+        :return:
+        """
+
         instructorList = []
         self.failures['Instructors'][index] = []
         for i in self.tableDict['Instructors'][index]['Instructor Account(s)']:
@@ -142,7 +152,7 @@ class SheetHandler:
     def getVolunteerList(self, index):
         """
         Construct a list of helpers
-        :param index:
+        :param index: the sheet index in the table dictionary
         :return:
         """
         volunteerList = []
@@ -182,7 +192,6 @@ class SheetHandler:
                     self.failures['Invalid File Formats'][sheetIndex] = 'Error null values in class info table'
             else:
                 self.failures['Invalid File Formats'][sheetIndex] = 'Error in class info table format'
-                # self.failures['Invalid File Formats'][sheetIndex] = self.tableDict['Course'][sheetIndex]
 
 
         return self.failures

@@ -233,7 +233,6 @@ def setMarkingSection():
     if email.error:
         abort(400)
 
-    # TODO: Validate types
     try:
         validate(instance=request.json, schema=SchemaFactory.set_marking)
     except exceptions.ValidationError:
