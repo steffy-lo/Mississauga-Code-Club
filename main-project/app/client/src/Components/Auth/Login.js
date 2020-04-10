@@ -1,12 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
-import { getState } from 'statezero';
 
 import { authenticate } from '../../Actions/auth.js';
 
 import './Login.css';
 
+/* Login window. Redirects based on the type of user that logged in */
 class Login extends React.Component {
 
   constructor(props) {

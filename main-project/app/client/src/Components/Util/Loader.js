@@ -2,6 +2,7 @@ import React from 'react';
 
 import '../CSS/Loader.css';
 
+/* Premade modifiable loader. Mainly used in LoadingModal */
 class Loader extends React.Component {
   constructor(props) {
     super(props);

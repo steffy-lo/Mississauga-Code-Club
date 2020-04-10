@@ -5,6 +5,13 @@ import Loader from "./Loader";
 import "../CSS/Common.css";
 import "../CSS/Util/ActiveNotification.css";
 
+/*
+  Display component that corresponds to a notification displayed to the user.
+  However, this notification is NOT screen dimming, unlike all other modals here
+  and should disappear after some time.
+
+  Currently: NOT IN USE. Functional.
+ */
 class ActiveNotification extends React.Component {
 
   constructor(props) {

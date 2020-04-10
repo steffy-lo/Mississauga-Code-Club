@@ -16,6 +16,19 @@ import { getUser, editUser } from "../../Actions/admin";
 import "../CSS/Admin/EditUser.css";
 import "../CSS/Common.css";
 
+/**
+ * View for modifying an existing user.
+ * FUNCTIONALITY: Edit an existing user. USER TYPE changing currently DISABLED.
+ *  SIMILARITY: CreateClass.
+ *  For more information, see CreateClass.
+ *
+ * CONTEXT: Admin use only.
+ * DEMANDS URL PARAMETER: "email".
+ *  USED to target a certain user for modification
+ *  (to retrieve and modify their data)
+ *
+ * @extends React
+ */
 class EditUser extends React.Component {
   constructor(props) {
     super(props);
@@ -39,10 +52,13 @@ class EditUser extends React.Component {
     this.getUserDetails();
   }
 
+  /* See Create Class */
   getUserDetails() {
     this.setState({
       modalWindow: <LoadingModal text="Getting user data ..." />
     });
+
+    /* See Create Class.  */
     getUser(this.email)
       .then(user => {
         console.log(user);
@@ -87,9 +103,15 @@ class EditUser extends React.Component {
       });
   }
 
+  /**
+   * Save the changes to this user's data.
+   * @return {void}
+   */
   editUser() {
+    /* See ACTIONS:admin.js, editUser for more information. */
     editUser(this.email, this.state)
       .then(() => {
+        //Success: Alert the user.
         this.setState({
           modalWindow: (
             <StatusModal
@@ -120,6 +142,8 @@ class EditUser extends React.Component {
           });
           setTimeout(() => window.location.reload(0), 1000);
         } else if (err.stat === 404) {
+          // Forced removal from page, if this user does not exist.
+          // "If there is nothing to see, then there is no reason for the user to be here"
           this.setState({
             modalWindow: <LoadingModal text={err.msg} />
           });
@@ -163,8 +187,12 @@ class EditUser extends React.Component {
 		}/>
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
+            {/*
+              The main window for editUser.
+            */}
             <form id="singleUserEditMainWindow">
               <h1>Edit User</h1>
+              {/* The user email itself. Changed disabled for obvious reasons */}
               <div id="sueIDUserType">
                 <span>
                   Email:&nbsp;

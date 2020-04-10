@@ -13,6 +13,16 @@ import { getUserList } from "../../Actions/admin";
 import "../CSS/Admin/SelectUser.css";
 import "../CSS/Common.css";
 
+/**
+ * View that display a list of filterable links to edit the information of various users.
+ * FUNCTIONALITY: USER selects a type of user to view & they are shown the email,
+ * & name of the user to choose (one per row of the table).
+ * These are clickable links to the user edit view for that specific user.
+ *
+ * CONTEXT: Admin use only. For simple selection of a user to modify.
+ *
+ * @extends React
+ */
 class SelectUser extends React.Component {
   constructor(props) {
     super(props);
@@ -69,6 +79,7 @@ class SelectUser extends React.Component {
         <div className="flexContentContainerGeneric">
           <div className={"flex horizontalCentre"}>
             <div id="selectUserMainWindowPW">
+              {/* Selector buttons for user types. */}
               <div id="sumwpwTypeSelector">
                 <button
                   onClick={e => this.setState({ selectedType: 4 })}
@@ -145,6 +156,13 @@ class SelectUser extends React.Component {
     );
   }
 
+  /*
+    HELPER METHOD:
+    Generate the table of user information to be shown from userList in state.
+    Respects type of user selected (ex. admin).
+    Rerenders on state change (specifically, when the user selected a different
+    user type to display).
+   */
   generateHoursRows() {
     const compiledList = [];
     for (let userEntry of this.state.userList) {
@@ -162,6 +180,9 @@ class SelectUser extends React.Component {
     return compiledList;
   }
 
+  /*
+    HELPER METHOD: Creates an individual hours table row.
+   */
   generateHourRow(email, firstName, lastName, userType) {
     return (
       <tr

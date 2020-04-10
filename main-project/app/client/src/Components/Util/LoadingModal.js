@@ -5,6 +5,14 @@ import Loader from "./Loader";
 import "../CSS/Common.css";
 import "../CSS/Util/StatusModal.css";
 
+/*
+  A simple modal window that display a message along side a loader.
+  Like all other modal views, it must be set in its containing view.
+  Also, no self-contained removal. Removal must be done from the containing view.
+
+  EXPECTS PROP:
+    text: The text dusokayed alongside the loader. Can be empty.
+ */
 class LoadingModal extends React.Component {
 
   constructor(props) {

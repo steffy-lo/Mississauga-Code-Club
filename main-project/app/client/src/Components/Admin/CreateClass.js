@@ -8,12 +8,25 @@ import { createClass } from '../../Actions/admin';
 import "../CSS/Common.css";
 import "../CSS/Util/StatusModal.css";
 
+/**
+ * MODAL VIEW
+ * FUNCTIONALITY: Create an empty class with a given name.
+ * The created class will be empty &, by default, ongoing.
+ * CONTEXT: Attached to a button in the admin dashboard/manage classes view.
+ *
+ * EXPECTS PROP:
+ *  onClose: FUNCTION | Function to be executed on attempted close.
+ *    SHOULD: Remove this modal from the view it is attached to.
+ *
+ * @extends React
+ */
 class CreateClass extends React.Component {
 
   constructor(props) {
     super(props);
     this.onClose = props.onClose;
     this.state = {
+      // Used to display alternative views (Loaders and status).
       toDisplay: null,
       nameOfClass: ""
     }
@@ -24,6 +37,7 @@ class CreateClass extends React.Component {
       return (
         <div id="statusModalBlackout" className="fillContainer flex verticalCentre">
           <div id="statusModalSubBlackout" className="flex horizontalCentre">
+            {/* Class creation modal proper. Features the class name input */}
           <div id="statusModalWindow">
             <h1>Create A Class</h1>
             <span>Class Name:&nbsp;
@@ -34,12 +48,14 @@ class CreateClass extends React.Component {
               }}
               />
             </span>
+            {/* Buttons for the modal */}
             <div className="buttonSectionWrapper">
               <button className="adminStyle"
               onClick={e => {
                 this.setState({toDisplay: <LoadingModal text="Creating class ..." />});
                 createClass(this.state.nameOfClass)
                 .then(class_id => {
+                  // On success. Alert the user.
                   this.setState({toDisplay: null});
                   this.setState({
                     toDisplay:
@@ -59,6 +75,7 @@ class CreateClass extends React.Component {
                 .catch(err => {
                   let clFunc = () => this.setState({toDisplay: null});
                   if (err.stat === 403) {
+                    // Clear the extra view, first.
                     this.setState({toDisplay: null});
                     this.setState({
                       toDisplay:
@@ -74,6 +91,7 @@ class CreateClass extends React.Component {
                     })
                     setTimeout(() => window.location.reload(0), 1000);
                   } else {
+                    // Non-authorisation based errors.
                     this.setState({
                       toDisplay:
                         <StatusModal
@@ -87,7 +105,7 @@ class CreateClass extends React.Component {
               }}>
                 OK
               </button>
-              <button className="adminStyle"
+              <button
               onClick={e => this.onClose()}>
                 Close
               </button>

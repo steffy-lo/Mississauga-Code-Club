@@ -51,7 +51,7 @@
   padding: 10px;
   justify-content: center;
   display: flex;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap-reverse;
 }
 
 .intCloseButton {
@@ -149,7 +149,7 @@
 }
 
 .simpleListView:hover {
-  background-color: lightgrey;;
+  background-color: lightgrey;
 }
 
 .errorless td{
@@ -158,6 +158,15 @@
 
 .errorless:hover td{
   background-color: #27ae60;
+  color: black;
+}
+
+.fatal-errored td{
+  background-color: #ff7675;
+}
+
+.fatal-errored:hover td{
+  background-color: #e74c3c;
   color: black;
 }
 

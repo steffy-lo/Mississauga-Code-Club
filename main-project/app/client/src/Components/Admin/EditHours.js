@@ -13,6 +13,15 @@ import { getUserTypeExplicit, getUserHours, getHoursReport } from '../../Actions
 import "../CSS/Util/ViewHours.css";
 import "../CSS/Common.css";
 
+/**
+ * View for editing the hours log for a given user.
+ * FUNCTIONALITY: Special version of ViewHours, but also with editable hours
+ * (by clicking on an entry, it can be edited) & a button for creating new entries.
+ * For more information, see Util:ViewHours.js
+ *
+ * EXPECTS URL PROP: <email:String>: Email of the user, whose hours log is to be modified.
+ * @extends React
+ */
 class EditHours extends React.Component {
 
   constructor(props) {
@@ -36,7 +45,6 @@ class EditHours extends React.Component {
   }
 
   componentDidMount() {
-    //this.setState({deployedList: this.generateHoursRows(this.state.fullList)})
     this.getHours();
   }
 

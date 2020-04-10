@@ -12,6 +12,19 @@ import "../CSS/Admin/EditHours.css";
 
 import "react-datepicker/dist/react-datepicker.css";
 
+/**
+ * MODAL VIEW
+ * View for creating a new hours entry for a user.
+ * FUNCTIONALITY: Create a new entry for a given user.
+ *
+ * CONTEXT: Admin use only. To be used tp create hours, retroactively, for other users.
+ *  Linked to the new entry button in the EditHours view.
+ *
+ * EXPECTS PROPS: email, modal, reload | SAME AS IN EditHourEntry
+ *
+ * NOTE: This view is somewhat analogous to EditHourEntry.
+ * @extends React
+ */
 class NewHoursEntry extends React.Component {
   constructor(props) {
     super(props);
@@ -26,8 +39,6 @@ class NewHoursEntry extends React.Component {
       props.reload === null || props.reload === undefined
         ? e => true
         : props.reload;
-    //const full_date =
-    //  props.date === null || props.date === undefined ? new Date() : props.date;
     this.state = {
       paid: true,
       numHours: "",
@@ -37,6 +48,7 @@ class NewHoursEntry extends React.Component {
     };
   }
 
+  /* Function for adding a completed new entry */
   newEntry() {
     const compDT = new Date(
       this.state.date + " " + this.state.time
@@ -94,6 +106,7 @@ class NewHoursEntry extends React.Component {
         <div id="statusModalSubBlackout" className="flex horizontalCentre">
           <div id="statusModalWindow">
             <h1>Create New Hours Entry</h1>
+            {/* Format similar to that in EditHourEntry */}
             <div id="EHwrapper">
               <div id="EHwrapperLeft">
                 <div id="EHModalID">

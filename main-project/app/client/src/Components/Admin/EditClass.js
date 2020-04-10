@@ -14,14 +14,23 @@ import {
   addStudent,
   addTeacher,
   addVolunteer,
-  removeUserFromClass,
-  setCriterion,
-  removeCriterion
+  removeUserFromClass
 } from "../../Actions/admin";
+
+import { setCriterion, removeCriterion } from "../../Actions/teacher";
 
 import "../CSS/Admin/EditClass.css";
 import "../CSS/Common.css";
 
+/**
+ * View for editing every attribute of a class.
+ * FUNCTIONALITY: Change the name, activity, marking section, enrollment and staff
+ *  of a given class.
+ * EXPECTS URL PROP:
+ *  class_id: STRINB | The id of the class being edited.
+ *
+ * @extends React
+ */
 class EditClass extends React.Component {
   constructor(props) {
     super(props);
@@ -29,6 +38,7 @@ class EditClass extends React.Component {
     this.critObj = {};
     this.state = {
       modalWindow: "",
+      // For use with "ActiveNotifications".
       actionDisplay: "",
       //Teachers
       teacherList: [],
@@ -60,10 +70,12 @@ class EditClass extends React.Component {
     this.getClassData();
   }
 
+  /* Retireves data for initial state */
   getClassData() {
     this.setState({
       modalWindow: <LoadingModal text="Getting class data ..." />
     });
+    /* See ACTIONS:admin.js, getClass for more information */
     getClass(this.id)
       .then(classData => {
         console.log(classData);
@@ -86,7 +98,6 @@ class EditClass extends React.Component {
         });
       })
       .catch(err => {
-        console.log(err);
         this.setState({ modalWindow: "" });
         if (err.stat === 403) {
           this.setState({
@@ -156,7 +167,14 @@ class EditClass extends React.Component {
           <div className="flex horizontalCentre">
             <div className="flex verticalCentre" id="editClassPreWrapper">
               <h1>Edit Class</h1>
+              {/* Main Wrapper */}
               <div id="editClassMain" className="flex horizontalCentre">
+                {/*
+                  Left-most pane. Contains base class details + marking scheme.
+                  Here, the functionality for changing the class name & activity
+                  is present, as well as, all of the functionality for
+                  modifying the class marking scheme.
+                */}
                 <div id="editClassMainL">
                   <h2>Class Details:</h2>
                   <div className="flexCol">
@@ -202,6 +220,7 @@ class EditClass extends React.Component {
                     />
                     <button
                       onClick={e => {
+                        // Class base attribute modification.
                         this.setState({
                           modalWindow: (
                             <LoadingModal text="Updating course info ..." />
@@ -254,6 +273,11 @@ class EditClass extends React.Component {
                       Save Details
                     </button>
                   </div>
+                  {/*
+                    Marking scheme list: Auto-populated on state change.
+                    Also present is functionality for changing this criteria
+                    (in the form just below this div).
+                  */}
                   <div>
                     <h3>Criteria:</h3>
                     <div id="critScroll" className="vScrollable">
@@ -346,6 +370,7 @@ class EditClass extends React.Component {
                   </div>
                 </div>
 
+                {/* Teacher Column */}
                 <div id="ECMhFormatWrapper">
                   <div id="editClassMainC">
                     <h2>Teachers:</h2>
@@ -396,6 +421,7 @@ class EditClass extends React.Component {
                     </form>
                   </div>
 
+                  {/* Student Column */}
                   <div id="editClassMainR">
                     <h2>Students:</h2>
                     <div id="stdLstW" className="flexCol">
@@ -445,6 +471,7 @@ class EditClass extends React.Component {
                     </form>
                   </div>
 
+                  {/* Volunteer Column */}
                   <div id="editClassMainR2">
                     <h2>Volunteers:</h2>
                     <div id="vltLstW" className="flexCol">
@@ -502,7 +529,18 @@ class EditClass extends React.Component {
     );
   }
 
-  generateStudentList(selector) {
+  /**
+   * HELPER METHOD
+   * Creates the visual list of students.
+   * EACH ENTRY WILL HAVE:
+   *  i) The student's email
+   *  2) A Link to their report for this class.
+   *  3) A button that removes them from this class.
+   *
+   * NOTE: Removal is both client and server side.
+   * @return {[<div:JSX>]}         A JSX list of student entries. For use in the associated column of this view.
+   */
+  generateStudentList() {
     const compiledList = [];
     for (let email of this.state.studentList) {
       compiledList.push(
@@ -546,6 +584,10 @@ class EditClass extends React.Component {
     return compiledList;
   }
 
+  /*
+    Same as generateStudentList(), but for teachers and also without the
+    extra link,
+   */
   generateTeacherList() {
     const compiledList = [];
     for (let email of this.state.teacherList) {
@@ -584,6 +626,14 @@ class EditClass extends React.Component {
     return compiledList;
   }
 
+  /*
+    Same as generateStudentList(), but for volunteers and also without the
+    extra link.
+
+    This and generateTeacherList() used to be one function, but were split
+    during development, due to initally differing implementations.
+    They remain split, to allow for more direct modification.
+   */
   generateVolunteerList() {
     const compiledList = [];
     for (let email of this.state.volunteerList) {
@@ -622,6 +672,14 @@ class EditClass extends React.Component {
     return compiledList;
   }
 
+  /**
+   * HELPER METHOD
+   * Generate the view for the marking criteria for this class.
+   *
+   * NOTE: This method is specifically different from those three above,
+   * due to the differing format of the marking scheme for a class.
+   * @return {[type]} [description]
+   */
   generateCriteriaList() {
     const compiledList = [];
     const criteria = this.state.criteriaList;
