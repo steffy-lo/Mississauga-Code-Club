@@ -150,7 +150,27 @@ class EditClassReport extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList} />
+        <NavbarGeneric crumbs={navList}
+	help={
+            <HelpButton
+              text={
+                <div>
+		  This page allows you to edit the criterion for a class. Criterion are the sections that students are marked on.
+                  <br />
+                  Points is the how much the section is work.
+                  <br />
+                  The index is used to sort it in the report in increasing
+                  order. When two criterion have the same index, they are sorted
+                  alphabetically.
+                  <br />
+                  eg. For loops, index 1 will appear before If statements, index
+                  2 or Goto statements, index 1
+                  <br />
+		  To rename a criterion, delete it and then add a new criterion with that name. Marks entered for that criterion will be lost.
+
+                </div>
+              }
+	/>
         <div className="flexContentContainerGeneric">
           <div id="tCriteriaListMain">
             <h1>{this.state.courseName}</h1>

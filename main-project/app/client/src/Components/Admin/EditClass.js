@@ -136,6 +136,8 @@ class EditClass extends React.Component {
                   eg. For loops, index 1 will appear before If statements, index
                   2 or Goto statements, index 1
                   <br />
+		  To rename a criterion, delete it and then add a new criterion with that name. Marks entered for that criterion will be lost.
+		  <br />
                   You can add students, instructors, and volunteers to classes
                   by typing their email in and adding them in the appropriate
                   section.
