@@ -278,6 +278,35 @@ def deleteMarkingSection():
 
     return jsonify({'success' : True})
 
+
+@app.route('/api/deleteclass/<string:class_id>', methods=['PATCH', 'DELETE'])
+def deleteClass(class_id):
+    """
+    Delete an existing class from the database. This will require "cascading" the deletion through
+    other records (ie: removing a class with classId means removing it also from respective student records as well)
+    """
+
+    if 'email' not in session or session['email'] is None:
+        abort(403)
+
+    email = mailsane.normalize(session['email'])
+    if email.error:
+        abort(400)
+
+    if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
+        abort(401)
+
+    convClassId = ObjectId(class_id)
+
+    # Check that class with classId actually exists before attempting deletion
+    cl = dbworker.getClass(convClassId)
+
+    if cl is None:
+        abort(404)
+
+    return jsonify({'success': dbworker.deleteClass(convClassId)})
+
+
 @app.route('/api/setmark', methods=['POST', 'PATCH'])
 def setMark():
     """

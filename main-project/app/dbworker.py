@@ -421,6 +421,32 @@ def deleteMarkingSection(classId, sectionTitle):
         # TODO: This has cascade related issues
         deleteMark(classId, s, sectionTitle)
 
+
+def deleteClass(classId):
+    """
+    Delete classId from classes collection. Note: this change needs to cascade to other relevant collections
+    that reference classId.
+    """
+
+    res = mclient[database]['classes'].delete_one({"classId": classId})
+
+    if res.deleted_count != 1:
+        return False
+
+    # Cascade classId deletion through other collections (ie: reports)
+    # Keep a temp backup of the classId reports, in case of failed deletion, we can restore these.
+    backupReports = mclient[database]['reports'].find({"classId": classId})
+
+    res = mclient[database]['reports'].delete_many({"classId": classId})
+
+    if res.deleted_count != backupReports.count():
+        # Attempt to restore all backupReports
+        mclient[database]['reports'].insert_many(backupReports)
+        return False
+
+    return True
+
+
 def updateClassInfo(classId, json):
     """
     Updates the class info using json
