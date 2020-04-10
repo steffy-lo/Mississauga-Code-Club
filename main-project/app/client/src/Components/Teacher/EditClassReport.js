@@ -3,6 +3,8 @@ import React from "react";
 import NavbarGeneric from "../Util/NavbarGeneric";
 import LoadingModal from "../Util/LoadingModal";
 import StatusModal from "../Util/StatusModal";
+import HelpButton from "../Util/HelpButton";
+
 import { STD_LOG, STD_STAT, STD_RELOAD } from "../Util/PrebuiltModals";
 
 import {
