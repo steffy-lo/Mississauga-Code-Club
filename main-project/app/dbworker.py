@@ -16,6 +16,14 @@ mclient = MongoClient(MONGOURI)
 database = config.DATABASE # This is a database within a MongoDB instance
 
 
+# These lines ensure that indexes are created that ensure uniqueness of data
+indx = IndexModel([("email", TEXT)], unique=True)
+mclient[database]['users'].create_indexes([indx])
+
+
+indx2 = IndexModel([("email", TEXT), ("class_id", HASHED)], unique=True)
+mclient[database]['reports'].create_indexes([indx2])
+
 def getUsers(filt={}, projection={}):
     """
     Get all users that match a filter
