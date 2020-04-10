@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
 import "../CSS/Common.css";
 import "../CSS/Util/StatusModal.css";
-import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { getUserTypeExplicit } from "../../Actions/utility.js";
 
 /**
  * MODAL VIEW
@@ -18,32 +18,34 @@ import { getUserTypeExplicit } from '../../Actions/utility.js';
  * @extends React
  */
 class StatusModal extends React.Component {
-
   constructor(props) {
     super(props);
-    this.title = props.title === null || props.title === undefined ?
-      "" : props.title;
-    this.text = props.text === null || props.text === undefined ?
-      "" : props.text;
-    this.onClose = props.onClose === null || props.onClose === undefined ?
-      () => true : props.onClose;
+    this.title =
+      props.title === null || props.title === undefined ? "" : props.title;
+    this.text =
+      props.text === null || props.text === undefined ? "" : props.text;
+    this.onClose =
+      props.onClose === null || props.onClose === undefined
+        ? () => true
+        : props.onClose;
   }
 
   render() {
     let type = getUserTypeExplicit();
-    return(
-      <div id="statusModalBlackout" className="fillContainer flex verticalCentre">
+    return (
+      <div
+        id="statusModalBlackout"
+        className="fillContainer flex verticalCentre"
+      >
         <div id="statusModalSubBlackout" className="flex horizontalCentre">
           <div id="statusModalWindow" className={`${type}InnerButton`}>
             <h1>{this.title}</h1>
             <p>{this.text}</p>
-            <button onClick={e => this.onClose()}>
-              OK
-            </button>
+            <button onClick={e => this.onClose()}>OK</button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

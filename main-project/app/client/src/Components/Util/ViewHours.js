@@ -1,11 +1,15 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import NavbarGeneric from '../Util/NavbarGeneric';
-import StatusModal from '../Util/StatusModal';
-import LoadingModal from '../Util/LoadingModal';
+import NavbarGeneric from "../Util/NavbarGeneric";
+import StatusModal from "../Util/StatusModal";
+import LoadingModal from "../Util/LoadingModal";
 
-import { getUserTypeExplicit, getUserHours, getHoursReport } from '../../Actions/utility.js';
+import {
+  getUserTypeExplicit,
+  getUserHours,
+  getHoursReport
+} from "../../Actions/utility.js";
 
 import "../CSS/Util/ViewHours.css";
 import "../CSS/Common.css";
@@ -25,7 +29,6 @@ import "../CSS/Common.css";
  * @extends React
  */
 class ViewHours extends React.Component {
-
   constructor(props) {
     super(props);
     this.uTE = getUserTypeExplicit();
@@ -37,7 +40,7 @@ class ViewHours extends React.Component {
       toDate: "",
       purposeQuery: "",
       isPaid: this.uTE === "volunteer" ? false : null,
-      filterBoxState: 'none',
+      filterBoxState: "none",
       totalHours: 0
     };
   }
@@ -49,23 +52,24 @@ class ViewHours extends React.Component {
 
   getOwnHours() {
     this.setState({
-      modalWindow: <LoadingModal text="Getting Hours ..."/>
-    })
+      modalWindow: <LoadingModal text="Getting Hours ..." />
+    });
     getUserHours()
-    .then(hours => {
-      const deployment = this.generateHoursRows(hours)
-      this.setState({
-        fullList: hours,
-        deployedList: deployment
+      .then(hours => {
+        const deployment = this.generateHoursRows(hours);
+        this.setState({
+          fullList: hours,
+          deployedList: deployment
+        });
+        this.setState({ modalWindow: "" });
       })
-      this.setState({modalWindow: ""});
-    })
-    .catch(err => {
+      .catch(err => {
         if (err.stat === 403) {
-          this.setState({modalWindow: ""});
+          this.setState({ modalWindow: "" });
           this.setState({
-            modalWindow:
-              <LoadingModal text={
+            modalWindow: (
+              <LoadingModal
+                text={
                   <span>
                     Your login has expired
                     <br />
@@ -73,54 +77,44 @@ class ViewHours extends React.Component {
                     <br />
                     Singing you out ...
                   </span>
-              }/>
-          })
+                }
+              />
+            )
+          });
           setTimeout(() => window.location.reload(0), 1000);
         } else {
-          this.setState({modalWindow: ""});
+          this.setState({ modalWindow: "" });
           this.setState({
-            modalWindow:
-              <LoadingModal
-                text={err.msg}
-              />
-          })
+            modalWindow: <LoadingModal text={err.msg} />
+          });
           setTimeout(() => this.props.history.push("/"), 1000);
         }
-    })
+      });
   }
 
   render() {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={[
-            {tag: 'Dashboard', link: '/'},
-            {tag: 'View Your Hours'}
-          ]}/>
+        <NavbarGeneric
+          crumbs={[{ tag: "Dashboard", link: "/" }, { tag: "View Your Hours" }]}
+        />
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <div id="mainVHoursWindow">
               <div id="mVHWindowHeader">
-                <div>
-                  Hours Worked
-                </div>
-                {(this.uTE !== "administrator") ? "" :
-                  (
-                    <Link
-                      className={`${this.uTE}VH`}
-                      to="/a/hours/@" >
-                      Edit Hours
-                    </Link>
-                  )
-                }
+                <div>Hours Worked</div>
+                {this.uTE !== "administrator" ? (
+                  ""
+                ) : (
+                  <Link className={`${this.uTE}VH`} to="/a/hours/@">
+                    Edit Hours
+                  </Link>
+                )}
               </div>
-              {this.state.deployedList === "" ?
-                (
-                  <h2 id="noHoursLogged">
-                    You have not logged any hours.
-                  </h2>
-                )
-                :
+              {this.state.deployedList === "" ? (
+                <h2 id="noHoursLogged">You have not logged any hours.</h2>
+              ) : (
                 <div id="scrollableHoursPane">
                   <table id="VHviewTable">
                     <thead>
@@ -131,19 +125,19 @@ class ViewHours extends React.Component {
                         <th>Paid</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      {this.state.deployedList}
-                    </tbody>
+                    <tbody>{this.state.deployedList}</tbody>
                   </table>
                   <div id="VHhoursCount">
                     <span>
-                      Total in selection: <span className={`${this.uTE}Text`}>
+                      Total in selection:{" "}
+                      <span className={`${this.uTE}Text`}>
                         {this.state.totalHours}
-                        </span> <b>hour(s)</b>
+                      </span>{" "}
+                      <b>hour(s)</b>
                     </span>
                   </div>
                 </div>
-              }
+              )}
 
               {/* Collapsible filter options box. */}
               <form>
@@ -152,18 +146,18 @@ class ViewHours extends React.Component {
                     className={`${this.uTE}VH`}
                     id="vhsettingsExpand"
                     onClick={e => {
-                      const newStatus = this.state.filterBoxState === 'none' ?
-                      'flex' : 'none';
-                      this.setState({filterBoxState: newStatus});
-                    }}>
-                    <span>
-                      Filtering Options
-                    </span>
+                      const newStatus =
+                        this.state.filterBoxState === "none" ? "flex" : "none";
+                      this.setState({ filterBoxState: newStatus });
+                    }}
+                  >
+                    <span>Filtering Options</span>
                     <span>+</span>
                   </div>
                   <div
-                    style={{display: this.state.filterBoxState}}
-                    id="vhSettingsExpanded">
+                    style={{ display: this.state.filterBoxState }}
+                    id="vhSettingsExpanded"
+                  >
                     <div id="dateFieldSet">
                       <p>Date:</p>
                       <label>From: </label>
@@ -171,17 +165,18 @@ class ViewHours extends React.Component {
                         type="date"
                         value={this.state.fromDate}
                         onChange={e => {
-                          this.setState({fromDate: e.target.value})
-                        }}/>
-                      <br/>
+                          this.setState({ fromDate: e.target.value });
+                        }}
+                      />
+                      <br />
                       <label>To: </label>
                       <input
                         type="date"
                         value={this.state.toDate}
                         onChange={e => {
-                          this.setState({toDate: e.target.value})
-                        }}>
-                      </input>
+                          this.setState({ toDate: e.target.value });
+                        }}
+                      ></input>
                     </div>
                     <div>
                       <p>Event: </p>
@@ -189,18 +184,19 @@ class ViewHours extends React.Component {
                         type="search"
                         placeholder="event name"
                         value={this.state.purposeQuery}
-                        onChange={e =>
-                          {this.setState({purposeQuery: e.target.value})}
-                        }>
-                      </input>
-                      <br/>
+                        onChange={e => {
+                          this.setState({ purposeQuery: e.target.value });
+                        }}
+                      ></input>
+                      <br />
                       <button
                         className={`${this.uTE}VH`}
                         id="vhVerboseClear"
                         onClick={e => {
                           e.preventDefault();
-                          this.setState({purposeQuery: ""});
-                        }}>
+                          this.setState({ purposeQuery: "" });
+                        }}
+                      >
                         Clear Query
                       </button>
                     </div>
@@ -211,7 +207,8 @@ class ViewHours extends React.Component {
                         value={-1}
                         disabled={/*this.uTE === 'volunteer'*/ false}
                         checked={this.state.isPaid === null}
-                        onChange={_ => this.setState({isPaid: null})} />
+                        onChange={_ => this.setState({ isPaid: null })}
+                      />
                       <label htmlFor={null}>All</label>
                       <br />
                       <input
@@ -219,54 +216,57 @@ class ViewHours extends React.Component {
                         value={1}
                         disabled={/*this.uTE === 'volunteer'*/ false}
                         checked={this.state.isPaid === true}
-                        onChange={_ => this.setState({isPaid: true})} />
-                      <label htmlFor={1}>
-                        Only Teaching
-                      </label>
+                        onChange={_ => this.setState({ isPaid: true })}
+                      />
+                      <label htmlFor={1}>Only Teaching</label>
                       <br />
                       <input
                         type="radio"
                         value={0}
                         checked={this.state.isPaid === false}
-                        onChange={_ => this.setState({isPaid: false})} />
-                      <label htmlFor={0}>
-                        Only Volunteering
-                      </label>
+                        onChange={_ => this.setState({ isPaid: false })}
+                      />
+                      <label htmlFor={0}>Only Volunteering</label>
                       <br />
                     </div>
                   </div>
                 </div>
                 <div id="vhFuncButtonsWrapper">
-
                   <button
                     className={`${this.uTE}VH`}
                     disabled={this.state.deployedList === ""}
                     onClick={e => {
                       e.preventDefault();
                       this.setState({
-                        modalWindow: <LoadingModal text="Getting Report ..."/>
-                      })
+                        modalWindow: <LoadingModal text="Getting Report ..." />
+                      });
                       getHoursReport(
                         this.state.fromDate,
                         this.state.toDate,
-                        this.state.isPaid)
+                        this.state.isPaid
+                      )
                         .then(url => {
-                          this.setState({modalWindow: ""});
-                          let a = document.createElement('a');
+                          this.setState({ modalWindow: "" });
+                          let a = document.createElement("a");
                           a.href = url;
-                          a.download = 'report.pdf';
+                          a.download = "report.pdf";
                           a.click();
                         })
                         .catch(err => {
                           this.setState({
-                            modalWindow:
-                              <StatusModal title="Could Not Get Report"
+                            modalWindow: (
+                              <StatusModal
+                                title="Could Not Get Report"
                                 text={err.msg}
-                                onClose={e => this.setState({modalWindow: ""})}
-                                />
-                          })
-                        })
-                    }}>
+                                onClose={e =>
+                                  this.setState({ modalWindow: "" })
+                                }
+                              />
+                            )
+                          });
+                        });
+                    }}
+                  >
                     Get Report
                   </button>
                   <input
@@ -277,121 +277,130 @@ class ViewHours extends React.Component {
                     onClick={e => {
                       e.preventDefault();
                       this.repopulateDeployedList();
-                    }}/>
-                    <input
-                      className={`${this.uTE}VH`}
-                      type="reset"
-                      value="Clear Filters"
-                      disabled={this.state.fullList.length === 0}
-                      onClick={e => {
-                        e.preventDefault();
-                        this.setState({
-                          fromDate: "",
-                          toDate: "",
-                          purposeQuery: "",
-                          isPaid: this.uTE === "volunteer" ? false : null,
-                          deployedList: this.generateHoursRows(this.state.fullList)
-                        })
-                      }}/>
-                    </div>
-                  </form>
+                    }}
+                  />
+                  <input
+                    className={`${this.uTE}VH`}
+                    type="reset"
+                    value="Clear Filters"
+                    disabled={this.state.fullList.length === 0}
+                    onClick={e => {
+                      e.preventDefault();
+                      this.setState({
+                        fromDate: "",
+                        toDate: "",
+                        purposeQuery: "",
+                        isPaid: this.uTE === "volunteer" ? false : null,
+                        deployedList: this.generateHoursRows(
+                          this.state.fullList
+                        )
+                      });
+                    }}
+                  />
                 </div>
-              </div>
+              </form>
             </div>
-          </React.Fragment>
-        );
-      }
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  }
 
-      /*
+  /*
         Complex filter function constructor.
         The constructed function is used as a filter by generateHoursRows().
         Called everytime "Apply Filter" is clicked.
        */
-      constructFilterFunction() {
-        const payCheck = this.state.isPaid === null ? (_) => true :
-        (paid) => paid === this.state.isPaid;
-        const queryCheck = (evnt) => evnt.includes(this.state.purposeQuery);
-        const fromCheck = this.state.fromDate === "" ? (_) => true :
-        (date) => new Date(date) >= new Date(this.state.fromDate + ' 0:00:00');
-        const toCheck = this.state.toDate === "" ? (_) => true :
-        (date) => new Date(date) <= new Date(this.state.toDate + ' 23:59:59');
-        const compiledFunc = (hours_record) => {
-          return (hours_record &&
-            payCheck(hours_record.paid) &&
-            queryCheck(hours_record.purpose) &&
-            fromCheck(hours_record.dateTime) &&
-            toCheck(hours_record.dateTime));
-          };
-        return compiledFunc;
-        }
+  constructFilterFunction() {
+    const payCheck =
+      this.state.isPaid === null
+        ? _ => true
+        : paid => paid === this.state.isPaid;
+    const queryCheck = evnt => evnt.includes(this.state.purposeQuery);
+    const fromCheck =
+      this.state.fromDate === ""
+        ? _ => true
+        : date => new Date(date) >= new Date(this.state.fromDate + " 0:00:00");
+    const toCheck =
+      this.state.toDate === ""
+        ? _ => true
+        : date => new Date(date) <= new Date(this.state.toDate + " 23:59:59");
+    const compiledFunc = hours_record => {
+      return (
+        hours_record &&
+        payCheck(hours_record.paid) &&
+        queryCheck(hours_record.purpose) &&
+        fromCheck(hours_record.dateTime) &&
+        toCheck(hours_record.dateTime)
+      );
+    };
+    return compiledFunc;
+  }
 
-        /*
+  /*
           Used to rerender the list of valid hours.
           Valid hours change based on the filter applied.
           Called on application of a new filter.
          */
-        repopulateDeployedList() {
-          const toDeploy =
-          this.generateHoursRows(this.state.fullList, this.constructFilterFunction());
-          this.setState({deployedList: toDeploy});
-        }
+  repopulateDeployedList() {
+    const toDeploy = this.generateHoursRows(
+      this.state.fullList,
+      this.constructFilterFunction()
+    );
+    this.setState({ deployedList: toDeploy });
+  }
 
-        /*
+  /*
           Populates the view table for hours, using the given list and filter function.
           If no filter is given, the default includes everything.
          */
-        generateHoursRows(inputList, filter=(_) => true) {
-          let hoursSum = 0
-          const compiledList = [];
-          for (let record of inputList) {
-            if (filter(record)) {
-              compiledList.push(
-                <HoursRow
-                  key={record._id}
-                  date={new Date(record.dateTime).toLocaleString()}
-                  event={record.purpose}
-                  hours={record.hours}
-                  paid={record.paid} />
-              )
-              hoursSum += parseFloat(record.hours)
-            }
-          }
-          this.setState({totalHours: hoursSum})
-          return compiledList;
-        }
-
+  generateHoursRows(inputList, filter = _ => true) {
+    let hoursSum = 0;
+    const compiledList = [];
+    for (let record of inputList) {
+      if (filter(record)) {
+        compiledList.push(
+          <HoursRow
+            key={record._id}
+            date={new Date(record.dateTime).toLocaleString()}
+            event={record.purpose}
+            hours={record.hours}
+            paid={record.paid}
+          />
+        );
+        hoursSum += parseFloat(record.hours);
       }
+    }
+    this.setState({ totalHours: hoursSum });
+    return compiledList;
+  }
+}
 
-      /* A table row containing the information for a single hours entry */
-      class HoursRow extends React.Component {
-        constructor(props) {
-          super(props);
-          this.paid = props.paid === undefined || props.paid === null ? 0 : props.paid;
-          this.date = props.date;
-          this.hours = props.hours;
-          this.event = props.event;
-        }
+/* A table row containing the information for a single hours entry */
+class HoursRow extends React.Component {
+  constructor(props) {
+    super(props);
+    this.paid =
+      props.paid === undefined || props.paid === null ? 0 : props.paid;
+    this.date = props.date;
+    this.hours = props.hours;
+    this.event = props.event;
+  }
 
-        render() {
-          return(
-            <tr className="VHviewRow">
-              <td>
-                {this.date}
-              </td>
-              <td>
-                {this.event}
-              </td>
-              <td>
-                {this.hours}
-              </td>
-              {this.paid ?
-                <td className="paid">&#10003;</td>
-                :
-                <td className="unPaid">&times;</td>
-              }
-            </tr>
-          )
-        }
-      }
+  render() {
+    return (
+      <tr className="VHviewRow">
+        <td>{this.date}</td>
+        <td>{this.event}</td>
+        <td>{this.hours}</td>
+        {this.paid ? (
+          <td className="paid">&#10003;</td>
+        ) : (
+          <td className="unPaid">&times;</td>
+        )}
+      </tr>
+    );
+  }
+}
 
-      export default ViewHours;
+export default ViewHours;

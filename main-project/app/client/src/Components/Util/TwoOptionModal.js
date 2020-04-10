@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { getUserTypeExplicit } from "../../Actions/utility.js";
 
 import "../CSS/Common.css";
 import "../CSS/Util/StatusModal.css";
@@ -22,42 +22,38 @@ import "../CSS/Util/StatusModal.css";
  * @extends React
  */
 class StatusModal extends React.Component {
-
   constructor(props) {
     super(props);
-    this.title = props.title === null || props.title === undefined ?
-      "" : props.title;
-    this.text = props.text === null || props.text === undefined ?
-      "" : props.text;
-    this.onA = props.onA === null || props.onA === undefined ?
-      () => true : props.onA;
-    this.onB = props.onB === null || props.onB === undefined ?
-      () => true : props.onB;
+    this.title =
+      props.title === null || props.title === undefined ? "" : props.title;
+    this.text =
+      props.text === null || props.text === undefined ? "" : props.text;
+    this.onA =
+      props.onA === null || props.onA === undefined ? () => true : props.onA;
+    this.onB =
+      props.onB === null || props.onB === undefined ? () => true : props.onB;
     this.textB = props.textB;
   }
 
   render() {
     let type = getUserTypeExplicit();
-    return(
-      <div id="statusModalBlackout" className="fillContainer flex verticalCentre">
+    return (
+      <div
+        id="statusModalBlackout"
+        className="fillContainer flex verticalCentre"
+      >
         <div id="statusModalSubBlackout" className="flex horizontalCentre">
           <div id="statusModalWindow">
             <h1>{this.title}</h1>
             <p>{this.text}</p>
-            <div id="op2ButtonWrapper"  className={`${type}InnerButton`}>
-              <button
-              onClick={e => this.onA()}>
-                OK
-              </button>
-              <button
-              onClick={e => this.onB()}>
-                {this.textB}
-              </button>
+            <div id="op2ButtonWrapper" className={`${type}InnerButton`}>
+              <button onClick={e => this.onA()}>OK</button>
+              <button onClick={e => this.onB()}>{this.textB}</button>
             </div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

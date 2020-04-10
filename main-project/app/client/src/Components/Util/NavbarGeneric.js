@@ -1,11 +1,11 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import '../CSS/Util/NavbarGeneric.css';
+import "../CSS/Util/NavbarGeneric.css";
 import "../CSS/Common.css";
 
-import { logout } from '../../Actions/auth.js';
-import { getUserTypeExplicit } from '../../Actions/utility.js';
+import { logout } from "../../Actions/auth.js";
+import { getUserTypeExplicit } from "../../Actions/utility.js";
 
 /**
  * Generic Navigation bar present on each and every view, aside from login.
@@ -20,11 +20,11 @@ import { getUserTypeExplicit } from '../../Actions/utility.js';
  * @extends React
  */
 class NavbarGeneric extends React.Component {
-
   constructor(props) {
     super(props);
     this.crumbs = props.crumbs instanceof Array ? props.crumbs : [];
-    this.help = props.help === undefined || props.help === null ? "" : props.help;
+    this.help =
+      props.help === undefined || props.help === null ? "" : props.help;
   }
 
   /*
@@ -35,22 +35,21 @@ class NavbarGeneric extends React.Component {
     const compiledCrumbs = [];
     let ticker = 0;
     for (let crumbPair of this.crumbs) {
-      if (crumbPair instanceof Object && 'tag' in crumbPair) {
+      if (crumbPair instanceof Object && "tag" in crumbPair) {
         ticker++;
         let compObj = null;
-        if ('link' in crumbPair) {
+        if ("link" in crumbPair) {
           compObj = (
-            <Link
-            key={ticker}
-            className="crumbTag"
-            to={`${crumbPair.link}`}>
-            {crumbPair.tag}
-          </Link>)
+            <Link key={ticker} className="crumbTag" to={`${crumbPair.link}`}>
+              {crumbPair.tag}
+            </Link>
+          );
         } else {
           compObj = (
             <span key={ticker} className="crumbTag">
-            {crumbPair.tag}
-          </span>)
+              {crumbPair.tag}
+            </span>
+          );
         }
         compiledCrumbs.push(compObj);
         compiledCrumbs.push(<b key={++ticker}>></b>);
@@ -60,31 +59,37 @@ class NavbarGeneric extends React.Component {
     return compiledCrumbs;
   }
 
-  render(){
+  render() {
     let type = getUserTypeExplicit();
-    return(
+    return (
       <div id="preTopWrapper">
         <div id="topBarWrapper">
-          <div id='topBar'>
-            <Link to={`/${type.charAt(0)}/`} id='typer' onClick={e => {
-              console.log('Back to dashboard');
-            }}>{type === "administrator" ? "admin" : type }</Link>
+          <div id="topBar">
+            <Link
+              to={`/${type.charAt(0)}/`}
+              id="typer"
+              onClick={e => {
+                console.log("Back to dashboard");
+              }}
+            >
+              {type === "administrator" ? "admin" : type}
+            </Link>
 
-          <span id='logoutB' onClick={e => {
-              logout().then(() => {
-              console.log("Logged out, I guess")
-              window.location.reload(0)
-              })
-            }}>Logout</span>
-
-
+            <span
+              id="logoutB"
+              onClick={e => {
+                logout().then(() => {
+                  console.log("Logged out, I guess");
+                  window.location.reload(0);
+                });
+              }}
+            >
+              Logout
+            </span>
           </div>
           <div id="underWrapper" className={`${type}NBG`} />
-
         </div>
-        <div id="crumbsWrapper">
-          {this.generateCrumbs()}
-        </div>
+        <div id="crumbsWrapper">{this.generateCrumbs()}</div>
         <div id="helpWrapper" className={`${type}InnerButton`}>
           {this.help}
         </div>

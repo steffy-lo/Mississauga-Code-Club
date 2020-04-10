@@ -52,6 +52,7 @@
   justify-content: center;
   display: flex;
   flex-wrap: wrap-reverse;
+  max-width: 96vw;
 }
 
 .intCloseButton {
@@ -71,7 +72,9 @@
   flex-grow: 0;
   margin: 5px;
   padding: 5px;
-  min-width: 400px;
+  min-width: 300px;
+  width: 40%;
+  max-width: 96vw;
 }
 
 .importerModalPane h4 {
@@ -81,6 +84,10 @@
 
 .importerModalPane p {
   text-align: center;
+}
+
+#impSheetSelectHeader {
+  margin: 0;
 }
 
 .importerModalPane select {
@@ -105,7 +112,21 @@
 
 .scrollableMIDisplay {
   overflow-y: auto;
-  max-height: 100px;
+  max-height: 27vh;
+}
+
+#impRightPane {
+  max-height: 27vh;
+  overflow-y: auto;
+}
+
+#impRightPane div div {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#descView {
+
 }
 
 #descViewAdv h4 {
@@ -118,9 +139,7 @@
   border-collapse: collapse;
 }
 
-#scrollableMITable tbody {
-  max-height: 200px;
-}
+#scrollableMITable tbody {}
 
 #scrollableMITable th, #scrollableMITable td {
   padding: 1px;
@@ -171,11 +190,11 @@
 }
 
 .errored td{
-  background-color: #ff7675;
+  background-color: #ffa801;
 }
 
 .errored:hover td{
-  background-color: #e74c3c;
+  background-color: goldenrod;
   color: black;
 }
 

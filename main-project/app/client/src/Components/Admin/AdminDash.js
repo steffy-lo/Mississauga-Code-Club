@@ -27,21 +27,21 @@ class AdminDash extends React.Component {
       <React.Fragment>
         {this.state.modalWindow}
         <NavbarGeneric
-	    help={
-                <HelpButton
-                text={
-                        <div>
-			This page allows you to access various administration related functions.
-			<br />
-			To create a new class, either import a spreadsheet or click create new classes and enter a class name.
-
-		        </div>
-			}
-
-
-                      parentForClose = {this}
-                    />
-		}/>
+          help={
+            <HelpButton
+              text={
+                <div>
+                  This page allows you to access various administration related
+                  functions.
+                  <br />
+                  To create a new class, either import a spreadsheet or click
+                  create new classes and enter a class name.
+                </div>
+              }
+              parentForClose={this}
+            />
+          }
+        />
         <div className="flexContentContainerGeneric">
           <div className="absolute flex verticalCentre">
             <div id="aDashWelcomeTag">Welcome to the Admin Dashboard</div>
@@ -49,7 +49,6 @@ class AdminDash extends React.Component {
               id="ADashMainWrapper"
               className="flex horizontalCentre reverseWrap"
             >
-
               {/*Shared functionality (i.e. "teacher-like" functionality).*/}
               <div id="mADwSLeft" className="mainADashWindowS">
                 <h2>Your Information</h2>

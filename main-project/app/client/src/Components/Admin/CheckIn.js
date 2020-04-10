@@ -72,24 +72,25 @@ class CheckIn extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList}
-	    help={
-                <HelpButton
-                      text={
-                        <div>
-                          The admin should leave this page open.
-                          <br />
-                          Then, any person who wishes to sign in should
-                          input their email address, the reason they are present,
-                          whether their presence is for volunteering or teaching
-                          (where teaching is paid & volunteering is not) & how long
-                          they will be present for.
-                        </div>
-			      }
-                      parentForClose = {this}
-                    />
-		}
-	/>
+        <NavbarGeneric
+          crumbs={navList}
+          help={
+            <HelpButton
+              text={
+                <div>
+                  The admin should leave this page open.
+                  <br />
+                  Then, any person who wishes to sign in should input their
+                  email address, the reason they are present, whether their
+                  presence is for volunteering or teaching (where teaching is
+                  paid & volunteering is not) & how long they will be present
+                  for.
+                </div>
+              }
+              parentForClose={this}
+            />
+          }
+        />
         <div className="flexContentContainerGeneric">
           {/* Alignment divs */}
           <div className="flex horizontalCentre">

@@ -63,19 +63,15 @@ class SelectUser extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList} help={
-                <HelpButton
-                text={
-                        <div>
-			This page allows you to select a user to edit.
-
-		        </div>
-			}
-
-
-                      parentForClose = {this}
-                    />
-		}/>
+        <NavbarGeneric
+          crumbs={navList}
+          help={
+            <HelpButton
+              text={<div>This page allows you to select a user to edit.</div>}
+              parentForClose={this}
+            />
+          }
+        />
         <div className="flexContentContainerGeneric">
           <div className={"flex horizontalCentre"}>
             <div id="selectUserMainWindowPW">

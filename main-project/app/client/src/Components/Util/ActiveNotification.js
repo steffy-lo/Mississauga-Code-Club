@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import Loader from "./Loader";
 
@@ -13,12 +13,11 @@ import "../CSS/Util/ActiveNotification.css";
   Currently: NOT IN USE. Functional.
  */
 class ActiveNotification extends React.Component {
-
   constructor(props) {
     super(props);
-    this.type = props.type
-    this.text = props.text === null || props.text === undefined ?
-      "" : props.text;
+    this.type = props.type;
+    this.text =
+      props.text === null || props.text === undefined ? "" : props.text;
   }
 
   render() {
@@ -26,10 +25,10 @@ class ActiveNotification extends React.Component {
       return (
         <div className="flex horizontalCentre">
           <div className="activeNotCondClear">
-          <p>
-            <h6>&#10003;</h6>
-            <span>{this.text}</span>
-          </p>
+            <p>
+              <h6>&#10003;</h6>
+              <span>{this.text}</span>
+            </p>
           </div>
         </div>
       );
@@ -37,10 +36,10 @@ class ActiveNotification extends React.Component {
       return (
         <div className="flex horizontalCentre">
           <div className="activeNotCondFail">
-          <p>
-            <h6>&times;</h6>
-            <span>{this.text}</span>
-          </p>
+            <p>
+              <h6>&times;</h6>
+              <span>{this.text}</span>
+            </p>
           </div>
         </div>
       );
@@ -49,10 +48,8 @@ class ActiveNotification extends React.Component {
         <div className="flex horizontalCentre">
           <div className="activeNotCondLoading">
             <p>
-              <Loader border={2} height={20} width={20}/>
-            <span>
-              {this.text}
-            </span>
+              <Loader border={2} height={20} width={20} />
+              <span>{this.text}</span>
             </p>
           </div>
         </div>

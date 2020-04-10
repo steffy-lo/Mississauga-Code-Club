@@ -47,31 +47,33 @@ class CreateUser extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={navList}
-	help={
-                <HelpButton
-                text={
-                        <div>
-			This page allows you to create a new user without importing a spreadsheet.
-			<br />
-			The email used must be unique to that specific user. Once set, the email <b>cannot</b> be changed from this online interface.
-
-		        <br />
-			Students can see their own marks.
-		        <br />
-			Volunteers can see the hours that they have worked.
-		        <br />
-			Teachers can mark students and edit classes. They can also see the hours that they have worked.
-		        <br />
-			Administrators can access everything that Teachers can access as well as perform administrative functions.
-
-		        </div>
-			}
-
-
-                      parentForClose = {this}
-                    />
-		}/>
+        <NavbarGeneric
+          crumbs={navList}
+          help={
+            <HelpButton
+              text={
+                <div>
+                  This page allows you to create a new user without importing a
+                  spreadsheet.
+                  <br />
+                  The email used must be unique to that specific user. Once set,
+                  the email <b>cannot</b> be changed from this online interface.
+                  <br />
+                  Students can see their own marks.
+                  <br />
+                  Volunteers can see the hours that they have worked.
+                  <br />
+                  Teachers can mark students and edit classes. They can also see
+                  the hours that they have worked.
+                  <br />
+                  Administrators can access everything that Teachers can access
+                  as well as perform administrative functions.
+                </div>
+              }
+              parentForClose={this}
+            />
+          }
+        />
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             <form id="singleUserEditMainWindow">

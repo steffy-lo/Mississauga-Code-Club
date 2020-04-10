@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import Loader from "./Loader";
 
@@ -14,24 +14,30 @@ import "../CSS/Util/StatusModal.css";
     text: The text dusokayed alongside the loader. Can be empty.
  */
 class LoadingModal extends React.Component {
-
   constructor(props) {
     super(props);
-    this.text = props.text === null || props.text === undefined ?
-      "" : props.text;
+    this.text =
+      props.text === null || props.text === undefined ? "" : props.text;
   }
 
   render() {
-    return(
-      <div id="statusModalBlackout" className="fillContainer flex verticalCentre">
+    return (
+      <div
+        id="statusModalBlackout"
+        className="fillContainer flex verticalCentre"
+      >
         <div id="statusModalSubBlackout" className="flex horizontalCentre">
           <div id="statusModalWindow">
             <Loader />
-            <p><b><i>{this.text}</i></b></p>
+            <p>
+              <b>
+                <i>{this.text}</i>
+              </b>
+            </p>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

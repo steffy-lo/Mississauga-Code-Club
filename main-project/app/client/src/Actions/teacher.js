@@ -108,7 +108,7 @@ export const submitFeedback = (email, classId, feedbackFormData) => {
 
     console.log("submitting report: ", requestObj)
     axios.post(PREFIX + '/api/updatereport',
-    requestObj, {headers: {"Content-Type": "application/json"}})
+    JSON.stringify(requestObj), {headers: {"Content-Type": "application/json"}})
     .then(response => {
       console.log(response);
       resolve()

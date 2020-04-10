@@ -43,29 +43,35 @@ class ClassImporter extends React.Component {
     return (
       <React.Fragment>
         {this.state.modalWindow}
-        <NavbarGeneric crumbs={[{tag: "Dashboard", link: "/a"}, {tag: "Import from File"}]}
-	help={
-                <HelpButton
-                      text={
-                        <div>
-                          This page allows an admin to perform the initial import to create any new class.
-                          <br />
-                          Students that already exist should just have their email listed on the spreadsheet.
-
-			  <br />
-			  New students should have all their information filled in.
-
-			  <br />
-			  If an error occurs, the system will attempt to insert as much as possible. Rows that fail should be inserted manually through the edit class functions accessible on the main admin page.
-
-			  <br />
-			  Supported file types: .xls, .xlsx
-                        </div>
-			      }
-                      parentForClose = {this}
-                    />
-		}
-	/>
+        <NavbarGeneric
+          crumbs={[
+            { tag: "Dashboard", link: "/a" },
+            { tag: "Import from File" }
+          ]}
+          help={
+            <HelpButton
+              text={
+                <div>
+                  This page allows an admin to perform the initial import to
+                  create any new class.
+                  <br />
+                  Students that already exist should just have their email
+                  listed on the spreadsheet.
+                  <br />
+                  New students should have all their information filled in.
+                  <br />
+                  If an error occurs, the system will attempt to insert as much
+                  as possible. Rows that fail should be inserted manually
+                  through the edit class functions accessible on the main admin
+                  page.
+                  <br />
+                  Supported file types: .xls, .xlsx
+                </div>
+              }
+              parentForClose={this}
+            />
+          }
+        />
         <div className="flexContentContainerGeneric">
           <div className="flex horizontalCentre">
             {/* Upload Window */}
@@ -226,14 +232,15 @@ class CIModal extends React.Component {
         YELLOW IF NON-FATAL ERRORS (teacher/student/volunteer import error).
         GREEN IF NO ERRORS.
        */
-      const errorCountColour = iffNum === 1 ? "fatal-errored" :
-        stuNum + instNum + volNum === 0 ? "errorless" : "errored";
+      const errorCountColour =
+        iffNum === 1
+          ? "fatal-errored"
+          : stuNum + instNum + volNum === 0
+          ? "errorless"
+          : "errored";
 
       shList.push(
-        <tr
-          className={errorCountColour}
-          key={ticker}
-        >
+        <tr className={errorCountColour} key={ticker}>
           <th>{sheet}</th>
           <td>{iffNum}</td>
           <td>{stuNum}</td>
@@ -385,7 +392,7 @@ class CIModal extends React.Component {
               This will repopulate each time a new item is selected.
               Uses the selectionList generated and assigned in singleTimeSetup.
             */}
-            <p title="Select a sheet">
+            <p title="Select a sheet" id="impSheetSelectHeader">
               <select
                 onChange={e => {
                   this.setState({
@@ -396,7 +403,9 @@ class CIModal extends React.Component {
                 {this.state.selectionList}
               </select>
             </p>
-            {this._populateDescription()}
+            <div id="impRightPane">
+              {this._populateDescription()}
+            </div>
           </div>
         </div>
       </div>
