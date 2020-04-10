@@ -1,6 +1,6 @@
 import bcrypt
 import datetime
-from pymongo import MongoClient
+from pymongo import MongoClient, IndexModel, TEXT, HASHED
 from flask import session, jsonify
 
 import mailsane
