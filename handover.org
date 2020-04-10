@@ -6,6 +6,7 @@
 ** Backend
    - Python using a library called Flask
    - Database is MongoDB
+     - Emails stored in the database are normalized to ensure a consistent comparable format. What this means is hello@GMAIL.com gets converted to hello@gmail.com and so on. There is an example on how this works at the end of this document under Code Samples in case you wish to expand/change the backend.
 
 ** Frontend
    - React Application (a library available for Node.js)
@@ -33,11 +34,11 @@
 * Deployment
 ** Requirements
    - You must have several packages/pieces of software installed
-     - Node.js and NPM (used to build react)
-     - Docker
+     - Node.js and NPM (used to build react) [[https://nodejs.org/en/][Link]]
+     - Docker (used to run a medium weight Linux distribution containing the web server, deployable on Heroku, AWS, etc.) [[https://www.docker.com/][Link]]
      - Make
      - A shell of your choice (eg. bash)
-     - Heroku CLI (optional, only if you are deploying to Heroku)
+     - Heroku CLI (optional, only if you are deploying to Heroku, installable through NPM)
 ** Process
    - Assuming that you are running bash, are at the directory that this file is located in, and you are deploying to Heroku, you want to do the following things
    - Edit main-project/Makefile's entry for shipprod. Right now it says the following thing. You will want to change the *bolded areas* to be the same as your *Heroku App Name*
@@ -67,4 +68,21 @@ Run the following make command to remove the loaded Docker image. Afterwards, yo
 
 #+BEGIN_SRC sh
 make clean
+#+END_SRC
+
+* Code Samples
+  - Here you can find some code samples explaining some of the potentially harder to intuitively understand concepts in case you wish to change/expand the backend.
+** Email Normalization
+  - This ensures a consistent email format for comparisons in authentication/other uses on the backend. For example, hello@GMAIL.com changes to hello@gmail.com
+
+#+BEGIN_SRC python
+email = mailsane.normalize(request.json['email'])
+if email.error: # if there was an error in normalization
+    abort(400)  # Return a 400 (Bad Request)
+
+if dbworker.validateCredentials(str(email), request.json['password']):
+    userType = dbworker.getUserType(str(email))
+    # str(email) is either the normalized email or the error message
+    # resulting from normalization. This includes if a domain name
+    # is not valid.
 #+END_SRC
