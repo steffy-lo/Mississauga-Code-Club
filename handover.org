@@ -1,6 +1,7 @@
 #+TITLE: Documentation of CSC 301
-#+AUTHOR: Nathan Fischer, Andriyan Bilyk, Steffy Lo, Philip Smith, Dragan Soso, Ari Truanovsky, and Edwin Chan
+#+AUTHOR: Team 19
 #+OPTIONS: ^:nil
+#+latex_header: \hypersetup{colorlinks=true,linkcolor=black}
 
 * Technical Structure
 ** Backend
@@ -18,19 +19,28 @@
    - Input validation on the data from the frontend is spotty
      - This was mostly something we worked on near the end and as a result we did not fully have enough time to work on it. This means there is a weakness there where an attacker could provide invalid input which ends up in the database.
    - Npm will try to resolve some vulnerabilities. It is unable to fix all of them and you may wish to look into these to ensure that the website is secure in the long term.
-   - Some of the Python packages have hardcoded versions. You may wish to update these in the future to prevent vulnerabilities from forming.
+   - Some of the Python packages have hardcoded versions. You may wish to update these in the future to prevent vulnerabilities from forming. You can change this in main-project/requirements.txt
+     - This is also where you can add new Python packages to be installed in case you wish to change/expand the backend.
 
 * Configuration
   - The configuration for the backend is located at main-project/app/config.py
+  - Configuration should be verified before deployment
 ** Variables and what they do
-    - SECRET_KEY :: This is the secret key for the session cookie, an encrypted cookie stored on the browser of the user. If someone knows this key, they can modify their own cookie and authenticate as another user. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
+*** Configuration Variables
+These variables are located in main-project/app/config.py
+    - SECRET_KEY :: This is the secret key for the session cookie, an encrypted cookie stored on the browser of the user. If someone knows this key, they can modify their own cookie and authenticate as another user. *Do not show this publicly and edit this after accessing the source code to prevent us from being able to do malicious things.*
     - STATIC_FOLDER :: Do not change this, this points to the React app so that the Flask server knows where to go to for 'static' HTML files.
     - ENABLE_DEBUG_ROUTES :: When True, this opens up debug routes to the public. *This should be set to False for all production deployments*. When this is set to False, those routes will return a 404 instead (therefore not appearing to be a real route to the general public)
-    - DBUSER :: This is the username for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
-    - DBPASSWORD :: This is the password for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
+    - DBUSER :: This is the username for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from being able to do malicious things.*
+    - DBPASSWORD :: This is the password for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from being able to do malicious things.*
     - MONGOURI :: This tells the server where the MongoDB instance is. This should be changed once you determine where your production MongoDB server will be.
     - DATABASE :: This points to the *database* within a MongoDB instance. The idea is instance -> *database* -> collection (eg. reports, users) -> record. Our provider only allowed us one *database* with an unlimited amount of collections within that database. Once you determine what your database will be named, change this variable to be the same.
-
+*** Other Variables
+    - session :: This is a special variable associated with the Flask app. It allows you to modify the session cookie and functions as a dictionary unique to each computer connecting to the server.
+* Hosting Recommendations
+  - We recommend hosting the site on a subdomain of mcode.club, eg. marks.mcode.club
+  - As to hosting it, the site is run through a Docker image and is relatively portable. Many online services such as Heroku, AWS, etc. allow you to host Docker images.
+  - We have no specific recommendations for MongoDB providers, Heroku integrates with a provider called mLab which is the service we used for our demo.
 * Deployment
 ** Requirements
    - You must have several packages/pieces of software installed
@@ -39,6 +49,12 @@
      - Make
      - A shell of your choice (eg. bash)
      - Heroku CLI (optional, only if you are deploying to Heroku, installable through NPM)
+       - You can run *make getheroku* in the main-project directory to install it if you have NPM and make installed. Please have an account setup before running the command.
+** First Deployment Pre-Steps
+  1. Install required software
+  2. If deploying to Heroku, log in with the CLI
+  3. Configure main-project/app/config.py appropriately. (see [[*Configuration Variables]])
+
 ** Process
    - Assuming that you are running bash, are at the directory that this file is located in, and you are deploying to Heroku, you want to do the following things
    - Edit main-project/Makefile's entry for shipprod. Right now it says the following thing. You will want to change the *bolded areas* to be the same as your *Heroku App Name*
@@ -86,3 +102,28 @@ if dbworker.validateCredentials(str(email), request.json['password']):
     # resulting from normalization. This includes if a domain name
     # is not valid.
 #+END_SRC
+* Authors and Licensing
+  - Written by Nathan Fischer, Andriyan Bilyk, Steffy Lo, Philip Smith, Dragan Soso, Ari Truanovsky, and Edwin Chan
+  - Licensed under the MIT License, located in LICENSE in this directory.
+
+MIT License
+
+Copyright (c) 2020 Nathan Fischer, Dragan Soso, Edwin Chan, Steffy Lo, Ari Truanovsky, Philip Smith, Andriyan Bilyk
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
