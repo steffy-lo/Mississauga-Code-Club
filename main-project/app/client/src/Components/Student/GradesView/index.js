@@ -9,6 +9,7 @@ import './styles.css'
 import "../../CSS/Common.css"
 
 import HelpButton from "../../Util/HelpButton";
+import {deauthorise} from "../../../Actions/auth";
 
 /**
  * View for Students' Grades.
@@ -165,6 +166,12 @@ class GradesView extends React.Component {
             })
             .catch(function (error) {
                 // handle error
+                if (err.response.status === 403 || err.response.status === 401) {
+                    deauthorise();
+                    window.location.reload(true);
+                } else {
+                    currentComponent.props.history.goBack();
+                }
                 console.log(error);
             })
     }

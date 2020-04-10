@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import NavBarGeneric from "../Util/NavbarGeneric";
+import { logout, deauthorise } from './auth';
 
 import { Link } from "react-router-dom";
 import { uid } from "react-uid";
@@ -66,6 +67,14 @@ class StudentDash extends React.Component {
       })
       .catch(function(error) {
         // handle error
+          if (error.response.status === 401) {
+              deauthorise();
+              window.location.reload(true);
+          } else if (error.response.status === 400 || error.response.status === 500) {
+              logout();
+              deauthorise();
+              window.location.reload(true);
+          }
         this.setState({modalWindow: ""})
         console.log(error);
       });
