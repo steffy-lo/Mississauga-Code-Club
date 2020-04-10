@@ -890,9 +890,8 @@ def editUser():
     if dbworker.getUser(str(email)) is None:
         abort(404)
 
-    if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes'] \
-            or 'password' in request.json['newAttributes']:
-        # No changes requested or an attempt was made to change the email or _id or the password
+    if request.json['newAttributes'] == {} or 'email' in request.json['newAttributes'] or '_id' in request.json['newAttributes']:
+        # No changes requested or an attempt was made to change the email or _id
         abort(400)
 
     # TODO: Validate that all the changes made are valid
@@ -904,12 +903,13 @@ def editUser():
     except exceptions.ValidationError:
         abort(400)
 
-    if 'birthday' in request.json['newAttributes']:
+    if 'birthday' in request.json['newAttributes'] or 'password' in request.json['newAttributes']:
         # Convert birthday from string to datetime object
         # See https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object
         correctedTime = None
         try:
-            correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            if 'birthday' in request.json['newAttributes']:
+                correctedTime = datetime.datetime.strptime(request.json['newAttributes']['birthday'], "%Y-%m-%dT%H:%M:%S.%fZ")
         except:
             abort(400)
 
@@ -917,6 +917,8 @@ def editUser():
         for x in request.json['newAttributes']:
             if x == 'birthday':
                 correctedDict['birthday'] = correctedTime
+            elif x == 'password':
+                dbworker.setPassword(str(email), request.json['newAttributes']['password'])
             else:
                 correctedDict[x] = request.json['newAttributes'][x]
 
