@@ -132,6 +132,8 @@ class TeacherDash extends React.Component {
                   <br />
 		  At the bottom of the classes column, you can go to another page to see your logged hours.
 		  <br />
+		  To swap between seeing Active and Completed courses, click on the Active or Completed Courses button at the top of the list of classes.
+		  <br />
 		  If you do not see a class or student listed here, please contact an administrator.
 
                 </div>
