@@ -94,12 +94,19 @@ def validateAccess(expectedUserType):
 def createUser(email, parentEmail, firstName, lastName, password, userType, phoneNumber, birthday, parentName):
     """
     Create a user and add them to the database
+
+    Returns whether or not it was successful.
     """
+    if getUser(email) is not None:
+        return False
+
     salt = bcrypt.gensalt()
     password = password.encode()
 
     saltedPassword = bcrypt.hashpw(password, salt).decode('utf-8')
     mclient[database]['users'].insert_one({'email' : email, 'parentEmail' : parentEmail, 'firstName' : firstName, 'lastName' : lastName, 'password' : saltedPassword, 'userType' : userType, 'phoneNumber' : phoneNumber, 'birthday' : birthday, 'parentName' : parentName})
+
+    return True
 
 def setPassword(email, newPassword):
     """
