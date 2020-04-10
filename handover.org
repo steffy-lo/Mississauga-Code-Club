@@ -86,6 +86,13 @@ Run the following make command to remove the loaded Docker image. Afterwards, yo
 make clean
 #+END_SRC
 
+*** Error with either shipprod or shipdev
+Heroku timed out. You essentially need to try again and then clean the container. This means running...
+#+BEGIN_SRC sh
+# Use shipdev if you are using the dev location
+make shipprod; make clean
+#+END_SRC
+
 * Code Samples
   - Here you can find some code samples explaining some of the potentially harder to intuitively understand concepts in case you wish to change/expand the backend.
 ** Email Normalization
