@@ -12,9 +12,9 @@
 * Configuration
   - The configuration for the backend is located at main-project/app/config.py
 ** Variables and what they do
-    - SECRET_KEY :: This is the secret key for the session cookie, an encrypted cookie stored on the browser of the user. If someone knows this key, they can modify their own cookie and authenticate as another user. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
-    - STATIC_FOLDER :: Do not change this, this points to the React app so that the Flask server knows where to go to for 'static' HTML files.
-    - ENABLE_DEBUG_ROUTES :: When True, this opens up debug routes to the public. *This should be set to False for all production deployments*
+    - SECRET\_KEY :: This is the secret key for the session cookie, an encrypted cookie stored on the browser of the user. If someone knows this key, they can modify their own cookie and authenticate as another user. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
+    - STATIC\_FOLDER :: Do not change this, this points to the React app so that the Flask server knows where to go to for 'static' HTML files.
+    - ENABLE\_DEBUG_ROUTES :: When True, this opens up debug routes to the public. *This should be set to False for all production deployments*
     - DBUSER :: This is the username for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
     - DBPASSWORD :: This is the password for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from doing malicious things.*
     - MONGOURI :: This tells the server where the MongoDB instance is. This should be changed once you determine where your production MongoDB server will be.
@@ -42,7 +42,7 @@ shipprod:
 
 	heroku container:release web --app *mcc-prod-301*
 
-Afterwards, again assuming that you are in the directory where this file is located, you want to run the following command.
+   - Afterwards, again assuming that you are in the directory where this file is located, you want to run the following command.
 
 #+BEGIN_SRC sh
 cd main-project; make prod
