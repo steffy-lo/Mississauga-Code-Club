@@ -140,7 +140,11 @@ class SheetHandler:
 
 
     def getVolunteerList(self, index):
-        # Construct lists of helpers
+        """
+        Construct a list of helpers
+        :param index:
+        :return:
+        """
         volunteerList = []
         self.failures['Helpers'][index] = []
         for h in self.tableDict['Instructors'][index]['Helper Account(s)']:
@@ -155,6 +159,12 @@ class SheetHandler:
 
 
     def assignSpreadSheetUsers(self):
+        """
+        Takes the info from each sheet in the table dictionary, instantiates a class, and populates said class with
+        students and instructors.
+
+        :return: The error dictionary with the keys Students, Instructors, Helpers, and Invalid File Formats
+        """
         for sheetIndex in self.fullSheet:
             if 'Course Title' in self.tableDict['Course'][sheetIndex] and 'Schedule' in self.tableDict['Course'][sheetIndex]:
                 if not pd.isnull(self.tableDict['Course'][sheetIndex]['Course Title'][1]) and \
@@ -176,17 +186,3 @@ class SheetHandler:
 
 
         return self.failures
-
-# sys.stderr.write(str(list(courseTable.index)) + '\n')
-# sys.stderr.write(str(self.tableDict['Course'][sheetIndex]) + '\n')
-
-# sys.stderr.write(str(list(courseTable.columns)) + '\n')
-# sys.stderr.write(str(courseTable) + '\n')
-# courseTable.index = courseTable.index.drop_duplicates(keep='first')
-# sys.stderr.write(str(courseTable) + '\n')
-
-# sys.stderr.write(str(list(studentTable.columns)) + '\n')
-# sys.stderr.write(str(self.tableDict['Students'][sheetIndex]) + '\n')
-
-# sys.stderr.write(str(list(instructorTable.columns)) + '\n')
-# sys.stderr.write(str(self.tableDict['Instructors'][sheetIndex]) + '\n')

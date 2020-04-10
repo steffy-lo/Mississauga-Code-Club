@@ -4,6 +4,7 @@ import os
 import bcrypt
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+import bson.errors
 from jsonschema import validate, exceptions
 import datetime
 import pandas as pd
@@ -185,7 +186,6 @@ def getStudentDashboardInfo():
     studentDashboardDict['Classes'] = []
     studentDashboardDict['Classes'] = studentDashboardDict['Classes'] + classes['student']
 
-    # TODO: set up mock grades to put in here
     classReports = dbworker.mclient[dbworker.database]['reports']
 
     for c in studentDashboardDict['Classes']:
@@ -233,12 +233,18 @@ def setMarkingSection():
     if email.error:
         abort(400)
 
+    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.set_marking)
+    except exceptions.ValidationError:
+        abort(400)
+
     convClassId = ObjectId(request.json['classId'])
 
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
         abort(401)
 
-    # TODO: Validate types
+
     dbworker.addMarkingSection(convClassId, request.json['sectionTitle'], request.json['weightInfo'])
 
     return jsonify({'success' : True})
@@ -306,6 +312,11 @@ def setMark():
         if x not in request.json:
             abort(400)
 
+    try:
+        validate(instance=request.json, schema=SchemaFactory.set_mark)
+    except exceptions.ValidationError:
+        abort(400)
+
     convClassId = ObjectId(request.json['classId'])
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
         abort(401)
@@ -357,7 +368,10 @@ def updateCourseInfo():
     if not dbworker.validateAccess(dbworker.userTypeMap['admin']) and not dbworker.isClassInstructor(str(email), convClassId):
         abort(401)
 
-    # TODO: Validate types
+    try:
+        validate(instance=request.json, schema=SchemaFactory.update_CI)
+    except exceptions.ValidationError:
+        abort(400)
 
     json = {'ongoing' : request.json['status'], 'courseTitle' : request.json['newTitle']}
 
@@ -373,15 +387,17 @@ def getCriteria(class_id):
     if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(401)
 
-    # TODO: Validate types
+    try:
+        cl = dbworker.getClass(ObjectId(class_id))
+        if cl is None:
+            abort(404)
 
-    cl = dbworker.getClass(ObjectId(class_id))
-    if cl is None:
-        abort(404)
+        to_return = {"courseTitle": cl['courseTitle'], "markingSections": cl['markingSections']}
+        to_return['_id'] = str(cl['_id'])
+        return jsonify({'result' : to_return, 'success' : True})
+    except bson.errors.InvalidId:
+        abort(400)
 
-    to_return = {"courseTitle": cl['courseTitle'], "markingSections": cl['markingSections']}
-    to_return['_id'] = str(cl['_id'])
-    return jsonify({'result' : to_return, 'success' : True})
 
 @app.route('/api/getclass', methods=['POST'])
 def getClass():
@@ -401,12 +417,20 @@ def getClass():
 
     # TODO: Validate types
 
-    cl = dbworker.getClass(ObjectId(request.json['_id']))
-    if cl is None:
-        abort(404)
+    try:
+        validate(instance=request.json, schema=SchemaFactory.get_class)
+    except exceptions.ValidationError:
+        abort(400)
 
-    cl['_id'] = str(cl['_id'])
-    return jsonify({'result' : cl, 'success' : True})
+    try:
+        cl = dbworker.getClass(ObjectId(request.json['_id']))
+        if cl is None:
+            abort(404)
+
+        cl['_id'] = str(cl['_id'])
+        return jsonify({'result' : cl, 'success' : True})
+    except bson.errors.InvalidId:
+        abort(400)
 
 @app.route('/api/mymarks/')
 def getMyMarks():
@@ -474,10 +498,10 @@ def updateReport():
     if request.json is None:
         abort(400)
 
-    # try:
-    #     validate(instance=request.json, schema=SchemaFactory.report_update)
-    # except exceptions.ValidationError:
-    #     abort(400)
+    try:
+        validate(instance=request.json, schema=SchemaFactory.report_update)
+    except exceptions.ValidationError:
+        abort(400)
 
     if not dbworker.validateAccessList([dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor']]):
         abort(403)
