@@ -40,6 +40,7 @@ These variables are located in main-project/app/config.py
   - We recommend hosting the site on a subdomain of mcode.club, eg. marks.mcode.club
   - As to hosting it, the site is run through a Docker image and is relatively portable. Many online services such as Heroku, AWS, etc. allow you to host Docker images.
   - We have no specific recommendations for MongoDB providers, Heroku integrates with a provider called mLab which is the service we used for our demo.
+  - We recommend ensuring that your host supports TLS/SSL (ie. that someone can connect through https so that way passwords can be sent safely from the user to the server)
 * Deployment
 ** Requirements
    - You must have several packages/pieces of software installed
