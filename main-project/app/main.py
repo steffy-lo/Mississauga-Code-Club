@@ -1304,7 +1304,7 @@ def addSampleUser(username):
     if not ENABLE_DEBUG_ROUTES:
         abort(404)
 
-    dbworker.createUser(username + '@mcode.club', username + '@roma.it', 'Sample', 'User', 'I love rock and roll', 1, '647-111-1111', datetime.datetime.strptime('1970-01-01', '%Y-%m-%d'), 'Parent Name')
+    dbworker.createUser(username + '@mcode.club', username + '@mcode.club', 'Sample', 'User', 'I love rock and roll', 1, '647-111-1111', datetime.datetime.strptime('1970-01-01', '%Y-%m-%d'), 'Parent Name')
     return username
 
 @app.route('/showusers')
