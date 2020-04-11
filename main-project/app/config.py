@@ -13,11 +13,11 @@ ENABLE_DEBUG_ROUTES = False
 
 # Database related configuration
 # DO NOT SHOW THESE CREDENTIALS PUBLICLY
-DBUSER = "mccgamma"
-DBPASSWORD = "alfdasdf83423j4lsdf8"
-MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@ds117535.mlab.com:17535/heroku_hxfxx8nj?retryWrites=false"
+DBUSER = "USERNAME"
+DBPASSWORD = "PASSWORD"
+MONGOURI = "mongodb://" + DBUSER + ":" + DBPASSWORD + "@URL-FILLTHISIN?retryWrites=false"
 
-DATABASE = 'heroku_hxfxx8nj' # This is a database within a MongoDB instance
+DATABASE = 'DATABASE-FILLTHISIN' # This is a database within a MongoDB instance
 
 
 

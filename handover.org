@@ -32,7 +32,7 @@ These variables are located in main-project/app/config.py
     - ENABLE_DEBUG_ROUTES :: When True, this opens up debug routes to the public. *This should be set to False for all production deployments*. When this is set to False, those routes will return a 404 instead (therefore not appearing to be a real route to the general public)
     - DBUSER :: This is the username for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from being able to do malicious things.*
     - DBPASSWORD :: This is the password for the administrator account on the MongoDB instance. *Do not show this publicly and edit this after accessing the source code to prevent us from being able to do malicious things.*
-    - MONGOURI :: This tells the server where the MongoDB instance is. This should be changed once you determine where your production MongoDB server will be.
+    - MONGOURI :: This tells the server where the MongoDB instance is. *This should be changed once you determine where your production MongoDB server will be.*
     - DATABASE :: This points to the *database* within a MongoDB instance. The idea is instance -> *database* -> collection (eg. reports, users) -> record. Our provider only allowed us one *database* with an unlimited amount of collections within that database. Once you determine what your database will be named, change this variable to be the same.
 *** Other Variables
     - session :: This is a special variable associated with the Flask app. It allows you to modify the session cookie and functions as a dictionary unique to each computer connecting to the server.
