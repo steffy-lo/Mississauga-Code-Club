@@ -131,7 +131,7 @@ def createClass(courseTitle, students, instructors, volunteers, semester):
     # This will be returned outside of the function
     val = mclient[database]['classes'].insert_one({'courseTitle' : courseTitle, 'students' : students, 'instructors' : instructors, 'volunteers' : volunteers, 'semester' : semester, 'markingSections' : {}, 'ongoing' : True})
 
-    addMissingEmptyReports() # TODO: This is super inefficient, fix this
+    addMissingEmptyReports() # This is super inefficient
 
     return val
 
@@ -170,7 +170,6 @@ def addInstructor(courseId, email):
 
     Returns True if successful, False otherwise
     """
-    # TODO: Maybe merge this with addStudent?
     matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
 
     if matchingClass is None:
@@ -210,7 +209,7 @@ def removeInstructor(courseId, email):
         # Instructor was not found in the list
         return False
 
-    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}}) # TODO: Check if this update was successful
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'instructors' : staffList}})
 
     return True
 
@@ -220,7 +219,6 @@ def addVolunteer(courseId, email):
 
     Returns True if successful, False otherwise
     """
-    # TODO: Maybe merge this with addStudent?
     matchingClass = mclient[database]['classes'].find_one({'_id' : courseId})
 
     if matchingClass is None:
@@ -260,7 +258,7 @@ def removeVolunteer(courseId, email):
         # Instructor was not found in the list
         return False
 
-    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'volunteers' : staffList}}) # TODO: Check if this update was successful
+    mclient[database]['classes'].update_one({'_id' : courseId}, {'$set' : {'volunteers' : staffList}})
 
     return True
 
@@ -276,7 +274,7 @@ def getClasses(email, filt={}):
     """
     currUserType = getUserType(email)
 
-    # TODO: Is there a faster way of doing this lookup?
+    # Is there a faster way of doing this lookup?
     # Potential issue is that we have to search inside of a db object
     allClasses = mclient[database]['classes'].find(filt)
 
@@ -416,7 +414,7 @@ def deleteMarkingSection(classId, sectionTitle):
     mclient[database]['classes'].update_one({'_id' : classId}, {'$set' : {'markingSections' : classContent['markingSections']}})
 
     for s in classContent['students']:
-        # TODO: This has cascade related issues
+        # This has cascade related issues
         deleteMark(classId, s, sectionTitle)
 
 def updateClassInfo(classId, json):
@@ -429,7 +427,6 @@ def setClassActiveStatus(classId, status):
     """
     Sets the active status of a class to status
     """
-    # TODO: This may no longer be in use, check later
     mclient[database]['classes'].update_one({'_id': classId}, {'$set' : {'ongoing' : status}})
 
 def editUser(email, changes):

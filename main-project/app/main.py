@@ -22,14 +22,7 @@ import config
 
 # Start the app and setup the static directory for the html, css, and js files.
 
-# TODO: Get this working, maybe
 STATIC_FOLDER = config.STATIC_FOLDER
-# STATIC_FOLDER = 'static' # Default static folder to display warnings
-# if os.path.exists('client/build'):
-#     # React app was built
-#     # Well, the folder exists at least, might as well try to serve it
-#     STATIC_FOLDER = 'client/build'
-
 
 app = Flask(__name__, static_url_path='', static_folder=STATIC_FOLDER)
 CORS(app)
@@ -53,7 +46,6 @@ def authenticate():
     # Use this route to log in and get a token
     # Takes in a json of the form {email : '', password : ''}
 
-    # TODO: Likely need to validate email is good input here
     if request.json is None:
         abort(400)
 
@@ -86,11 +78,9 @@ def logout():
 def updatePassword():
     # Takes in a json of the form {email : '', password : ''}
 
-    # TODO: Likely need to validate that email is good input
 
     # Validate that the user calling this has access
     # Either that they are the same user or that they are an admin
-    # TODO: Make this prettier while keeping short circuit
     if request.json is None:
         abort(400)
 
@@ -484,10 +474,6 @@ def checkEmail():
 
     'message' will refer to the specific reason an email address is invalid
     """
-    # TODO: Add some sort of timeout?
-
-    # TODO: Sanitize input?
-
     if request.json is None or 'email' not in request.json:
         abort(400)
 
@@ -596,12 +582,12 @@ def editHours():
     convClassId = ObjectId(request.json['currentId'])
 
 
+    # Validate that all the changes made are valid
+    # ie. ban changes to any invalid attributes
     if request.json['newAttributes'] == {} or '_id' in request.json['newAttributes']:
         # No changes requested or an attempt was made to change the _id
         abort(400)
 
-    # TODO: Validate that all the changes made are valid
-    # ie. ban changes to any invalid attributes
 
     try:
         validate(instance=request.json, schema=SchemaFactory.edit_hours)
@@ -893,7 +879,7 @@ def editUser():
         # No changes requested or an attempt was made to change the email or _id
         abort(400)
 
-    # TODO: Validate that all the changes made are valid
+    # Validate that all the changes made are valid
     # ie. ban changes to any invalid attributes
 
     try:
@@ -1130,7 +1116,6 @@ def addVolunteer():
 
     if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
         # Allow non volunteers to volunteer
-        # TODO: VALID?
         abort(400)
 
     return jsonify({'success' : dbworker.addVolunteer(convClassId, str(email))})
@@ -1170,7 +1155,6 @@ def removeVolunteer():
 
     if us['userType'] not in [dbworker.userTypeMap['admin'], dbworker.userTypeMap['instructor'], dbworker.userTypeMap['volunteer']]:
         # Allow non volunteers to be volunteers
-        # TODO: VALID?
         abort(400)
 
 
@@ -1212,7 +1196,7 @@ def createUser():
     if email.error:
         abort(400)
 
-    # TODO: Verify no duplicate email here or in the dbworker method
+    # Verify no duplicate email here or in the dbworker method
     # likely better to do it there
 
     parentEmail = mailsane.normalize(request.json['parentEmail'])
